@@ -1,0 +1,41 @@
+{
+  "name": "@turnkey/demo-ethers-passkeys",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@thetalabs/theta-js": "^0.0.86",
+    "@turnkey/api-key-stamper": "^0.4.0",
+    "@turnkey/ethers": "^1.0.12",
+    "@turnkey/http": "^2.10.0",
+    "@turnkey/sdk-browser": "^1.0.0",
+    "@turnkey/sdk-react": "^1.0.0",
+    "@turnkey/sdk-server": "^1.0.0",
+    "@turnkey/webauthn-stamper": "^0.5.0",
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "axios": "^1.7.2",
+    "encoding": "^0.1.13",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.4",
+    "esm": "^3.2.25",
+    "ethers": "^6.13.1",
+    "install": "^0.13.0",
+    "next": "^14.2.4",
+    "npm": "^10.8.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.0",
+    "typescript": "^5.5.2"
+  }
+}
