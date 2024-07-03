@@ -1,7 +1,9 @@
+import '../app/globals.css'
 import { AppProps } from "next/app";
 import Head from "next/head";
 
 import { TurnkeyProvider } from "@turnkey/sdk-react";
+import Navbar from '@/components/navbar';
 
 const turnkeyConfig = {
   apiBaseUrl: process.env.NEXT_PUBLIC_TURNKEY_API_BASE_URL!,
@@ -18,6 +20,7 @@ function DemoEthersPasskeys({ Component, pageProps }: AppProps) {
         <Head>
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         </Head>
+        <Navbar/>
         <Component {...pageProps} />
       </TurnkeyProvider>
     </div>
