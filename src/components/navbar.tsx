@@ -1,4 +1,3 @@
-// components/Navbar.js
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -35,7 +34,7 @@ export default function Navbar() {
   return (
     <nav
       className={`bg-black p-4 fixed w-full z-10 transition-transform duration-300 ${
-        isVisible ? 'transform translate-y-0' : 'transform -translate-y-full'
+        isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
       <div className="container mx-auto flex items-center justify-between">
@@ -52,7 +51,7 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
-        <div className="hidden md:flex space-x-4">
+        <div className="hidden md:flex space-x-12">
           <Link href="/" className="text-white">
             Browse
           </Link>
@@ -75,7 +74,7 @@ export default function Navbar() {
         </div>
       </div>
       <div
-        className={`fixed inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center transform ${
+        className={`fixed inset-0 bg-black bg-opacity-80 flex flex-col h-screen items-center justify-center transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } transition-transform duration-300 ease-in-out md:hidden`}
       >
