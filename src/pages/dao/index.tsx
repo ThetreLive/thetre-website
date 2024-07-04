@@ -33,6 +33,16 @@ const proposals = [
     votes: 32489,
     timeLeft: '4 hours',
   },
+  {
+    id: 721,
+    author: 'Movie 3 by 0xDe2...9AaC',
+    status: 'Active',
+    title: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+    description:
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repudiandae, nisi eaque molestias corrupti nihil atque quos porro praesentium quasi! Dignissimos nulla eligendi neque numquam officiis reiciendis praesentium nisi. Saepe, cum.",
+    votes: 32489,
+    timeLeft: '4 hours',
+  },
 ];
 
 const Home: NextPage = () => {
@@ -50,7 +60,7 @@ const Home: NextPage = () => {
         </div>
         <div className='flex-grow overflow-y-auto w-50 lg:flex gap-10'>
             <Sidebar/>
-            <div>
+            <div className='max-h-[900px] overflow-y-scroll'>
                 {proposals.map((proposal) => (
                 <ProposalCard key={proposal.id} proposal={proposal} />
                 ))}

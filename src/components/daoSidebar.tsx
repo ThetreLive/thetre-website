@@ -47,28 +47,28 @@ const Sidebar: React.FC = () => {
 
   return (
     <div>
-        <div className='flex-shrink-0 lg:overflow-y-auto w-96 h-full bg-gray-100 p-4'>
-            <div className="hidden lg:block">
+        <div className='overflow-y-scroll w-96 max-height-[800px]'>
+            <div className="hidden lg:block p-4 backdrop-blur-xl bg-black/40">
                 <div className="mb-4">
                 <input
                     type="text"
                     placeholder="Search genres"
                     value={searchTerm}
                     onChange={handleSearch}
-                    className="w-full p-2 border border-gray-300 rounded"
+                    className="w-full p-2 border-b-2 rounded bg-transparent"
                 />
                 </div>
                 <div>
                 {filteredGenres.map((genre) => (
                     <div key={genre} className="mb-2">
-                    <label className="inline-flex items-center">
+                    <label className="inline-flex items-center gap-2">
                         <input
                         type="checkbox"
                         checked={selectedGenres.includes(genre)}
                         onChange={() => handleCheckboxChange(genre)}
-                        className="form-checkbox"
+                        className="form-checkbox checkbox"
                         />
-                        <span className="ml-2">{genre}</span>
+                        <span className="ml-2 text-white">{genre}</span>
                     </label>
                     </div>
                 ))}

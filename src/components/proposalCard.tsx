@@ -17,7 +17,7 @@ interface ProposalCardProps {
 
 const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
   return (
-    <div className="shadow-md rounded-lg p-6 mb-4 bg-custom-radial">
+    <div className="shadow-md rounded-lg p-6 mb-4 bg-black/40 backdrop-blur-xl">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <img
