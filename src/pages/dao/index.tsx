@@ -1,3 +1,4 @@
+import Sidebar from '@/components/daoSidebar';
 import ProposalCard from '@/components/proposalCard';
 import { NextPage } from 'next';
 
@@ -47,10 +48,13 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className='w-50'>
-            {proposals.map((proposal) => (
-            <ProposalCard key={proposal.id} proposal={proposal} />
-            ))}
+        <div className='flex-grow overflow-y-auto w-50 lg:flex gap-10'>
+            <Sidebar/>
+            <div>
+                {proposals.map((proposal) => (
+                <ProposalCard key={proposal.id} proposal={proposal} />
+                ))}
+            </div>
         </div>
       </div>
     </div>

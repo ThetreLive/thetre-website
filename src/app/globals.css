@@ -3,5 +3,8 @@
 @tailwind utilities;
 
 body {
-    background-color: black;
+    background-image: url("http://localhost:3000/background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    backdrop-filter:blur(100px);
 }
