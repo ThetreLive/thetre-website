@@ -33,7 +33,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-black p-4 w-full transition-transform duration-300 ${
+      className={`bg-black/30 backdrop-blur-xl p-4 w-full transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >

@@ -13,3 +13,21 @@ body {
     width: 1.5rem;
     height: 1.5rem;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgba(39, 39, 196, 0.4);
+    backdrop-filter: blur(10px);
+
+    border-radius: 5px;
+  }
