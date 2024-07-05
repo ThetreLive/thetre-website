@@ -1,28 +1,5 @@
+import { GENRES } from '@/utils/constants';
 import React, { useState } from 'react';
-
-const genres = [
-    'Action',
-    'Adventure',
-    'Comedy',
-    'Drama',
-    'Fantasy',
-    'Horror',
-    'Mystery',
-    'Romance',
-    'Sci-Fi',
-    'Thriller',
-    'Animation',
-    'Biography',
-    'Crime',
-    'Documentary',
-    'Family',
-    'History',
-    'Music',
-    'Musical',
-    'Sport',
-    'War',
-    'Western',
-  ];
 
 const Sidebar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -41,7 +18,7 @@ const Sidebar: React.FC = () => {
     );
   };
 
-  const filteredGenres = genres.filter((genre) =>
+  const filteredGenres = GENRES.filter((genre) =>
     genre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
