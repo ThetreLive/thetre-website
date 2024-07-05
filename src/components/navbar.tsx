@@ -61,6 +61,8 @@ export default function Navbar() {
           <Link href="/shows" className="text-white">
             Shows
           </Link>
+        </div>
+        <div className='hidden md:flex rounded-3xl bg-thetre-blue px-5 py-2'>
           <Link href="/account" className="text-white">
             Account
           </Link>
