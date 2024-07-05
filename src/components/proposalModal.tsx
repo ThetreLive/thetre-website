@@ -48,8 +48,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70">
-      <div className=" bg-bg-image bg-cover bg-no-repeat rounded-lg w-full max-w-5xl text-white">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70" onClick={(e) => {
+      onClose()
+    }}>
+      <div className=" bg-bg-image bg-cover bg-no-repeat rounded-lg w-full max-w-5xl text-white" onClick={e => e.stopPropagation()}>
         <div className='backdrop-blur-[100px]	p-6'>
         <h2 className="text-2xl mb-4 text-center">Movie Listing Proposal</h2>
         <form onSubmit={handleSubmit}>
@@ -114,7 +116,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           </div>
           <div className="flex flex-col justify-center gap-2 items-center">
             <button type="submit" className="px-4 py-2 rounded text-white w-96 bg-[#4B4BFF] font-bold cursor-pointer">Submit</button>
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-transparent border border-red-700 rounded text-red-700 w-96 font-bold cursor-pointer">Cancel</button>
           </div>
         </form>
         </div>
