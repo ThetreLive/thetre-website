@@ -1,6 +1,8 @@
 import Sidebar from '@/components/daoSidebar';
 import ProposalCard from '@/components/proposalCard';
+import Modal from '@/components/proposalModal';
 import { NextPage } from 'next';
+import { useState } from 'react';
 
 const proposals = [
   {
@@ -46,12 +48,20 @@ const proposals = [
 ];
 
 const Home: NextPage = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto p-6">
         <div className="shadow rounded-lg p-4 mb-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl text-white font-bold">Proposals</h2>
+            <div>
+                <h2 className="text-xl text-white font-bold">Proposals</h2>
+                <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-blue-500 text-white rounded">
+                    Open Modal
+                </button>
+
+            </div>
             <div>
               <span className="text-green-500">Passed 50</span>
               <span className="text-red-500 ml-4">Failed 32</span>
@@ -67,6 +77,7 @@ const Home: NextPage = () => {
             </div>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

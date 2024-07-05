@@ -141,7 +141,7 @@ export default function Home() {
   };
 
   return (
-    <main className={styles.main}>
+    <main className="h-screen">
       <a href="https://turnkey.com" target="_blank" rel="noopener noreferrer">
         <Image
           src="/logo.svg"
