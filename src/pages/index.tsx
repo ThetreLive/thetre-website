@@ -1,12 +1,8 @@
-import { TurnkeySigner } from "@turnkey/ethers";
-import { useTurnkey } from "@turnkey/sdk-react";
 import Image from "next/image";
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import styles from "./index.module.css";
-import { TWalletDetails } from "../types";
-import * as thetajs from "@thetalabs/theta-js";
+import { useTurnkeyContext } from "@/context/turnkeyContext";
 
 type subOrgFormData = {
   subOrgName: string;
@@ -21,17 +17,8 @@ type TSignedMessage = {
   signature: string;
 } | null;
 
-type TWalletState = TWalletDetails | null;
-
-const humanReadableDateTime = (): string => {
-  return new Date().toLocaleString().replaceAll("/", "-").replaceAll(":", ".");
-};
-
 export default function Home() {
-  const { turnkey, passkeyClient } = useTurnkey();
-
-  // Wallet is used as a proxy for logged-in state
-  const [wallet, setWallet] = useState<TWalletState>(null);
+  const {wallet, signer, createSubOrgAndWallet, login} = useTurnkeyContext()
   const [signedMessage, setSignedMessage] = useState<TSignedMessage>(null);
 
   const { handleSubmit: subOrgFormSubmit } = useForm<subOrgFormData>();
@@ -40,29 +27,12 @@ export default function Home() {
   const { register: _loginFormRegister, handleSubmit: loginFormSubmit } =
     useForm();
 
-  // First, logout user if there is no current wallet set
-  useEffect(() => {
-    (async () => {
-      if (!wallet) {
-        await turnkey?.logoutUser();
-      }
-    })();
-  });
-
   const signMessage = async (data: signingFormData) => {
-    if (!wallet) {
+    if (!wallet || !signer) {
       throw new Error("wallet not found");
     }
 
-    let ethersSigner = new TurnkeySigner({
-      client: passkeyClient!,
-      organizationId: wallet.subOrgId,
-      signWith: wallet.address,
-    });
-    const chainId = thetajs.networks.ChainIds.Testnet;
-    const provider = new thetajs.providers.HttpProvider(chainId);
-    ethersSigner = ethersSigner.connect(provider)
-    const signedMessage = await ethersSigner.signMessage(data.messageToSign);
+    const signedMessage = await signer.signMessage(data.messageToSign);
     
     setSignedMessage({
       message: data.messageToSign,
@@ -71,77 +41,9 @@ export default function Home() {
   };
 
 
-  const createSubOrgAndWallet = async () => {
-    const subOrgName = `Turnkey Ethers+Passkey Demo - ${humanReadableDateTime()}`;
-    const credential = await passkeyClient?.createUserPasskey({
-      publicKey: {
-        rp: {
-          id: "localhost",
-          name: "Turnkey Ethers Passkey Demo",
-        },
-        user: {
-          name: subOrgName,
-          displayName: subOrgName,
-        },
-      },
-    });
-
-    if (!credential?.encodedChallenge || !credential?.attestation) {
-      return false;
-    }
-
-    const res = await axios.post("http://localhost:3000/api/createSubOrg", {
-      subOrgName: subOrgName,
-      challenge: credential?.encodedChallenge,
-      attestation: credential?.attestation,
-    });
-
-    const response = res.data as TWalletDetails;
-    setWallet(response);
-  };
-
-  const login = async () => {
-    try {
-      // Initiate login (read-only passkey session)
-      const loginResponse = await passkeyClient?.login();
-      if (!loginResponse?.organizationId) {
-        return;
-      }
-
-      const currentUserSession = await turnkey?.currentUserSession();
-      if (!currentUserSession) {
-        return;
-      }
-
-      const walletsResponse = await currentUserSession?.getWallets();
-      if (!walletsResponse?.wallets[0].walletId) {
-        return;
-      }
-
-      const walletId = walletsResponse?.wallets[0].walletId;
-      const walletAccountsResponse =
-        await currentUserSession?.getWalletAccounts({
-          organizationId: loginResponse?.organizationId,
-          walletId,
-        });
-      if (!walletAccountsResponse?.accounts[0].address) {
-        return;
-      }
-
-      setWallet({
-        id: walletId,
-        address: walletAccountsResponse?.accounts[0].address,
-        subOrgId: loginResponse.organizationId,
-      } as TWalletDetails);
-    } catch (e: any) {
-      const message = `caught error: ${e.toString()}`;
-      console.error(message);
-      alert(message);
-    }
-  };
-
   return (
     <main className="h-screen">
+      <button onClick={()=> console.log(signer)}>fff</button>
       <a href="https://turnkey.com" target="_blank" rel="noopener noreferrer">
         <Image
           src="/logo.svg"
