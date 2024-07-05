@@ -113,7 +113,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
           <div className="flex flex-col justify-center gap-2 items-center">
-            <button type="submit" className="px-4 py-2 rounded text-white w-96 bg-transparent border font-bold cursor-pointer">Submit</button>
+            <button type="submit" className="px-4 py-2 rounded text-white w-96 bg-[#4B4BFF] font-bold cursor-pointer">Submit</button>
             <button type="button" onClick={onClose} className="px-4 py-2 bg-transparent border border-red-700 rounded text-red-700 w-96 font-bold cursor-pointer">Cancel</button>
           </div>
         </form>

@@ -55,9 +55,9 @@ const Home: NextPage = () => {
       <div className="container mx-auto p-6">
         <div className="shadow rounded-lg p-4 mb-6">
           <div className="flex justify-between items-center">
-            <div>
+            <div className='flex gap-4 items-center'>
                 <h2 className="text-xl text-white font-bold">Proposals</h2>
-                <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-blue-500 text-white rounded">
+                <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-[#4B4BFF] text-white rounded">
                     Open Modal
                 </button>
 
