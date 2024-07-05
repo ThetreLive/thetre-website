@@ -48,12 +48,11 @@ const TurnkeyContextProvider = (props: Props) => {
     });
 
     const createSubOrgAndWallet = async () => {
-        console.log("here")
         const subOrgName = `Thetre - ${humanReadableDateTime()}`;
         const credential = await passkeyClient?.createUserPasskey({
           publicKey: {
             rp: {
-              id: "localhost",
+              id: process.env.NEXT_PUBLIC_RPID,
               name: "Thetre",
             },
             user: {
@@ -64,11 +63,10 @@ const TurnkeyContextProvider = (props: Props) => {
         });
     
         if (!credential?.encodedChallenge || !credential?.attestation) {
-            console.log("eee")
           return false;
         }
     
-        const res = await axios.post("http://localhost:3000/api/createSubOrg", {
+        const res = await axios.post(process.env.NEXT_PUBLIC_SERVER_SIGN_URL+"createSubOrg", {
           subOrgName: subOrgName,
           challenge: credential?.encodedChallenge,
           attestation: credential?.attestation,
