@@ -1,8 +1,11 @@
+'use client'
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
+  const asPath = usePathname()
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
@@ -52,13 +55,13 @@ export default function Navbar() {
           </div>
         </div>
         <div className="hidden md:flex space-x-12 spread-bg">
-          <Link href="/" className="text-white">
+          <Link href="/" className={`text-white font-bold ${asPath === '/' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Browse
           </Link>
-          <Link href="/movies" className="text-white">
+          <Link href="/movies" className={`text-white font-bold ${asPath === '/movies' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Movies
           </Link>
-          <Link href="/shows" className="text-white">
+          <Link href="/shows" className={`text-white font-bold ${asPath === '/shows' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Shows
           </Link>
         </div>
