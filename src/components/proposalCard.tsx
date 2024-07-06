@@ -22,7 +22,7 @@ const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
         <div className="flex items-center">
           <img
             src={"https://avatars.jakerunzer.com/" + proposal.title}
-            alt="Aave"
+            alt="avatar"
             className="w-8 h-8 mr-2"
           />
           <div>

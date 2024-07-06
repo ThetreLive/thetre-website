@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 
@@ -67,7 +68,7 @@ const MovieSlider = () => {
       <Slider {...settings}>
         {movies.map((movie, index) => (
           <div key={index} className="relative h-screen">
-            <img src={movie.image} alt={movie.title} className="absolute inset-0 w-full h-full object-cover" />
+            <Image src={movie.image} alt={movie.title} className="absolute inset-0 w-full h-full object-cover" fill/>
             <div className="absolute inset-0"></div>
             <div className="relative z-10 flex md:items-center items-end h-full px-16">
               <div className="text-left text-white md:w-1/3 bg-black bg-opacity-50 p-8 rounded-lg backdrop-blur-xl">
