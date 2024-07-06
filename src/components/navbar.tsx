@@ -114,9 +114,22 @@ export default function Navbar() {
         <Link href="/shows" className="block text-white text-2xl p-2" onClick={() => setIsOpen(false)}>
           Shows
         </Link>
-        <Link href="/account" className="block text-white text-2xl p-2" onClick={() => setIsOpen(false)}>
-          Account
-        </Link>
+        {wallet ? (
+          <Link href="/account" className="block text-white text-2xl p-2" onClick={() => setIsOpen(false)}>
+            Account
+          </Link>
+
+        ) : (
+          <div className="flex flex-col items-center">
+            <button onClick={createSubOrgAndWallet} className="block text-white text-2xl p-2">
+              Sign Up
+            </button>
+            <button onClick={login} className="block text-white text-2xl p-2">
+              Login
+            </button>
+          </div>
+        
+        )}
       </div>
     </nav>
   );
