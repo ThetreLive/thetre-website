@@ -33,12 +33,12 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-black/30 backdrop-blur-xl p-4 w-full transition-transform duration-300 ${
+      className={`absolute z-10 p-4 w-full transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
       <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="md:hidden flex items-center">
           <div className="text-white text-2xl font-bold">
             <Link href="/">
               <Image
@@ -51,7 +51,7 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
-        <div className="hidden md:flex space-x-12">
+        <div className="hidden md:flex space-x-12 spread-bg">
           <Link href="/" className="text-white">
             Browse
           </Link>
@@ -62,7 +62,7 @@ export default function Navbar() {
             Shows
           </Link>
         </div>
-        <div className='hidden md:flex rounded-3xl bg-thetre-blue px-5 py-2'>
+        <div className='hidden md:flex rounded-full bg-custom-radial px-6 py-2'>
           <Link href="/account" className="text-white">
             Account
           </Link>
