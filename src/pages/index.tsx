@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import styles from "./index.module.css";
 import { useTurnkeyContext } from "@/context/turnkeyContext";
+import MovieSlider from "@/components/movieSlider.";
 
 type subOrgFormData = {
   subOrgName: string;
@@ -43,7 +44,8 @@ export default function Home() {
 
   return (
     <main className="h-screen">
-      <button onClick={()=> console.log(signer)}>fff</button>
+      <MovieSlider/>
+      {/* <button onClick={()=> console.log(signer)}>fff</button>
       <a href="https://turnkey.com" target="_blank" rel="noopener noreferrer">
         <Image
           src="/logo.svg"
@@ -187,7 +189,7 @@ export default function Home() {
             />
           </form>
         </div>
-      )}
+      )} */}
     </main>
   );
 }
