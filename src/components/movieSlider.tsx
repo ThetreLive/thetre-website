@@ -71,7 +71,7 @@ const MovieSlider = () => {
             <Image src={movie.image} alt={movie.title} className="absolute inset-0 w-full h-full object-cover" fill/>
             <div className="absolute inset-0"></div>
             <div className="relative z-10 flex lg:items-center items-end h-full px-16">
-              <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 p-8 rounded-lg backdrop-blur-xl">
+              <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 lg:p-8 rounded-lg backdrop-blur-xl">
                 <h1 className="text-5xl font-bold mb-4">{movie.title}</h1>
                 <p className="text-lg mb-4">{movie.genre}</p>
                 <p className="text-sm mb-8">Rating: {movie.rating}</p>
