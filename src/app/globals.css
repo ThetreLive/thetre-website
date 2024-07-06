@@ -66,4 +66,7 @@ body {
     background: radial-gradient(circle, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0) 70%);
 }
   
-  
+.smooth-scroll {
+    scroll-behavior: smooth;
+    transition: scroll 1ms ease;
+  }  
