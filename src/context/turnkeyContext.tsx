@@ -66,7 +66,7 @@ const TurnkeyContextProvider = (props: Props) => {
           return false;
         }
     
-        const res = await axios.post(process.env.NEXT_PUBLIC_SERVER_SIGN_URL+"createSubOrg", {
+        const res = await axios.post(process.env.NEXT_PUBLIC_SERVER_SIGN_URL+"/createSubOrg", {
           subOrgName: subOrgName,
           challenge: credential?.encodedChallenge,
           attestation: credential?.attestation,
