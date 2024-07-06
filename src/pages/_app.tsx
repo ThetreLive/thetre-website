@@ -11,7 +11,7 @@ const turnkeyConfig = {
   defaultOrganizationId: process.env.NEXT_PUBLIC_ORGANIZATION_ID!,
   rpId: process.env.NEXT_PUBLIC_RPID!,
   serverSignUrl: process.env.NEXT_PUBLIC_SERVER_SIGN_URL!,
-  iframeUrl: process.env.NEXT_PUBLIC_IFRAME_URL ?? "https://auth.turnkey.com", // not necessary for this example
+  iframeUrl: process.env.NEXT_PUBLIC_IFRAME_URL ?? "https://auth.turnkey.com",
 };
 
 function DemoEthersPasskeys({ Component, pageProps }: AppProps) {
