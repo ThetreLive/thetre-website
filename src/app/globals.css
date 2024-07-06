@@ -64,9 +64,6 @@ body {
 
 .spread-bg {
     background: radial-gradient(circle, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0) 70%);
-    padding: 20px 30px;
-    border-radius: 10px;
-
 }
   
   

@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useTurnkeyContext } from '@/context/turnkeyContext';
 
 export default function Navbar() {
   const asPath = usePathname()
+  const { wallet, createSubOrgAndWallet, login } = useTurnkeyContext()
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
@@ -54,7 +56,7 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
-        <div className="hidden md:flex space-x-12 spread-bg">
+        <div className="hidden md:flex space-x-12 spread-bg p-4 rounded-xl">
           <Link href="/" className={`text-white font-bold ${asPath === '/' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Browse
           </Link>
@@ -65,11 +67,26 @@ export default function Navbar() {
             Shows
           </Link>
         </div>
-        <div className='hidden md:flex rounded-full bg-custom-radial px-6 py-2'>
-          <Link href="/account" className="text-white">
-            Account
-          </Link>
-        </div>
+        {wallet ? (
+          <div className='hidden md:flex rounded-full bg-custom-radial px-6 py-2'>
+            <Link href="/account" className="text-white">
+              Account
+            </Link>
+          </div>
+        ): (
+          <div className='hidden md:flex space-x-4 items-center'>
+            <div className='hidden md:flex rounded-full bg-custom-radial px-6 py-2'>
+              <button onClick={createSubOrgAndWallet} className="text-white">
+                Sign Up
+              </button>
+            </div>
+            <div className='hidden md:flex rounded-full spread-bg px-8 py-2'>
+              <button onClick={login} className="text-white">
+                Login
+              </button>
+            </div>
+          </div>
+        )}
         <div className="md:hidden flex items-center">
           <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
