@@ -54,8 +54,14 @@ export default function Home() {
         <MovieSlider />
       </main>
       <div className="flex h-screen" id="movies">
-        <MovieCard />
-        <MovieCard />
+        <div>
+          <MovieCard />
+          <MovieCard />
+        </div>
+        <div>
+          <MovieCard />
+          <MovieCard />
+        </div>
       </div>
     </div>
   );
