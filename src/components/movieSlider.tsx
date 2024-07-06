@@ -15,7 +15,7 @@ const movies = [
     genre: 'Comedy, Drama',
     rating: '7.5',
     description: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    image: 'https://rose-melodic-felidae-510.mypinata.cloud/ipfs/QmVzdkmorYbK1NrLhwGFGNQRs65otVZGxS1hTKubfUbYux',
+    image: 'https://rose-melodic-felidae-510.mypinata.cloud/ipfs/QmZBCcpXm4KqTVxpciMfGSW4B1erKWnT1YChh6xmXFFu5u',
   },
   // Add more movies as needed
 ];
