@@ -25,6 +25,12 @@ function DemoEthersPasskeys({ Component, pageProps }: AppProps) {
             <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
             <link rel="manifest" href="/site.webmanifest"/>
             <title>Thetre | A Decentralized Movie Experience</title>
+            <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
+            <script src='https://vjs.zencdn.net/7.15.4/video.js'></script>
+            <script src="https://cdn.jsdelivr.net/npm/hls.js@0.12.4"></script>
+            <script src="https://d1ktbyo67sh8fw.cloudfront.net/js/theta.umd.min.js"></script>
+            <script src="https://d1ktbyo67sh8fw.cloudfront.net/js/theta-hls-plugin.umd.min.js"></script>
+            <script src="https://d1ktbyo67sh8fw.cloudfront.net/js/videojs-theta-plugin.min.js"></script>
           </Head>
           <Navbar/>
           <Component {...pageProps} />
