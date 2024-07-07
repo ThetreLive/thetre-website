@@ -5,6 +5,7 @@ import Head from "next/head";
 import { TurnkeyProvider } from "@turnkey/sdk-react";
 import Navbar from '@/components/navbar';
 import TurnkeyContextProvider from '@/context/turnkeyContext';
+import Script from 'next/script';
 
 const turnkeyConfig = {
   apiBaseUrl: process.env.NEXT_PUBLIC_TURNKEY_API_BASE_URL!,
@@ -26,11 +27,11 @@ function DemoEthersPasskeys({ Component, pageProps }: AppProps) {
             <link rel="manifest" href="/site.webmanifest"/>
             <title>Thetre | A Decentralized Movie Experience</title>
             <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
-            <script src='https://vjs.zencdn.net/7.15.4/video.js'></script>
-            <script src="https://cdn.jsdelivr.net/npm/hls.js@0.12.4"></script>
-            <script src="https://d1ktbyo67sh8fw.cloudfront.net/js/theta.umd.min.js"></script>
-            <script src="https://d1ktbyo67sh8fw.cloudfront.net/js/theta-hls-plugin.umd.min.js"></script>
-            <script src="https://d1ktbyo67sh8fw.cloudfront.net/js/videojs-theta-plugin.min.js"></script>
+            <Script src='https://vjs.zencdn.net/7.15.4/video.js'></Script>
+            <Script src="https://cdn.jsdelivr.net/npm/hls.js@0.12.4"></Script>
+            <Script src="https://d1ktbyo67sh8fw.cloudfront.net/js/theta.umd.min.js"></Script>
+            <Script src="https://d1ktbyo67sh8fw.cloudfront.net/js/theta-hls-plugin.umd.min.js"></Script>
+            <Script src="https://d1ktbyo67sh8fw.cloudfront.net/js/videojs-theta-plugin.min.js"></Script>
           </Head>
           <Navbar/>
           <Component {...pageProps} />
