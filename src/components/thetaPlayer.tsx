@@ -59,11 +59,30 @@ const ThetaPlayer: React.FC = () => {
                 document.body.appendChild(script);
                 
             })()
+        } else {
+            let script = document.createElement('script');
+                script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
+                script.async = true;
+                script.onload = function () {
+                    // setTvaLibLoaded(true);
+                    alert("here")
+                    new window.TVA.Video({
+                    videoId: "video_mg3tvfr4hzutanrfrru714kw0u",
+                    server: 'tva',
+                    videoEl: playerRef.current,
+                    networkId: 365,
+                    onError: function (error: any) {console.log(error)},
+                    });
+                };
+                document.body.appendChild(script);
+                
         }
     }
+    useEffect(() => {
+        renderVideo()
+    }, [signer])
     return (
         <div>
-            <button onClick={renderVideo}>Render Video</button>
             <video ref={playerRef} controls/>
         </div>
     )
