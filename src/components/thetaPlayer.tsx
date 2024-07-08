@@ -1,6 +1,7 @@
 "use client"
 import { useTurnkeyContext } from "@/context/turnkeyContext";
 import { LegacyRef, useEffect, useRef } from "react";
+import {ethers} from "ethers"
 
 let TVA_JS_VERSION_NUMBER = '1.0.12';
 
@@ -17,6 +18,16 @@ function getSignTypedDataJson(timestamp: number) {
         },
         primaryType: "SignIn",
         types: {
+            EIP712Domain: [{
+                name: "name",
+                type: "string"
+              }, {
+                name: "version",
+                type: "string"
+              }, {
+                name: "chainId",
+                type: "uint256"
+              }],
             SignIn: [{
                 name: "timestamp",
                 type: "uint256"
@@ -37,7 +48,9 @@ const ThetaPlayer: React.FC = () => {
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
             (async () => {
-                const signature = await signer._signTypedData(data.domain, data.types, data.message)
+                const digest = ethers.TypedDataEncoder.hash(data.domain, data.types, data.message);
+
+                const signature = await signer.signMessage(ethers.getBytes(digest))
                 alert(signature)
                 let script = document.createElement('script');
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
