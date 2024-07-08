@@ -46,7 +46,7 @@ const ThetaPlayer: React.FC = () => {
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
                 script.async = true;
                 const address = await signer.getAddress();
-                const a = { address, timestamp, signature }
+                const a = { address, timestamp, sig: signature }
                 script.onload = function () {
                     // setTvaLibLoaded(true);
                     alert("here")
