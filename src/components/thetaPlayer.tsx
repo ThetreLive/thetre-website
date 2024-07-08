@@ -37,7 +37,7 @@ const ThetaPlayer: React.FC = () => {
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
             (async () => {
-                const signature = await signer.signTypedData(data.domain, data.types, data.message)
+                const signature = await signer._signTypedData(data.domain, data.types, data.message)
                 alert(signature)
                 let script = document.createElement('script');
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
