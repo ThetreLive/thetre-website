@@ -2,7 +2,7 @@ import ThetaPlayer from '@/components/thetaPlayer';
 
 const WatchPage: React.FC = () => {
     return (
-        <div>
+        <div className='h-screen'>
             <ThetaPlayer/>
         </div>
     );

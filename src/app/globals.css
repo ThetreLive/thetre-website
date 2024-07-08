@@ -70,3 +70,9 @@ body {
     scroll-behavior: smooth;
     transition: scroll 1ms ease;
   }  
+
+.video-js .vjs-big-play-button {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+}
