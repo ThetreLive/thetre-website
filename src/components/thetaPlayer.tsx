@@ -41,7 +41,7 @@ function getSignTypedDataJson(timestamp: number) {
 const ThetaPlayer: React.FC = () => {
     const playerRef = useRef<HTMLVideoElement>(null)
     const {signer} = useTurnkeyContext()
-    useEffect(() => {
+    const renderVideo = () => {
         if (signer) {
             console.log(signer.getAddress().then(alert))
             const timestamp = Date.now();
@@ -70,9 +70,10 @@ const ThetaPlayer: React.FC = () => {
                 
             })()
         }
-    }, [signer])
+    }
     return (
         <div>
+            <button onClick={renderVideo}>Render Video</button>
             <video ref={playerRef} controls/>
         </div>
     )
