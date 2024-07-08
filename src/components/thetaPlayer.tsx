@@ -69,7 +69,7 @@ const ThetaPlayer: React.FC = () => {
                 
             })()
         }
-    })
+    }, [signer])
     return (
         <div>
             <video ref={playerRef} controls/>
