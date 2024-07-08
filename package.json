@@ -1,5 +1,5 @@
 {
-  "name": "@turnkey/demo-ethers-passkeys",
+  "name": "thetre-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
