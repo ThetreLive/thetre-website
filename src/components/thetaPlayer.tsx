@@ -17,22 +17,12 @@ function getSignTypedDataJson(timestamp: number) {
         },
         primaryType: "SignIn",
         types: {
-            EIP712Domain: [{
-            name: "name",
-            type: "string"
-            }, {
-            name: "version",
-            type: "string"
-            }, {
-            name: "chainId",
-            type: "uint256"
-            }],
             SignIn: [{
-            name: "timestamp",
-            type: "uint256"
+                name: "timestamp",
+                type: "uint256"
             }, {
-            name: "contents",
-            type: "string"
+                name: "contents",
+                type: "string"
             }]
         }
     };
