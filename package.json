@@ -13,6 +13,15 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@chainsafe/libp2p-gossipsub": "^13.1.0",
+    "@chainsafe/libp2p-noise": "^15.1.0",
+    "@chainsafe/libp2p-yamux": "^6.0.2",
+    "@libp2p/circuit-relay-v2": "^1.1.1",
+    "@libp2p/dcutr": "^1.1.1",
+    "@libp2p/identify": "^2.1.1",
+    "@libp2p/webrtc": "^4.1.1",
+    "@libp2p/websockets": "^8.1.1",
+    "@multiformats/multiaddr": "^12.3.0",
     "@thetalabs/theta-js": "^0.0.86",
     "@turnkey/api-key-stamper": "^0.4.0",
     "@turnkey/ethers": "^1.0.12",
@@ -31,6 +40,7 @@
     "esm": "^3.2.25",
     "ethers": "^6.13.1",
     "install": "^0.13.0",
+    "libp2p": "^1.8.0",
     "next": "^14.2.4",
     "npm": "^10.8.1",
     "react": "^18.3.1",
@@ -39,6 +49,7 @@
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
     "typescript": "^5.5.2",
+    "uint8arrays": "^5.1.0",
     "video.js": "^8.12.0"
   },
   "devDependencies": {
