@@ -38,11 +38,11 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`p-2 w-full transition-transform duration-300 ${
+      className={`px-8 py-2 w-full transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="w-full flex items-center justify-between">
         <div className="flex items-center">
           <div className="text-white text-2xl font-bold">
             <Link href="/">
@@ -57,7 +57,7 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
-        <div className="hidden md:flex space-x-12 spread-bg p-4 rounded-xl">
+        <div className="hidden md:flex space-x-12 p-4 rounded-xl">
           <Link href="/" className={`text-white font-bold ${asPath === '/' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Browse
           </Link>
@@ -81,7 +81,7 @@ export default function Navbar() {
                 Sign Up
               </button>
             </div>
-            <div className='hidden md:flex rounded-full spread-bg px-8 py-2'>
+            <div className='hidden md:flex rounded-full bg-gray-700 px-8 py-2'>
               <button onClick={login} className="text-white">
                 Login
               </button>

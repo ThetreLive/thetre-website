@@ -64,7 +64,7 @@ const MovieSlider = () => {
   }
 
   return (
-    <div className="h-full mx-4">
+    <div className="h-full">
       <Slider {...settings}>
         {movies.map((movie, index) => (
           <div key={index} className="relative h-full">
