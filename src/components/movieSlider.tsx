@@ -64,18 +64,18 @@ const MovieSlider = () => {
   }
 
   return (
-    <div className="relative h-screen">
+    <div className="h-full mx-4">
       <Slider {...settings}>
         {movies.map((movie, index) => (
-          <div key={index} className="relative h-screen">
-            <Image src={movie.image} alt={movie.title} className="absolute inset-0 w-full h-full object-cover" fill/>
+          <div key={index} className="relative h-full">
+            <Image src={movie.image} alt={movie.title} className="absolute inset-0 w-full h-full object-cover rounded-2xl" fill/>
             <div className="absolute inset-0"></div>
             <div className="relative z-10 flex lg:items-center items-end h-full px-16">
-              <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 lg:p-8 rounded-lg backdrop-blur-xl">
-                <h1 className="text-5xl font-bold mb-4">{movie.title}</h1>
-                <p className="text-lg mb-4">{movie.genre}</p>
+              <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 lg:p-8 p-4 rounded-lg backdrop-blur-xl">
+                <h1 className="lg:text-5xl text-3xl font-bold mb-4">{movie.title}</h1>
+                <p className="lg:text-lg text-sm mb-4">{movie.genre}</p>
                 <p className="text-sm mb-8">Rating: {movie.rating}</p>
-                <p className="mb-8">{movie.description}</p>
+                <p className="mb-8 lg:text-base text-sm">{movie.description}</p>
                 <div className="flex space-x-4">
                   <button className="bg-custom-radial px-6 py-3 font-bold rounded-full">Watch now</button>
                   <button className="bg-gray-700 px-4 py-2 rounded-full">Trailer</button>

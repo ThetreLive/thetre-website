@@ -38,12 +38,12 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`absolute z-10 p-4 w-full transition-transform duration-300 ${
+      className={`p-2 w-full transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
       <div className="container mx-auto flex items-center justify-between">
-        <div className="md:hidden flex items-center">
+        <div className="flex items-center">
           <div className="text-white text-2xl font-bold">
             <Link href="/">
               <Image
@@ -51,7 +51,8 @@ export default function Navbar() {
                 alt="Thetre Logo"
                 width={200}
                 height={16}
-                className="md:h-16 lg:h-16"
+                className="h-12"
+                loading='eager'
               />
             </Link>
           </div>
