@@ -67,14 +67,14 @@ const Chat: React.FC = () => {
     }
     const host = async () => {
 
-        const m = await fetch("http://13.233.238.96:3000/multiaddress");
+        const m = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/multiAddress");
         const addr = await m.json();
-        const ma = multiaddr(addr.multiaddress[1].replace("172.31.47.160", "13.233.238.96"))
+        const ma = multiaddr(addr.multiaddress[1].replace("172.31.47.160", "13.200.213.161"))
         await chatRoom(ma)
         await window.libp2p.addEventListener('self:peer:update', () => {
             (async () => {
                 const multiaddrs = await window.libp2p.getMultiaddrs().filter((ma: any) => {
-                    if (ma.toString().includes('webrtc') && ma.toString().includes("13.233.238.96")) {
+                    if (ma.toString().includes('webrtc') && ma.toString().includes("13.200.213.161")) {
                         return ma.toString()
                     }
                   })
