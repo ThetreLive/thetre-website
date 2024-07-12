@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { useTurnkeyContext } from "./turnkeyContext";
 import { ethers } from "ethers";
-import { getFileURL } from "@/utils/theta";
+import { getFileURL, uploadVideo } from "@/utils/theta";
 
 export interface ProposalData {
     title: string;
@@ -16,8 +16,9 @@ export interface ProposalData {
     coverLink: string;
 }
 
-const governerContract = ""
-const thetreContract = ""
+const governerContract = "0x1052Db8fe097a011cd2124f14fFe0729019984B3"
+const thetreContract = "0x1052Db8fe097a011cd2124f14fFe0729019984B3"
+const governanceNFT = "0x1a1d19fe31197e49ffcc292ff6a23c4fefb3ff39"
 const governerABI = [
     {
         "inputs": [
@@ -78,12 +79,12 @@ const thetreAB1 = [
 
 type StoreState = {
     movies: any[],
-    createProposal: (data: ProposalData) => void
+    createProposal: (data: ProposalData) => Promise<void>
 };
   
 const ThetreContext = createContext<StoreState>({
     movies: [],
-    createProposal: () => {}
+    createProposal: async() => {}
 });
   
 export const useThetreContext = () => useContext(ThetreContext);
@@ -96,15 +97,22 @@ const ThetreContextProvider = (props: Props) => {
     const [movies, setMovies] = useState([])
     const {signer} = useTurnkeyContext()
     const createProposal = async (data: ProposalData) => {
+        for (const key in data) {
+            if (data.hasOwnProperty(key) && data[key as keyof ProposalData] === '') {
+                alert("Please fill all fields")
+            }
+        }
         const govEthers = new ethers.Contract(governerContract, governerABI, signer)
         const thetreEthers = new ethers.Contract(thetreContract, thetreAB1, signer)
         const url = 'https://p2p.thetre.live/rpc';
+        const upload = await uploadVideo(getFileURL(JSON.parse(data.movieLink).result.key, JSON.parse(data.movieLink).result.relpath), governanceNFT, data.title, data.coverLink)
         const body = {
             jsonrpc: "2.0",
             method: "edgestore.PutData",
             params: [
                 {
-                ...data
+                ...data,
+                movieLink: upload.body.videos[0].id,
                 }
             ],
             id: 1
@@ -123,7 +131,9 @@ const ThetreContextProvider = (props: Props) => {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result = await response.json();
+            console.log(result)
             const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", [data.title, getFileURL(result.result.key, null)])
+            console.log(listingCalldata)
             const proposalId = await govEthers.propose([thetreContract], [0], [listingCalldata], "List Movie")
             console.log(proposalId)
           } catch (error) {
