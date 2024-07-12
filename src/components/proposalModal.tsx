@@ -1,4 +1,4 @@
-import { ProposalData } from '@/context/thetreContext';
+import { ProposalData, useThetreContext } from '@/context/thetreContext';
 import { GENRES } from '@/utils/constants';
 import { getFileURL } from '@/utils/theta';
 import Image from 'next/image';
@@ -10,6 +10,7 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  const {createProposal} = useThetreContext()
   const [form, setForm] = useState<ProposalData>({
     title: '',
     description: '',
@@ -30,9 +31,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(form);
+    await createProposal(form)
   };
 
   const handleNext = () => {
