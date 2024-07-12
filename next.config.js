@@ -8,6 +8,12 @@ const nextConfig = {
                 port: '',
                 pathname: '/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'p2p.thetre.live',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
 };
