@@ -1,3 +1,4 @@
+import { ProposalData } from '@/context/thetreContext';
 import { GENRES } from '@/utils/constants';
 import { getFileURL } from '@/utils/theta';
 import Image from 'next/image';
@@ -9,7 +10,7 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ProposalData>({
     title: '',
     description: '',
     genre: '',
