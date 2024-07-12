@@ -4,7 +4,7 @@ const getFileURL = (key: string, relpath: string | null) => {
     return `https://p2p.thetre.live/file?key=${key}${relpath && `&relpath=${relpath}`}`
 }
 
-const uploadVideo = async (key: string, relpath: string, ticket: string, movieName: string, imageKey: string, imagePath: string, fileName: string) => {
+const uploadVideo = async (movieUrl: string, ticket: string, movieName: string, coverUrl: string) => {
     const url = 'https://api.thetavideoapi.com/video';
     const headers = {
         'x-tva-sa-id': SA_ID,
@@ -13,7 +13,7 @@ const uploadVideo = async (key: string, relpath: string, ticket: string, movieNa
     };
 
     const data = {
-        source_uri: getFileURL(key, relpath),
+        source_uri: movieUrl,
         playback_policy: "public",
         resolutions: [2160, 1080, 720, 360],
         use_drm: true,
@@ -23,12 +23,12 @@ const uploadVideo = async (key: string, relpath: string, ticket: string, movieNa
             nft_collection: ticket,
             chain_id: 365,
             title: movieName,
-            image: getFileURL(imageKey, imagePath),
+            image: coverUrl,
             link: "No link"
         }],
-        file_name: fileName,
+        file_name: movieName,
         metadata: {
-            filename: fileName
+            filename: movieName
         }
     };
 
