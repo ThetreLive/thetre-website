@@ -1,7 +1,7 @@
 import { SA_ID } from "./constants";
 
-const getFileURL = (key: string, relpath: string) => {
-    return `https://p2p.thetre.live/file?key=${key}&relpath=${relpath}`
+const getFileURL = (key: string, relpath: string | null) => {
+    return `https://p2p.thetre.live/file?key=${key}${relpath && `&relpath=${relpath}`}`
 }
 
 const uploadVideo = async (key: string, relpath: string, ticket: string, movieName: string, imageKey: string, imagePath: string, fileName: string) => {
