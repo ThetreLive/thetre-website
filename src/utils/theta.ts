@@ -51,3 +51,8 @@ const uploadVideo = async (key: string, relpath: string, ticket: string, movieNa
         return null;
     }
 }
+
+export {
+    getFileURL,
+    uploadVideo
+}
