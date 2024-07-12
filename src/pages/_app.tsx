@@ -6,6 +6,7 @@ import { TurnkeyProvider } from "@turnkey/sdk-react";
 import Navbar from '@/components/navbar';
 import TurnkeyContextProvider from '@/context/turnkeyContext';
 import Script from 'next/script';
+import nexaHeavy from '@/utils/font';
 
 const turnkeyConfig = {
   apiBaseUrl: process.env.NEXT_PUBLIC_TURNKEY_API_BASE_URL!,
@@ -17,7 +18,7 @@ const turnkeyConfig = {
 
 function DemoEthersPasskeys({ Component, pageProps }: AppProps) {
   return (
-    <div>
+    <div className={nexaHeavy.variable}>
       <TurnkeyProvider config={turnkeyConfig}>
         <TurnkeyContextProvider>
           <Head>
