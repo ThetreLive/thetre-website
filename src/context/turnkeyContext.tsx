@@ -15,8 +15,8 @@ const humanReadableDateTime = (): string => {
 };
 
 type StoreState = {
-    wallet: TWalletState,
-    signer: TSigner,
+    wallet: TWalletState;
+    signer: TSigner;
     createSubOrgAndWallet: () => any;
     login: () => any;
 };
