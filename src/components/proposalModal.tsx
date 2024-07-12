@@ -1,4 +1,6 @@
 import { GENRES } from '@/utils/constants';
+import { getFileURL } from '@/utils/theta';
+import Image from 'next/image';
 import { useState } from 'react';
 
 interface ModalProps {
@@ -39,6 +41,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const handlePrev = () => {
     if (step > 1) setStep(step - 1);
   };
+
+  const jsonToLink = (jsonData: string) => {
+    return getFileURL(JSON.parse(jsonData).result.key, JSON.parse(jsonData).result.relpath)
+  }
 
   if (!isOpen) return null;
 
@@ -103,6 +109,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <input type="text" name="movieLink" id="movieLink" value={form.movieLink} placeholder='Paste the response' onChange={handleChange} className="col-span-3 text-center p-2 border-b-2 border-gray-500 rounded bg-transparent text-white" />
                   </div>
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    {form.movieLink.length > 0 ? (
+                      <video src={jsonToLink(form.movieLink)} controls className='w-96 h-64'></video>
+                    ) : (
+                      <div className='w-full bg-gray-800 flex items-center justify-center' style={{height: "200px"}}>No Video</div>
+
+                    )}
+                  </div>
                 </div>
               )}
               {step === 3 && (
@@ -123,6 +137,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <input type="text" name="trailerLink" id="trailerLink" value={form.trailerLink} placeholder='Paste the response' onChange={handleChange} className="col-span-3 text-center p-2 border-b-2 border-gray-500 rounded bg-transparent text-white" />
                   </div>
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    {form.trailerLink.length > 0 ? (
+                      <video src={jsonToLink(form.trailerLink)} controls className='w-96 h-64'></video>
+                    ) : (
+                      <div className='w-full bg-gray-800 flex items-center justify-center' style={{height: "200px"}}>No Trailer</div>
+
+                    )}
+                  </div>
                 </div>
               )}
               {step === 4 && (
@@ -141,6 +163,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   </div>
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <input type="text" name="coverLink" id="coverLink" value={form.coverLink} placeholder='Paste the response' onChange={handleChange} className="col-span-3 text-center p-2 border-b-2 border-gray-500 rounded bg-transparent text-white" />
+                  </div>
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    {form.coverLink.length > 0 ? (
+                      <Image src={jsonToLink(form.coverLink)} height={300} width={300} alt="Cover" className='text-center'></Image>
+                    ) : (
+                      <div className='w-full bg-gray-800 flex items-center justify-center' style={{height: "200px"}}>No Cover</div>
+
+                    )}
                   </div>
                 </div>
               )}
