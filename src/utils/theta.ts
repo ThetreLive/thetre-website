@@ -8,7 +8,7 @@ const uploadVideo = async (movieUrl: string, ticket: string, movieName: string, 
     const url = 'https://api.thetavideoapi.com/video';
     const headers = {
         'x-tva-sa-id': SA_ID,
-        'x-tva-sa-secret': process.env.THETA_SA as string,
+        'x-tva-sa-secret': process.env.NEXT_PUBLIC_THETA_SA as string,
         'Content-Type': 'application/json'
     };
 
