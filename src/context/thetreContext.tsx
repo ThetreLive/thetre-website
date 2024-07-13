@@ -43,13 +43,15 @@ const governanceNFT = "0x1a1d19fe31197e49ffcc292ff6a23c4fefb3ff39"
 type StoreState = {
     movies: any[],
     proposalDetails: ProposalDetails[],
-    createProposal: (data: ProposalData) => Promise<void>
+    createProposal: (data: ProposalData) => Promise<void>,
+    fetchProposals: () => Promise<void>,
 };
   
 const ThetreContext = createContext<StoreState>({
     movies: [],
     proposalDetails: [],
-    createProposal: async() => {}
+    createProposal: async() => {},
+    fetchProposals: async() => {},
 });
   
 export const useThetreContext = () => useContext(ThetreContext);
@@ -62,8 +64,7 @@ const ThetreContextProvider = (props: Props) => {
     const [movies, setMovies] = useState([])
     const [proposalDetails, setProposalDetails] = useState<ProposalDetails[]>([])
     const {signer} = useTurnkeyContext()
-    useEffect(() => {
-      (async () => {
+    const fetchProposals = async () => {
         if (provider) {
           const filter = {
             address: governerContract,
@@ -99,8 +100,7 @@ const ThetreContextProvider = (props: Props) => {
           setProposalDetails(flatProposals);
           console.log(flatProposals);
         }
-      })()
-    }, [])
+      }
     const createProposal = async (data: ProposalData) => {
         for (const key in data) {
             if (data.hasOwnProperty(key) && data[key as keyof ProposalData] === '') {
@@ -140,7 +140,7 @@ const ThetreContextProvider = (props: Props) => {
 
     }
     return (
-        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails }}>
+        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals }}>
             {props.children}
         </ThetreContext.Provider>
     )

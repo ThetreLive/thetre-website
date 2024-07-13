@@ -3,12 +3,16 @@ import ProposalCard from '@/components/proposalCard';
 import Modal from '@/components/proposalModal';
 import { useThetreContext } from '@/context/thetreContext';
 import { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Home: NextPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const {proposalDetails} = useThetreContext()
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {proposalDetails, fetchProposals} = useThetreContext()
+  useEffect(() => {
+    (async () => {
+      await fetchProposals();
+    })()
+  }, [])
   return (
     <div className="min-h-screen w-full">
       <div className="container mx-auto p-6">
