@@ -18,7 +18,7 @@ export interface ProposalData {
     coverLink: string;
 }
 
-enum ProposalState {
+export enum ProposalState {
   Pending,
   Active,
   Canceled,
@@ -29,7 +29,7 @@ enum ProposalState {
   Executed
 }
 
-interface ProposalDetails {
+export interface ProposalDetails {
   data: ProposalData;
   voteEnd: number;
   proposalState: ProposalState;
