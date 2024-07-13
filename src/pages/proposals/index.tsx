@@ -11,11 +11,7 @@ const Home: NextPage = () => {
   const {proposalDetails, fetchProposals, loading, setLoader} = useThetreContext()
   useEffect(() => {
     (async () => {
-      setLoader(true);
-      document.body.classList.add('overflow-hidden');
-      await fetchProposals();
-      setLoader(false);
-      document.body.classList.remove('overflow-hidden');
+      await setLoader(fetchProposals)
     })()
   }, [])
   return (
