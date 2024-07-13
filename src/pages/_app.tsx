@@ -5,7 +5,6 @@ import Head from "next/head";
 import { TurnkeyProvider } from "@turnkey/sdk-react";
 import Navbar from '@/components/navbar';
 import TurnkeyContextProvider from '@/context/turnkeyContext';
-import Script from 'next/script';
 import nexaHeavy from '@/utils/font';
 import ThetreContextProvider from '@/context/thetreContext';
 
@@ -17,7 +16,7 @@ const turnkeyConfig = {
   iframeUrl: process.env.NEXT_PUBLIC_IFRAME_URL ?? "https://auth.turnkey.com",
 };
 
-function DemoEthersPasskeys({ Component, pageProps }: AppProps) {
+function Thetre({ Component, pageProps }: AppProps) {
   return (
     <div className={nexaHeavy.variable}>
       <TurnkeyProvider config={turnkeyConfig}>
@@ -39,4 +38,4 @@ function DemoEthersPasskeys({ Component, pageProps }: AppProps) {
   );
 }
 
-export default DemoEthersPasskeys;
+export default Thetre;
