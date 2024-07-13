@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { useTurnkeyContext } from "./turnkeyContext";
 import { ethers } from "ethers";
 import { getFileURL, getFromEdgeStore, uploadToEdgeStore, uploadVideo } from "@/utils/theta";
@@ -42,6 +42,8 @@ const governanceNFT = "0x1a1d19fe31197e49ffcc292ff6a23c4fefb3ff39"
 
 type StoreState = {
     movies: any[],
+    loading: boolean,
+    setLoader: Dispatch<SetStateAction<boolean>>,
     proposalDetails: ProposalDetails[],
     createProposal: (data: ProposalData) => Promise<void>,
     fetchProposals: () => Promise<void>,
@@ -49,6 +51,8 @@ type StoreState = {
   
 const ThetreContext = createContext<StoreState>({
     movies: [],
+    loading: false,
+    setLoader: () => {},
     proposalDetails: [],
     createProposal: async() => {},
     fetchProposals: async() => {},
@@ -61,6 +65,7 @@ type Props = {
 };
 
 const ThetreContextProvider = (props: Props) => {
+    const [loading, setLoader] = useState(false)
     const [movies, setMovies] = useState([])
     const [proposalDetails, setProposalDetails] = useState<ProposalDetails[]>([])
     const {signer} = useTurnkeyContext()
@@ -77,11 +82,11 @@ const ThetreContextProvider = (props: Props) => {
     
       while (currentBlock <= endBlock) {
         const toBlock = Math.min(currentBlock + blockRange - 1, endBlock);
-          const filter = {
-            address: governerContract,
-            topics: [
-              ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
-            ],
+        const filter = {
+          address: governerContract,
+          topics: [
+            ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
+          ],
           fromBlock: currentBlock,
           toBlock: toBlock
         };
@@ -90,22 +95,22 @@ const ThetreContextProvider = (props: Props) => {
         const parsedLogs = logs?.map(log => govEthers.interface.parseLog(log)) || [];
     
         const proposalsInChunk = await Promise.all(parsedLogs.map(async log => {
-            const proposalDetails: ProposalDetails[] = await Promise.all(log?.args?.calldatas?.map(async (calldata: any) => {
-              const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
-              const data = JSON.parse(await getFromEdgeStore(listingData[1]));
-              const state = await govEthers.state(log?.args?.proposalId);
-              const voteEnd = log?.args?.voteEnd;
+          const proposalDetails: ProposalDetails[] = await Promise.all(log?.args?.calldatas?.map(async (calldata: any) => {
+            const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
+            const data = JSON.parse(await getFromEdgeStore(listingData[1]));
+            const state = await govEthers.state(log?.args?.proposalId);
+            const voteEnd = log?.args?.voteEnd;
     
-              return {
-                data,
-                voteEnd,
-                proposalState: state,
-                id: log?.args?.proposalId.toString()
-              };
-            }));
+            return {
+              data,
+              voteEnd,
+              proposalState: state,
+              id: log?.args?.proposalId.toString()
+            };
+          }));
     
-            return proposalDetails;
-          }) ?? []);
+          return proposalDetails;
+        }) ?? []);
     
         proposals = proposals.concat(proposalsInChunk.flat());
         currentBlock = toBlock + 1;
@@ -153,7 +158,7 @@ const ThetreContextProvider = (props: Props) => {
 
     }
     return (
-        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals }}>
+        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals, loading, setLoader }}>
             {props.children}
         </ThetreContext.Provider>
     )
