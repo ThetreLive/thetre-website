@@ -93,5 +93,24 @@ export const governerABI = [
         ],
         "name": "ProposalCreated",
         "type": "event"
-      }
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "proposalId",
+            "type": "uint256"
+          }
+        ],
+        "name": "state",
+        "outputs": [
+          {
+            "internalType": "enum IGovernor.ProposalState",
+            "name": "",
+            "type": "uint8"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
 ]
