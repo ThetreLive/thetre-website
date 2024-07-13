@@ -3,7 +3,7 @@ import { useTurnkey } from "@turnkey/sdk-react";
 import axios from "axios";
 import { useState, useEffect, createContext, useContext } from "react";
 import { TWalletDetails } from "../types";
-import * as thetajs from "@thetalabs/theta-js";
+import { ethers } from "ethers";
 
 
 type TWalletState = TWalletDetails | null;
@@ -79,8 +79,7 @@ const TurnkeyContextProvider = (props: Props) => {
             organizationId: response.subOrgId,
             signWith: response.address,
         });
-        const chainId = thetajs.networks.ChainIds.Testnet;
-        const provider = new thetajs.providers.HttpProvider(chainId);
+        const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
         ethersSigner = ethersSigner.connect(provider)
         setSigner(ethersSigner)
       };
@@ -124,9 +123,9 @@ const TurnkeyContextProvider = (props: Props) => {
                 organizationId: loginResponse.organizationId,
                 signWith: walletAccountsResponse?.accounts[0].address,
             });
-            const chainId = thetajs.networks.ChainIds.Testnet;
-            const provider = new thetajs.providers.HttpProvider(chainId);
+            const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
             ethersSigner = ethersSigner.connect(provider)
+            console.log(walletAccountsResponse?.accounts[0].address)
             setSigner(ethersSigner)
 
         } catch (e: any) {
