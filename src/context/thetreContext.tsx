@@ -65,20 +65,31 @@ const ThetreContextProvider = (props: Props) => {
     const [proposalDetails, setProposalDetails] = useState<ProposalDetails[]>([])
     const {signer} = useTurnkeyContext()
     const fetchProposals = async () => {
-        if (provider) {
+      const startBlock = 27110027;
+      const endBlock = await provider.getBlockNumber();
+      const blockRange = 5000;
+    
+      let proposals: ProposalDetails[] = [];
+      let currentBlock = startBlock;
+    
+      const govEthers = new ethers.Contract(governerContract, governerABI, provider);
+      const thetreEthers = new ethers.Contract(thetreContract, thetreAB1, provider);
+    
+      while (currentBlock <= endBlock) {
+        const toBlock = Math.min(currentBlock + blockRange - 1, endBlock);
           const filter = {
             address: governerContract,
             topics: [
               ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
             ],
-            fromBlock: 27110027,
-            toBlock: 'latest'
-          };
-          const govEthers = new ethers.Contract(governerContract, governerABI, provider);
-          const thetreEthers = new ethers.Contract(thetreContract, thetreAB1, provider)
-          const logs = await provider.provider?.getLogs(filter)
-          const parsedLogs = logs?.map(log => govEthers.interface.parseLog(log));
-          const proposals = await Promise.all(parsedLogs?.map(async log => {
+          fromBlock: currentBlock,
+          toBlock: toBlock
+        };
+    
+        const logs = await provider.provider?.getLogs(filter);
+        const parsedLogs = logs?.map(log => govEthers.interface.parseLog(log)) || [];
+    
+        const proposalsInChunk = await Promise.all(parsedLogs.map(async log => {
             const proposalDetails: ProposalDetails[] = await Promise.all(log?.args?.calldatas?.map(async (calldata: any) => {
               const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
               const data = JSON.parse(await getFromEdgeStore(listingData[1]));
@@ -96,11 +107,13 @@ const ThetreContextProvider = (props: Props) => {
             return proposalDetails;
           }) ?? []);
     
-          const flatProposals = proposals.flat();
-          setProposalDetails(flatProposals);
-          console.log(flatProposals);
-        }
+        proposals = proposals.concat(proposalsInChunk.flat());
+        currentBlock = toBlock + 1;
       }
+    
+      setProposalDetails(proposals);
+      console.log(proposals);
+    };
     const createProposal = async (data: ProposalData) => {
         for (const key in data) {
             if (data.hasOwnProperty(key) && data[key as keyof ProposalData] === '') {
