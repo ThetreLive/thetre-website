@@ -59,12 +59,11 @@ const uploadToEdgeStore = async (data: any) => {
         method: "edgestore.PutData",
         params: [
           {
-            val: data
+            val: JSON.stringify(data)
           }
         ],
         id: 1
     };
-
     const options = {
         method: 'POST',
         headers: {
