@@ -52,9 +52,13 @@ const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
       <p className="text-white mb-4">{proposal.data.description}</p>
       <div className="flex justify-between items-center">
         <p className="text-red-500">{timeLeft} left</p>
-        <Link href={`/proposal/${proposal.id}`} className="text-[#4B4BFF] hover:underline">
-            Read more
-        </Link>
+        {!(proposal.proposalState in [ProposalState.Succeeded, ProposalState.Executed, ProposalState.Active]) && (
+          <Link href={`/proposal/${proposal.id}`} className="text-[#4B4BFF] hover:underline">
+            {proposal.proposalState === ProposalState.Active 
+            ? "Vote now" : proposal.proposalState in [ProposalState.Succeeded, ProposalState.Executed] 
+            ? "View results" : ""}
+          </Link>
+        )}
       </div>
     </div>
   );
