@@ -17,6 +17,23 @@ export interface ProposalData {
     trailerLink: string;
     coverLink: string;
 }
+
+enum ProposalState {
+  Pending,
+  Active,
+  Canceled,
+  Defeated,
+  Succeeded,
+  Queued,
+  Expired,
+  Executed
+}
+
+interface ProposalDetails {
+  data: ProposalData;
+  voteEnd: number;
+  proposalState: ProposalState;
+}
 const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
 const governerContract = "0x1052Db8fe097a011cd2124f14fFe0729019984B3"
 const thetreContract = "0x1052Db8fe097a011cd2124f14fFe0729019984B3"
@@ -24,11 +41,13 @@ const governanceNFT = "0x1a1d19fe31197e49ffcc292ff6a23c4fefb3ff39"
 
 type StoreState = {
     movies: any[],
+    proposalDetails: ProposalDetails[],
     createProposal: (data: ProposalData) => Promise<void>
 };
   
 const ThetreContext = createContext<StoreState>({
     movies: [],
+    proposalDetails: [],
     createProposal: async() => {}
 });
   
@@ -40,6 +59,7 @@ type Props = {
 
 const ThetreContextProvider = (props: Props) => {
     const [movies, setMovies] = useState([])
+    const [proposalDetails, setProposalDetails] = useState<ProposalDetails[]>([])
     const {signer} = useTurnkeyContext()
     useEffect(() => {
       (async () => {
@@ -56,14 +76,26 @@ const ThetreContextProvider = (props: Props) => {
           const thetreEthers = new ethers.Contract(thetreContract, thetreAB1, provider)
           const logs = await provider.provider?.getLogs(filter)
           const parsedLogs = logs?.map(log => govEthers.interface.parseLog(log));
-          parsedLogs?.forEach(log => {
-            log?.args?.calldatas?.forEach(async (calldata: any) => {
-              const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata)
-              console.log(listingData[1])
-              console.log(await getFromEdgeStore(listingData[1]))
-            })
-          })
-          console.log(parsedLogs)
+          const proposals = await Promise.all(parsedLogs?.map(async log => {
+            const proposalDetails: ProposalDetails[] = await Promise.all(log?.args?.calldatas?.map(async (calldata: any) => {
+              const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
+              const data = JSON.parse(await getFromEdgeStore(listingData[1]));
+              const state = await govEthers.state(log?.args?.proposalId);
+              const voteEnd = log?.args?.voteEnd;
+    
+              return {
+                data,
+                voteEnd,
+                proposalState: state
+              };
+            }));
+    
+            return proposalDetails;
+          }) ?? []);
+    
+          const flatProposals = proposals.flat();
+          setProposalDetails(flatProposals);
+          console.log(flatProposals);
         }
       })()
     }, [])
@@ -106,7 +138,7 @@ const ThetreContextProvider = (props: Props) => {
 
     }
     return (
-        <ThetreContext.Provider value={{ movies, createProposal }}>
+        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails }}>
             {props.children}
         </ThetreContext.Provider>
     )
