@@ -43,7 +43,7 @@ const governanceNFT = "0x1a1d19fe31197e49ffcc292ff6a23c4fefb3ff39"
 type StoreState = {
     movies: any[],
     loading: boolean,
-    setLoader: Dispatch<SetStateAction<boolean>>,
+    setLoader: (fn: any) => Promise<void>,
     proposalDetails: ProposalDetails[],
     createProposal: (data: ProposalData) => Promise<void>,
     fetchProposals: () => Promise<void>,
@@ -52,7 +52,7 @@ type StoreState = {
 const ThetreContext = createContext<StoreState>({
     movies: [],
     loading: false,
-    setLoader: () => {},
+    setLoader: async () => {},
     proposalDetails: [],
     createProposal: async() => {},
     fetchProposals: async() => {},
@@ -65,10 +65,19 @@ type Props = {
 };
 
 const ThetreContextProvider = (props: Props) => {
-    const [loading, setLoader] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [movies, setMovies] = useState([])
     const [proposalDetails, setProposalDetails] = useState<ProposalDetails[]>([])
     const {signer} = useTurnkeyContext()
+
+    const setLoader = async (fn: any) => {
+      setLoading(true);
+      document.body.classList.add('overflow-hidden');
+      await fn();
+      setLoading(false);
+      document.body.classList.remove('overflow-hidden');
+    }
+
     const fetchProposals = async () => {
       const startBlock = 27110027;
       const endBlock = await provider.getBlockNumber();
