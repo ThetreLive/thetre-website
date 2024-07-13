@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useTurnkeyContext } from "./turnkeyContext";
 import { ethers } from "ethers";
 import { getFileURL, uploadVideo } from "@/utils/theta";
@@ -54,6 +54,67 @@ const governerABI = [
         "stateMutability": "nonpayable",
         "type": "function"
       },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "proposalId",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "address",
+            "name": "proposer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "address[]",
+            "name": "targets",
+            "type": "address[]"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256[]",
+            "name": "values",
+            "type": "uint256[]"
+          },
+          {
+            "indexed": false,
+            "internalType": "string[]",
+            "name": "signatures",
+            "type": "string[]"
+          },
+          {
+            "indexed": false,
+            "internalType": "bytes[]",
+            "name": "calldatas",
+            "type": "bytes[]"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "voteStart",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "voteEnd",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          }
+        ],
+        "name": "ProposalCreated",
+        "type": "event"
+      }
 ]
 
 const thetreAB1 = [
@@ -96,6 +157,25 @@ type Props = {
 const ThetreContextProvider = (props: Props) => {
     const [movies, setMovies] = useState([])
     const {signer} = useTurnkeyContext()
+    useEffect(() => {
+      (async () => {
+        if (signer) {
+          const filter = {
+            address: governerContract,
+            topics: [
+              ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
+            ],
+            fromBlock: 27110023,
+            toBlock: 'latest'
+          };
+          const govEthers = new ethers.Contract(governerContract, governerABI, signer)
+          
+          const logs = await signer.provider?.getLogs(filter)
+          const parsedLogs = logs?.map(log => govEthers.interface.parseLog(log));
+          console.log(parsedLogs)
+        }
+      })()
+    }, [])
     const createProposal = async (data: ProposalData) => {
         for (const key in data) {
             if (data.hasOwnProperty(key) && data[key as keyof ProposalData] === '') {
@@ -132,10 +212,22 @@ const ThetreContextProvider = (props: Props) => {
             }
             const result = await response.json();
             console.log(result)
+            // const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", ["movie", getFileURL("0x122d07b601c05953fe8229d17e5b5c0a66fbec3b9da839aea24afc18d86a6219", null)])
             const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", [data.title, getFileURL(result.result.key, null)])
-            console.log(listingCalldata)
-            const proposalId = await govEthers.propose([thetreContract], [0], [listingCalldata], "List Movie")
-            console.log(proposalId)
+
+            const govCalldata = govEthers.interface.encodeFunctionData("propose", [[thetreContract], [0], [listingCalldata], "List Movie"]);
+            const txResponse =  await signer?.sendTransaction({
+                from: signer.getAddress(),
+                to: governerContract,
+                data: govCalldata,
+                gasLimit: 100000
+
+            })
+            console.log('Transaction response:', txResponse);
+
+            // Wait for the transaction to be mined
+            const receipt = await txResponse?.wait();
+            console.log('Receipt - ', receipt);
           } catch (error) {
             console.error('Error:', error);
           }
