@@ -32,6 +32,7 @@ export enum ProposalState {
 export interface ProposalDetails {
   data: ProposalData;
   voteEnd: number;
+  id: string,
   proposalState: ProposalState;
 }
 const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
@@ -86,7 +87,8 @@ const ThetreContextProvider = (props: Props) => {
               return {
                 data,
                 voteEnd,
-                proposalState: state
+                proposalState: state,
+                id: log?.args?.proposalId.toString()
               };
             }));
     
