@@ -1,7 +1,7 @@
 import { SA_ID } from "./constants";
 
 const getFileURL = (key: string, relpath: string | null) => {
-    return `https://p2p.thetre.live/file?key=${key}${relpath && `&relpath=${relpath}`}`
+    return `https://p2p.thetre.live/file?key=${key}${relpath !== null && `&relpath=${relpath}`}`
 }
 
 const uploadVideo = async (movieUrl: string, ticket: string, movieName: string, coverUrl: string) => {
@@ -52,7 +52,74 @@ const uploadVideo = async (movieUrl: string, ticket: string, movieName: string, 
     }
 }
 
+const uploadToEdgeStore = async (data: any) => {
+    const url = 'https://p2p.thetre.live/rpc';
+    const body = {
+        jsonrpc: "2.0",
+        method: "edgestore.PutData",
+        params: [
+          {
+            val: data
+          }
+        ],
+        id: 1
+    };
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    };
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        return result
+    } catch (error) {
+        console.error('Error:', error);
+      }
+}
+
+
+const getFromEdgeStore = async (key: any) => {
+    const url = 'https://p2p.thetre.live/rpc';
+    const body = {
+        jsonrpc: "2.0",
+        method: "edgestore.GetData",
+        params: [
+          {
+            key
+          }
+        ],
+        id: 1
+    };
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    };
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        return result.result.val
+    } catch (error) {
+        console.error('Error:', error);
+      }
+}
+
 export {
     getFileURL,
-    uploadVideo
+    uploadVideo,
+    uploadToEdgeStore,
+    getFromEdgeStore
 }
