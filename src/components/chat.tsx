@@ -93,13 +93,19 @@ const Chat: React.FC = () => {
         await window.libp2p.services.pubsub.publish("thetre", fromString(currMessage))
     }
     return (
-        <div>
-            <button className='bg-black text-white' onClick={host}>New Room</button>
-            <input type="text" id="input" placeholder='enter room ma' onChange={e => setMa(e.target.value)}/>
-            <button className='bg-black text-white' onClick={joinRoom}>Join</button>
+        <div className='flex flex-col justify-between w-full lg:w-96 h-full'>
+            <div>
+                <button className='bg-black text-white' onClick={host}>New Room</button>
+                <input type="text" id="input" placeholder='enter room ma' onChange={e => setMa(e.target.value)}/>
+                <button className='bg-black text-white' onClick={joinRoom}>Join</button>
+
+            </div>
+            <div>
             <input type='text' id='message' placeholder='enter message' onChange={e => setCurr(e.target.value)}/>
             <button className='bg-black text-white' onClick={sendMessage}>Send</button>
             {messages.map((msg, i) => <p className='text-white' key={i}>{msg}</p>)}
+
+            </div>
         </div>
     )
 }

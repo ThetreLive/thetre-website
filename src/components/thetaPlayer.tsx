@@ -87,7 +87,7 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
         renderVideo()
     }, [signer])
     return (
-        <div>
+        <div className="w-full h-full">
             <video ref={playerRef} controls className={props.styles}/>
         </div>
     )
