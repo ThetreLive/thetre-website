@@ -11,14 +11,8 @@ const WatchPage: React.FC = () => {
 
     const [movie, setMovie] = useState<ProposalDetails | undefined>(undefined);
     const { proposalDetails, fetchProposals, setLoader, castVote } = useThetreContext();
-    const { signer } = useTurnkeyContext()
 
     useEffect(() => {
-        if (!signer) {
-            alert("Please sign in first")
-            router.replace("/")
-            return
-        }
         if (router.isReady && (router.query.id)![0]) {
             if (proposalDetails.length > 0) {
                 proposalDetails.find((proposal) => {
@@ -36,7 +30,7 @@ const WatchPage: React.FC = () => {
                 })()
             }
         }
-    }, [router.isReady, router.query.id, proposalDetails, signer]);
+    }, [router.isReady, router.query.id, proposalDetails]);
     if (!movie) {
         return <Loader />
     }
