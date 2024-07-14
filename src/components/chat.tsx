@@ -125,7 +125,7 @@ const Chat: React.FC<Props> = (props: Props) => {
         }
     }, [props.room, defaultMa])
     return (
-        <div className='flex flex-col justify-between w-full lg:w-96 h-full'>
+        <div className='flex flex-col justify-between w-full lg:w-[550px] lg:h-screen h-[500px] px-2'>
             <div className='p-2'>
                 {roomId ? (
                     <button className='bg-black text-white w-full py-2 bg-thetre-blue rounded-xl' onClick={copyCommand}>Copy Invite Link</button>
@@ -133,19 +133,31 @@ const Chat: React.FC<Props> = (props: Props) => {
                     <button className='bg-black text-white w-full py-2 bg-thetre-blue rounded-xl' onClick={host}>New Room</button>
                 )}
             </div>
-            <div>
+            <div className='overflow-y-scroll'>
                 {messages.map((msg, i) => (
-                    <div key={i} className={`w-full flex flex-row${msg.from !== "me" ? "-reverse" : ""}`}>
-                        <p className="text-white">{msg.message}</p>
-                        <img
-                            src={"https://avatars.jakerunzer.com/" + msg.from}
-                            alt="avatar"
-                            className="w-5 h-5 mr-2"
-                        />
+                    <div key={i} className={`w-full gap-2 mb-1 items-center flex ${msg.from === "me" ? "flex-row-reverse" : "flex-row"}`}>
+                        {(i === 0 || messages[i - 1].from !== msg.from) ? (
+                            <img
+                                src={"https://avatars.jakerunzer.com/" + msg.from}
+                                alt="avatar"
+                                className="w-5 h-5"
+                            />
+                        ) : (
+                            <div className='w-5 h-5'></div>
+                        )}
+                        <p className="text-white bg-gray-600 max-w-80 text-wrap break-words	 px-2 py-1 rounded-xl">{msg.message}</p>
                     </div>
                 ))}
-                <input type='text' id='message' placeholder='enter message' onChange={e => setCurr(e.target.value)}/>
-                <button className='bg-black text-white' onClick={sendMessage}>Send</button>
+                
+            </div>
+            <div className="relative w-full">
+                <input type="text" placeholder="Message ChatGPT" className="w-full p-4 pr-12 rounded-full bg-gray-600 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"  onChange={e => setCurr(e.target.value)}/>
+                <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none" onClick={sendMessage}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
+
+                </button>
             </div>
         </div>
     )
