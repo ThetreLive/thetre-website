@@ -81,8 +81,7 @@ const Chat: React.FC<Props> = (props: Props) => {
             const topic = event.detail.topic
             const message = toString(event.detail.data)
             console.log(event)
-            const decoder = new TextDecoder('utf-8');
-            const decodedString = decoder.decode(event.detail.key);
+            const decodedString = event.detail.key.join(",");
             console.log(decodedString)
             console.log(`Message received on topic '${topic}'`)
             setMessages((prev) => [...prev, {from: decodedString, message: message}])
@@ -135,7 +134,16 @@ const Chat: React.FC<Props> = (props: Props) => {
                 )}
             </div>
             <div>
-                {messages.map((msg, i) => <p className='text-white' key={i}>{msg.message}</p>)}
+                {messages.map((msg, i) => (
+                    <div key={i} className={`w-full flex flex-row${msg.from !== "me" ? "-reverse" : ""}`}>
+                        <p className="text-white">{msg.message}</p>
+                        <img
+                            src={"https://avatars.jakerunzer.com/" + msg.from}
+                            alt="avatar"
+                            className="w-5 h-5 mr-2"
+                        />
+                    </div>
+                ))}
                 <input type='text' id='message' placeholder='enter message' onChange={e => setCurr(e.target.value)}/>
                 <button className='bg-black text-white' onClick={sendMessage}>Send</button>
             </div>
