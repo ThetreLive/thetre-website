@@ -91,7 +91,7 @@ const Chat: React.FC<Props> = (props: Props) => {
                     }
                   })
                 console.log(multiaddrs[0].toString())
-                setRoomId(multiaddrs[0].toString().split("/")[7])
+                setRoomId(multiaddrs[0].toString().split("/")[11])
             })()
           })
     }
@@ -111,10 +111,10 @@ const Chat: React.FC<Props> = (props: Props) => {
       }
 
     useEffect(() => {
-        if (props.room) {
+        if (props.room && defaultMa) {
             joinRoom()
         }
-    }, [props.room])
+    }, [props.room, defaultMa])
     return (
         <div className='flex flex-col justify-between w-full lg:w-96 h-full'>
             <div className='p-2'>
