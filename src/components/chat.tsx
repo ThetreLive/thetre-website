@@ -17,10 +17,15 @@ interface Props {
     room: string | undefined;
 }
 
+interface Message {
+    from: string;
+    message: string;
+}
+
 const Chat: React.FC<Props> = (props: Props) => {
     const [libp2p, setLibp2p] = useState<any>(null)
     const [roomId, setRoomId] = useState<string | undefined>(props.room)
-    const [messages, setMessages] = useState<string[]>([])
+    const [messages, setMessages] = useState<Message[]>([])
     const [currMessage, setCurr] = useState<string>("")
     const [defaultMa, setDefaultMa] = useState<Multiaddr | undefined>(undefined)
     const router = useRouter()
@@ -75,9 +80,12 @@ const Chat: React.FC<Props> = (props: Props) => {
         p2p.services.pubsub.addEventListener('message', (event: any) => {
             const topic = event.detail.topic
             const message = toString(event.detail.data)
-            
+            console.log(event)
+            const decoder = new TextDecoder('utf-8');
+            const decodedString = decoder.decode(event.detail.key);
+            console.log(decodedString)
             console.log(`Message received on topic '${topic}'`)
-            setMessages((prev) => [...prev, message])
+            setMessages((prev) => [...prev, {from: decodedString, message: message}])
         })
             
     }
@@ -104,6 +112,8 @@ const Chat: React.FC<Props> = (props: Props) => {
         console.log(`Sending message '${(currMessage)}'`)
 
         await window.libp2p.services.pubsub.publish("thetre", fromString(currMessage))
+        setMessages((prev) => [...prev, {from: "me", message: currMessage}])
+
     }
 
     const copyCommand = () => {
@@ -125,7 +135,7 @@ const Chat: React.FC<Props> = (props: Props) => {
                 )}
             </div>
             <div>
-                {messages.map((msg, i) => <p className='text-white' key={i}>{msg}</p>)}
+                {messages.map((msg, i) => <p className='text-white' key={i}>{msg.message}</p>)}
                 <input type='text' id='message' placeholder='enter message' onChange={e => setCurr(e.target.value)}/>
                 <button className='bg-black text-white' onClick={sendMessage}>Send</button>
             </div>
