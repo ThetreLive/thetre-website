@@ -10,7 +10,7 @@ import * as filters from '@libp2p/websockets/filters'
 import { Multiaddr, multiaddr } from '@multiformats/multiaddr'
 import { createLibp2p } from 'libp2p'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fromString, toString } from 'uint8arrays'
 
 interface Props {
@@ -23,12 +23,14 @@ interface Message {
 }
 
 const Chat: React.FC<Props> = (props: Props) => {
+    const msgRef = useRef<HTMLDivElement>(null)
     const [libp2p, setLibp2p] = useState<any>(null)
     const [roomId, setRoomId] = useState<string | undefined>(props.room)
     const [messages, setMessages] = useState<Message[]>([])
     const [currMessage, setCurr] = useState<string>("")
     const [defaultMa, setDefaultMa] = useState<Multiaddr | undefined>(undefined)
     const router = useRouter()
+
     useEffect(() => {
         (async () => {
             const m = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/multiAddress");
@@ -38,6 +40,11 @@ const Chat: React.FC<Props> = (props: Props) => {
             setDefaultMa(ma)
         })()
     }, [])
+
+    useEffect(() => {
+        msgRef.current?.lastElementChild?.scrollIntoView({ behavior: "smooth" })
+    }, [messages]);
+
     const chatRoom = async (multiAddr: Multiaddr) => {
         const p2p = await createLibp2p({
             addresses: {
@@ -133,7 +140,7 @@ const Chat: React.FC<Props> = (props: Props) => {
                     <button className='bg-black text-white w-full py-2 bg-thetre-blue rounded-xl' onClick={host}>New Room</button>
                 )}
             </div>
-            <div className='overflow-y-scroll'>
+            <div className='overflow-y-scroll' ref={msgRef}>
                 {messages.map((msg, i) => (
                     <div key={i} className={`w-full gap-2 mb-1 items-center flex ${msg.from === "me" ? "flex-row-reverse" : "flex-row"}`}>
                         {(i === 0 || messages[i - 1].from !== msg.from) ? (
