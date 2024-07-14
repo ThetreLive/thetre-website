@@ -12,7 +12,11 @@ import { createLibp2p } from 'libp2p'
 import { useEffect, useState } from 'react'
 import { fromString, toString } from 'uint8arrays'
 
-const Chat: React.FC = () => {
+interface Props {
+    room: string | undefined;
+}
+
+const Chat: React.FC<Props> = (props: Props) => {
     const [libp2p, setLibp2p] = useState<any>(null)
     const [currMa, setMa] = useState<string | null>(null)
     const [messages, setMessages] = useState<string[]>([])
@@ -85,13 +89,22 @@ const Chat: React.FC = () => {
     }
 
     const joinRoom = async () => {
-        await chatRoom(multiaddr(currMa))
+        const m = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/multiAddress");
+        const addr = await m.json();
+        console.log(addr.multiaddress[1].replace("172.31.47.160", "13.200.213.161").replace(/\/tcp\/\d+\/ws\//, '/tcp/443/wss/'))
+        const ma = multiaddr(addr.multiaddress[1].replace("172.31.47.160", "13.200.213.161").replace(/\/tcp\/\d+\/ws\//, '/tcp/443/wss/') + "/p2p-circuit/webrtc/p2p/" + props.room)
+        await chatRoom(ma)
     }
     const sendMessage = async () => {
         console.log(`Sending message '${(currMessage)}'`)
 
         await window.libp2p.services.pubsub.publish("thetre", fromString(currMessage))
     }
+    useEffect(() => {
+        if (props.room) {
+            joinRoom()
+        }
+    }, [props.room])
     return (
         <div className='flex flex-col justify-between w-full lg:w-96 h-full'>
             <div>

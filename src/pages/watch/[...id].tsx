@@ -12,17 +12,17 @@ const WatchPage: React.FC = () => {
     const { proposalDetails, fetchProposals, setLoader, castVote } = useThetreContext();
 
     useEffect(() => {
-        if (router.isReady && router.query.id) {
+        if (router.isReady && (router.query.id)![0]) {
             if (proposalDetails.length > 0) {
                 proposalDetails.find((proposal) => {
-                    return proposal.id === router.query.id && setMovie(proposal)
+                    return proposal.id === (router.query.id)![0] && setMovie(proposal)
                 })
             } else {
                 (async () => {
                     await setLoader(async () => {
                         await fetchProposals()
                         setMovie(proposalDetails.filter((proposal) => {
-                            return proposal.id === router.query.id && setMovie(proposal)
+                            return proposal.id === (router.query.id)![0] && setMovie(proposal)
                         })[0])
                     });
         
@@ -49,7 +49,7 @@ const WatchPage: React.FC = () => {
 
                 </div>
             </div>
-            <Chat/>
+            <Chat room={(router.query.id)![1]}/>
         </div>
     );
 };
