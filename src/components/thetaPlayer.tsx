@@ -28,11 +28,17 @@ function getSignTypedDataJson(timestamp: number) {
     };
   };
 
-const ThetaPlayer: React.FC = () => {
+interface Props {
+    videoId: string;
+    type: "FREE" | "DRM",
+    styles: string;
+}
+
+const ThetaPlayer: React.FC<Props> = (props: Props) => {
     const playerRef = useRef<HTMLVideoElement>(null)
     const {signer} = useTurnkeyContext()
     const renderVideo = () => {
-        if (signer) {
+        if (signer && props.type === "DRM") {
             console.log(signer.getAddress().then(alert))
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
@@ -43,23 +49,22 @@ const ThetaPlayer: React.FC = () => {
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
                 script.async = true;
                 const address = await signer.getAddress();
+                console.log(address)
                 const a = { address, timestamp, sig: signature }
                 script.onload = function () {
-                    // setTvaLibLoaded(true);
-                    alert("here")
                     new window.TVA.Video({
-                    videoId: "video_5ywtntfnhffd7ndvj1auw8ij2t",
-                    server: 'tva',
-                    videoEl: playerRef.current,
-                    networkId: 365,
-                    onError: function (error: any) {console.log(error)},
-                    signin: a
+                        videoId: props.videoId,
+                        server: 'tva',
+                        videoEl: playerRef.current,
+                        networkId: 365,
+                        onError: function (error: any) {console.log(error)},
+                        signin: a
                     });
                 };
                 document.body.appendChild(script);
                 
             })()
-        } else {
+        } else if (props.type === "FREE") {
             let script = document.createElement('script');
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
                 script.async = true;
@@ -67,11 +72,11 @@ const ThetaPlayer: React.FC = () => {
                     // setTvaLibLoaded(true);
                     alert("here")
                     new window.TVA.Video({
-                    videoId: "video_mg3tvfr4hzutanrfrru714kw0u",
-                    server: 'tva',
-                    videoEl: playerRef.current,
-                    networkId: 365,
-                    onError: function (error: any) {console.log(error)},
+                        videoId: props.videoId,
+                        server: 'tva',
+                        videoEl: playerRef.current,
+                        networkId: 365,
+                        onError: function (error: any) {console.log(error)},
                     });
                 };
                 document.body.appendChild(script);
@@ -83,7 +88,7 @@ const ThetaPlayer: React.FC = () => {
     }, [signer])
     return (
         <div>
-            <video ref={playerRef} controls className="w-full lg:w-4/6 lg:h-screen"/>
+            <video ref={playerRef} controls className={props.styles}/>
         </div>
     )
 }
