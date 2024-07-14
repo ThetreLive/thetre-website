@@ -45,6 +45,7 @@ type StoreState = {
     loading: boolean,
     setLoader: (fn: any) => Promise<void>,
     proposalDetails: ProposalDetails[],
+    castVote: (proposalId: string, support: 0 | 1) => Promise<void>,
     createProposal: (data: ProposalData) => Promise<void>,
     fetchProposals: () => Promise<void>,
 };
@@ -54,6 +55,7 @@ const ThetreContext = createContext<StoreState>({
     loading: false,
     setLoader: async () => {},
     proposalDetails: [],
+    castVote: async() => {},
     createProposal: async() => {},
     fetchProposals: async() => {},
 });
@@ -163,11 +165,36 @@ const ThetreContextProvider = (props: Props) => {
           } catch (error) {
             console.error('Error:', error);
           }
-        
+    }
+
+    const castVote = async (proposalId: string, support: 0 | 1) => {
+      if (!signer) {
+        alert("Please Sign In")
+        return
+      }
+      const govEthers = new ethers.Contract(governerContract, governerABI, signer)
+      try {
+        // Cast the vote
+        const govCalldata = govEthers.interface.encodeFunctionData("castVote", [proposalId, support]);
+
+        const txResponse =  await signer?.sendTransaction({
+          from: signer.getAddress(),
+          to: governerContract,
+          data: govCalldata,
+          gasLimit: 100000
+        })
+        console.log('Transaction response:', txResponse);
+
+        // Wait for the transaction to be mined
+        const receipt = await txResponse?.wait();
+        console.log('Receipt - ', receipt);
+      } catch (error) {
+        console.error('Error:', error);
+      }
 
     }
     return (
-        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals, loading, setLoader }}>
+        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals, loading, setLoader, castVote }}>
             {props.children}
         </ThetreContext.Provider>
     )

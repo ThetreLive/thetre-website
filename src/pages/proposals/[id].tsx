@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 const Proposal: React.FC = () => {
     const router = useRouter()
     const [proposal, setProposal] = useState<ProposalDetails | undefined>(undefined);
-    const { proposalDetails, fetchProposals, setLoader } = useThetreContext();
+    const { proposalDetails, fetchProposals, setLoader, castVote } = useThetreContext();
 
     useEffect(() => {
         if (router.isReady && router.query.id) {
@@ -54,10 +54,10 @@ const Proposal: React.FC = () => {
                         <p className="font-bold text-white">Available On: {proposal.data.platforms}</p>
                     </div>
                     <div className="flex space-x-4">
-                        <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700">
+                        <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700" onClick={async () => await castVote(router.query.id as string, 1)}>
                             Approve
                         </button>
-                        <button className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700">
+                        <button className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700" onClick={async () => await castVote(router.query.id as string, 0)}>
                             Reject
                         </button>
                     </div>
