@@ -17,11 +17,9 @@ const WatchPage: React.FC = () => {
     }
 
     const onSeek = (time: number) => {
-        playerRef.current?.pause();
+        playerRef.current?.play();
         if (playerRef.current) {
-            if (Math.abs(playerRef.current.currentTime - time) > 1) {
-                playerRef.current.currentTime = time;
-            }
+            playerRef.current.currentTime = time;
         }
     }
 
