@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { getFileURL, getFromEdgeStore, uploadToEdgeStore, uploadVideo } from "@/utils/theta";
 import { governerABI } from "@/utils/abis/governerABI";
 import { thetreAB1 } from "@/utils/abis/thetreABI";
+import { contracts } from "@/utils/constants";
 
 export interface ProposalData {
     title: string;
@@ -36,9 +37,6 @@ export interface ProposalDetails {
   proposalState: ProposalState;
 }
 const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
-const governerContract = "0x1052Db8fe097a011cd2124f14fFe0729019984B3"
-const thetreContract = "0x1052Db8fe097a011cd2124f14fFe0729019984B3"
-const governanceNFT = "0x1a1d19fe31197e49ffcc292ff6a23c4fefb3ff39"
 
 type StoreState = {
     movies: any[],
@@ -88,13 +86,13 @@ const ThetreContextProvider = (props: Props) => {
       let proposals: ProposalDetails[] = [];
       let currentBlock = startBlock;
     
-      const govEthers = new ethers.Contract(governerContract, governerABI, provider);
-      const thetreEthers = new ethers.Contract(thetreContract, thetreAB1, provider);
+      const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, provider);
+      const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, provider);
     
       while (currentBlock <= endBlock) {
         const toBlock = Math.min(currentBlock + blockRange - 1, endBlock);
         const filter = {
-          address: governerContract,
+          address: contracts.LISTING_GOVERNER,
           topics: [
             ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
           ],
@@ -136,9 +134,9 @@ const ThetreContextProvider = (props: Props) => {
                 alert("Please fill all fields")
             }
         }
-        const govEthers = new ethers.Contract(governerContract, governerABI, signer)
-        const thetreEthers = new ethers.Contract(thetreContract, thetreAB1, signer)
-        const upload = await uploadVideo(getFileURL(JSON.parse(data.movieLink).result.key, JSON.parse(data.movieLink).result.relpath), governanceNFT, data.title, data.coverLink)
+        const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, signer)
+        const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, signer)
+        const upload = await uploadVideo(getFileURL(JSON.parse(data.movieLink).result.key, JSON.parse(data.movieLink).result.relpath), contracts.GOVERNANCE_PASS, data.title, data.coverLink)
         try {
             const result = await uploadToEdgeStore({
               ...data,
@@ -149,10 +147,10 @@ const ThetreContextProvider = (props: Props) => {
             // const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", ["movie", getFileURL("0x122d07b601c05953fe8229d17e5b5c0a66fbec3b9da839aea24afc18d86a6219", null)])
             const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", [data.title, result.result.key])
 
-            const govCalldata = govEthers.interface.encodeFunctionData("propose", [[thetreContract], [0], [listingCalldata], "List Movie: " + data.title]);
+            const govCalldata = govEthers.interface.encodeFunctionData("propose", [[contracts.THETRE], [0], [listingCalldata], "List Movie: " + data.title]);
             const txResponse =  await signer?.sendTransaction({
                 from: signer.getAddress(),
-                to: governerContract,
+                to: contracts.LISTING_GOVERNER,
                 data: govCalldata,
                 gasLimit: 100000
 
@@ -172,14 +170,14 @@ const ThetreContextProvider = (props: Props) => {
         alert("Please Sign In")
         return
       }
-      const govEthers = new ethers.Contract(governerContract, governerABI, signer)
+      const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, signer)
       try {
         // Cast the vote
         const govCalldata = govEthers.interface.encodeFunctionData("castVote", [proposalId, support]);
 
         const txResponse =  await signer?.sendTransaction({
           from: signer.getAddress(),
-          to: governerContract,
+          to: contracts.LISTING_GOVERNER,
           data: govCalldata,
           gasLimit: 100000
         })
