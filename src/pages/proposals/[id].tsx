@@ -3,13 +3,13 @@ import ThetaPlayer from '@/components/thetaPlayer';
 import { ProposalDetails, useThetreContext } from '@/context/thetreContext';
 import { getFileURL } from '@/utils/theta';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Proposal: React.FC = () => {
     const router = useRouter()
     const [proposal, setProposal] = useState<ProposalDetails | undefined>(undefined);
     const { proposalDetails, fetchProposals, setLoader, castVote } = useThetreContext();
-
+    const playerRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
         if (router.isReady && router.query.id) {
             if (proposalDetails.length > 0) {
@@ -42,7 +42,7 @@ const Proposal: React.FC = () => {
             }}>
                 <div className='w-full h-full col-start-0 col-span-5'>
                     {/* to replace with correct movie id */}
-                    <ThetaPlayer videoId={"video_mg3tvfr4hzutanrfrru714kw0u"} type="FREE" styles="w-full h-96" />
+                    <ThetaPlayer playerRef={playerRef} videoId={"video_mg3tvfr4hzutanrfrru714kw0u"} type="FREE" styles="w-full h-96" />
                 </div>
                 <div className='col-start-6 col-span-3 flex flex-col gap-16 justify-center'>
                     <div className='flex flex-col gap-2'>

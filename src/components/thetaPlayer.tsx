@@ -1,6 +1,6 @@
 "use client"
 import { useTurnkeyContext } from "@/context/turnkeyContext";
-import { LegacyRef, useEffect, useRef } from "react";
+import { LegacyRef, RefObject, useEffect, useRef } from "react";
 
 let TVA_JS_VERSION_NUMBER = '1.0.12';
 
@@ -32,10 +32,10 @@ interface Props {
     videoId: string;
     type: "FREE" | "DRM",
     styles: string;
+    playerRef: RefObject<HTMLVideoElement>;
 }
 
 const ThetaPlayer: React.FC<Props> = (props: Props) => {
-    const playerRef = useRef<HTMLVideoElement>(null)
     const {signer} = useTurnkeyContext()
     const renderVideo = () => {
         if (signer && props.type === "DRM") {
@@ -55,7 +55,7 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
                     new window.TVA.Video({
                         videoId: props.videoId,
                         server: 'tva',
-                        videoEl: playerRef.current,
+                        videoEl: props.playerRef.current,
                         networkId: 365,
                         onError: function (error: any) {console.log(error)},
                         signin: a
@@ -74,7 +74,7 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
                     new window.TVA.Video({
                         videoId: props.videoId,
                         server: 'tva',
-                        videoEl: playerRef.current,
+                        videoEl: props.playerRef.current,
                         networkId: 365,
                         onError: function (error: any) {console.log(error)},
                     });
@@ -88,7 +88,7 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
     }, [signer])
     return (
         <div className="w-full h-full">
-            <video ref={playerRef} controls className={props.styles}/>
+            <video ref={props.playerRef} controls className={props.styles}/>
         </div>
     )
 }

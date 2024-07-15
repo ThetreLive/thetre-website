@@ -15,11 +15,18 @@ import { fromString, toString } from 'uint8arrays'
 
 interface Props {
     room: string | undefined;
+    onPlay: () => void;
+    onPause: () => void;
+    onSeek: (time: number) => void;
+    playerRef: React.RefObject<HTMLVideoElement>;
 }
 
 interface Message {
+    data: {
+        type: "text" | "play" | "pause" | "seek";
+        message: string;
+    };
     from: string;
-    message: string;
 }
 
 const Chat: React.FC<Props> = (props: Props) => {
@@ -30,6 +37,38 @@ const Chat: React.FC<Props> = (props: Props) => {
     const [currMessage, setCurr] = useState<string>("")
     const [defaultMa, setDefaultMa] = useState<Multiaddr | undefined>(undefined)
     const router = useRouter()
+
+
+  useEffect(() => {
+        const videoElement = props.playerRef.current;
+
+        const handlePlay = async () => {
+            await sendMessage("play", "")
+        };
+
+        const handlePause = async () => {
+            await sendMessage("pause", "")
+            
+        };
+
+        const handleSeeked = async() => {
+            await sendMessage("seek", (videoElement!.currentTime).toString());
+          };
+
+        if (videoElement) {
+            videoElement.addEventListener('play', handlePlay);
+            videoElement.addEventListener('pause', handlePause);
+            videoElement.addEventListener('seeked', handleSeeked);
+        }
+      
+        return () => {
+            if (videoElement) {
+                videoElement.removeEventListener('play', handlePlay);
+                videoElement.removeEventListener('pause', handlePause);
+                videoElement.removeEventListener('seeked', handleSeeked);
+            }
+        };
+    }, [props.playerRef.current]);
 
     useEffect(() => {
         (async () => {
@@ -91,7 +130,16 @@ const Chat: React.FC<Props> = (props: Props) => {
             const decodedString = event.detail.key.join(",");
             console.log(decodedString)
             console.log(`Message received on topic '${topic}'`)
-            setMessages((prev) => [...prev, {from: decodedString, message: message}])
+            const data = JSON.parse(message) as Message["data"]
+            if (data.type === "play") {
+                props.onPlay()
+            } else if (data.type === "pause") {
+                props.onPause()
+            } else if (data.type === "seek") {
+                props.onSeek(parseFloat(data.message))
+            } else {
+                setMessages((prev) => [...prev, {from: decodedString, data}])
+            }
         })
             
     }
@@ -114,11 +162,18 @@ const Chat: React.FC<Props> = (props: Props) => {
         const ma = multiaddr(defaultMa?.toString() + "/p2p-circuit/webrtc/p2p/" + props.room)
         await chatRoom(ma)
     }
-    const sendMessage = async () => {
-        console.log(`Sending message '${(currMessage)}'`)
+    const sendMessage = async (type: Message["data"]["type"], message: string) => {
+        console.log(`Sending message '${(message)}'`)
 
-        await window.libp2p.services.pubsub.publish("thetre", fromString(currMessage))
-        setMessages((prev) => [...prev, {from: "me", message: currMessage}])
+        await window.libp2p.services.pubsub.publish("thetre", fromString(JSON.stringify({
+            type,
+            message
+        })))
+        setMessages((prev) => [...prev, {from: "me", data: {
+            type,
+            message
+        }}])
+        setCurr("")
 
     }
 
@@ -141,7 +196,7 @@ const Chat: React.FC<Props> = (props: Props) => {
                 )}
             </div>
             <div className='overflow-y-scroll' ref={msgRef}>
-                {messages.map((msg, i) => (
+                {messages.filter(msg => msg.data.type ==="text").map((msg, i) => (
                     <div key={i} className={`w-full gap-2 mb-1 items-center flex ${msg.from === "me" ? "flex-row-reverse" : "flex-row"}`}>
                         {(i === 0 || messages[i - 1].from !== msg.from) ? (
                             <img
@@ -152,14 +207,14 @@ const Chat: React.FC<Props> = (props: Props) => {
                         ) : (
                             <div className='w-5 h-5'></div>
                         )}
-                        <p className="text-white bg-gray-600 max-w-80 text-wrap break-words	 px-2 py-1 rounded-xl">{msg.message}</p>
+                        <p className="text-white bg-gray-600 max-w-80 text-wrap break-words	 px-2 py-1 rounded-xl">{msg.data.message}</p>
                     </div>
                 ))}
                 
             </div>
             <div className="relative w-full">
-                <input type="text" placeholder="Message ChatGPT" className="w-full p-4 pr-12 rounded-full bg-gray-600 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"  onChange={e => setCurr(e.target.value)}/>
-                <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none" onClick={sendMessage}>
+                <input type="text" placeholder="Send Message" className="w-full p-4 pr-12 rounded-full bg-gray-600 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" value={currMessage} onChange={e => setCurr(e.target.value)}/>
+                <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none" onClick={async() => await sendMessage("text", currMessage)}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                     </svg>

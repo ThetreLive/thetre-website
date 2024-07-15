@@ -2,15 +2,32 @@ import Chat from '@/components/chat';
 import Loader from '@/components/loader';
 import ThetaPlayer from '@/components/thetaPlayer';
 import { ProposalDetails, useThetreContext } from '@/context/thetreContext';
-import { useTurnkeyContext } from '@/context/turnkeyContext';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const WatchPage: React.FC = () => {
     const router = useRouter()
 
+    const playerRef = useRef<HTMLVideoElement>(null);
     const [movie, setMovie] = useState<ProposalDetails | undefined>(undefined);
     const { proposalDetails, fetchProposals, setLoader, castVote } = useThetreContext();
+
+    const onPlay = () => {
+        playerRef.current?.play();
+    }
+
+    const onSeek = (time: number) => {
+        playerRef.current?.pause();
+        if (playerRef.current) {
+            if (Math.abs(playerRef.current.currentTime - time) > 1) {
+                playerRef.current.currentTime = time;
+            }
+        }
+    }
+
+    const onPause = () => {
+        playerRef.current?.pause();
+    }
 
     useEffect(() => {
         if (router.isReady && (router.query.id)![0]) {
@@ -39,7 +56,7 @@ const WatchPage: React.FC = () => {
         <div className='h-screen flex lg:flex-row flex-col'>
             <div className='w-full lg:h-screen lg:overflow-y-scroll'>
                 {/* <ThetaPlayer videoId={movie.data.movieLink} type='FREE' styles="w-full lg:w-4/6 lg:h-screen"/> */}
-                <ThetaPlayer videoId="video_mg3tvfr4hzutanrfrru714kw0u"type='FREE' styles="w-full h-96 lg:h-screen"/>
+                <ThetaPlayer playerRef={playerRef} videoId="video_mg3tvfr4hzutanrfrru714kw0u"type='FREE' styles="w-full h-96 lg:h-screen"/>
                 <div className='p-4 flex flex-col gap-2 hidden lg:block'>
                     <p className='text-white font-bold text-2xl'>{movie.data.title}</p>
                     <p className="font-bold text-white">{movie.data.description}</p>
@@ -50,7 +67,7 @@ const WatchPage: React.FC = () => {
 
                 </div>
             </div>
-            <Chat room={(router.query.id)![1]}/>
+            <Chat room={(router.query.id)![1]} onPlay={onPlay} onSeek={onSeek} onPause={onPause} playerRef={playerRef}/>
         </div>
     );
 };
