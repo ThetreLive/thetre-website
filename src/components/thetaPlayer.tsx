@@ -39,12 +39,10 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
     const {signer} = useTurnkeyContext()
     const renderVideo = () => {
         if (signer && props.type === "DRM") {
-            console.log(signer.getAddress().then(alert))
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
             (async () => {
                 const signature = await signer._signTypedData(data.domain, data.types, data.message)
-                alert(signature)
                 let script = document.createElement('script');
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
                 script.async = true;
@@ -70,7 +68,6 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
                 script.async = true;
                 script.onload = function () {
                     // setTvaLibLoaded(true);
-                    alert("here")
                     new window.TVA.Video({
                         videoId: props.videoId,
                         server: 'tva',

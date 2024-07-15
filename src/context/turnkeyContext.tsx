@@ -131,7 +131,6 @@ const TurnkeyContextProvider = (props: Props) => {
         } catch (e: any) {
           const message = `caught error: ${e.toString()}`;
           console.error(message);
-          alert(message);
         }
       };
 
