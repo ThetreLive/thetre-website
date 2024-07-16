@@ -2,7 +2,7 @@ import Sidebar from '@/components/daoSidebar';
 import Loader from '@/components/loader';
 import ProposalCard from '@/components/proposalCard';
 import Modal from '@/components/proposalModal';
-import { useThetreContext } from '@/context/thetreContext';
+import { ProposalState, useThetreContext } from '@/context/thetreContext';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
@@ -29,8 +29,8 @@ const Home: NextPage = () => {
 
               </div>
               <div>
-                <span className="text-green-500">Passed 50</span>
-                <span className="text-red-500 ml-4">Failed 32</span>
+                <span className="text-green-500">Passed {proposalDetails.filter(prop => prop.proposalState == ProposalState.Succeeded).length}</span>
+                <span className="text-red-500 ml-4">Failed {proposalDetails.filter(prop => prop.proposalState in [ProposalState.Defeated, ProposalState.Expired]).length}</span>
               </div>
             </div>
           </div>
