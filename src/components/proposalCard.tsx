@@ -46,7 +46,11 @@ const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
             </span>
           </div>
         </div>
-        <p className="text-white">Total Votes: 0</p>
+        <div>
+          <p className="text-green-300">For: {proposal.votes.forProp}</p>
+          <p className="text-red-500">Against: {proposal.votes.against}</p>
+
+        </div>
       </div>
       <h3 className="text-xl font-bold text-white mb-2">{proposal.data.title}</h3>
       <p className="text-white mb-4">{proposal.data.description}</p>

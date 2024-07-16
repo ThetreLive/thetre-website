@@ -35,6 +35,10 @@ export interface ProposalDetails {
   voteEnd: number;
   id: string,
   proposalState: ProposalState;
+  votes: {
+    forProp: number;
+    against: number;
+  };
 }
 const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
 
@@ -109,12 +113,17 @@ const ThetreContextProvider = (props: Props) => {
             const data = JSON.parse(await getFromEdgeStore(listingData[1]));
             const state = await govEthers.state(log?.args?.proposalId);
             const voteEnd = log?.args?.voteEnd;
-    
+            console.log(ethers.id(log.args.description))
+            const votes = await govEthers.proposalVotes(log?.args?.proposalId);
             return {
               data,
               voteEnd,
               proposalState: state,
-              id: log?.args?.proposalId.toString()
+              id: log?.args?.proposalId.toString(),
+              votes: {
+                forProp: ethers.formatEther(votes[1]),
+                against: ethers.formatEther(votes[0]) 
+              }
             };
           }));
     
