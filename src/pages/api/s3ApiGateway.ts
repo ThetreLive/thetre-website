@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import formidable,{ Fields, Files } from 'formidable';
 import FormData from 'form-data';
 import fs from 'fs';
+import fetch from 'node-fetch';
+
 
 export const config = {
   api: {
@@ -20,7 +22,7 @@ const uploadFileToApiGateway = async (file: any, filename: string): Promise<void
     headers: {
       'Content-Type': file.mimetype!,
     },
-    body: file,
+    body: fs.createReadStream(file.filepath),
   });
 
   if (!response.ok) {
@@ -52,6 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await uploadFileToApiGateway(file, filename);
       res.status(200).json({ message: 'File uploaded successfully' });
     } catch (error) {
+      console.log(error)
       res.status(500).json({ error: 'Error uploading file' });
       }
     });
