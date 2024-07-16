@@ -4,6 +4,56 @@ const getFileURL = (key: string, relpath: string | null) => {
     return `https://p2p.thetre.live/file?key=${key}${relpath !== null && `&relpath=${relpath}`}`
 }
 
+const uploadFileToEdgeStore = async (file: File) => {
+    try {
+        const filename = (Date.now() + file.name).split(" ").join("_");
+        let url = `/api/s3ApiGateway`;
+        const formData = new FormData()
+        formData.append("file", file)
+        formData.append("filename", filename)
+
+        let response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+        });
+    
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+    
+        console.log('File uploaded successfully to s3');
+
+        url = 'https://p2p.thetre.live/rpc';
+
+        const body = {
+            jsonrpc: "2.0",
+            method: "edgestore.PutFile",
+            params: [
+              {
+                path: `thetre/${filename}`,
+              }
+            ],
+            id: 1
+        };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        };
+        response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log(result)
+        return result
+    } catch (error) {
+      console.error('Error:', error);
+    }
+}
+
 const uploadVideo = async (movieUrl: string, ticket: string, movieName: string, coverUrl: string) => {
     const url = 'https://api.thetavideoapi.com/video';
     const headers = {
@@ -120,5 +170,6 @@ export {
     getFileURL,
     uploadVideo,
     uploadToEdgeStore,
-    getFromEdgeStore
+    getFromEdgeStore,
+    uploadFileToEdgeStore
 }

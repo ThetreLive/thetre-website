@@ -48,6 +48,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const jsonToLink = (jsonData: string) => {
     return getFileURL(JSON.parse(jsonData).result.key, JSON.parse(jsonData).result.relpath)
   }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+    setForm({ ...form, [name]: files ? files[0] : "" });
+  };
   const copyCommand = (type: "MOVIE" | "TRAILER" | "COVER") => {
     let command = '';
     switch (type) {
@@ -114,83 +118,40 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               )}
               {step === 2 && (
                 <div>
-                  <p className='mb-4 text-center'>Run this command in your terminal to upload movie(replace with your path)</p>
-                  <div className="mb-4 bg-gray-700 relative">
-                    <code>
-                      {`curl -X POST -H 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"edgestore.PutFile","params":[{"path": "<PATH-TO-MOVIE>"}],"id":1}' https://p2p.thetre.live/rpc`}
-                    </code>
-                    <div className='absolute top-1 right-1 cursor-pointer' onClick={() => copyCommand("MOVIE")}>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-                      </svg>
-
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <input type="text" name="movieLink" id="movieLink" value={form.movieLink} placeholder='Paste the response' onChange={handleChange} className="col-span-3 text-center p-2 border-b-2 border-gray-500 rounded bg-transparent text-white" />
-                  </div>
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    {form.movieLink.length > 0 ? (
-                      <video src={jsonToLink(form.movieLink)} controls className='w-96 h-64'></video>
-                    ) : (
-                      <div className='w-full bg-gray-800 flex items-center justify-center' style={{height: "200px"}}>No Video</div>
-
-                    )}
+                  <label className="block text-center mb-8">Upload Movie</label>
+                  <div 
+                    className="flex items-center justify-center border border-dashed border-gray-500 h-36 p-4 text-center rounded bg-transparent text-white"
+                  >
+                    <input type="file" name="movieLink" onChange={handleFileChange} className="hidden" id="movieLink" />
+                    <label htmlFor="movieLink" className="cursor-pointer text-blue-400">
+                      {form.movieLink instanceof File ? form.movieLink.name : 'Choose a file to upload'}
+                    </label>
                   </div>
                 </div>
               )}
               {step === 3 && (
                 <div>
-                  <p className='mb-4 text-center'>Run this command in your terminal to upload trailer(replace with your path)</p>
-                  <div className="mb-4 bg-gray-700 relative">
-                    <code>
-                      {`curl -X POST -H 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"edgestore.PutFile","params":[{"path": "<PATH-TO-TRAILER>"}],"id":1}' https://p2p.thetre.live/rpc`}
-                    </code>
-                    <div className='absolute top-1 right-1 cursor-pointer' onClick={() => copyCommand("TRAILER")}>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-                      </svg>
-
-                    </div>
-
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <input type="text" name="trailerLink" id="trailerLink" value={form.trailerLink} placeholder='Paste the response' onChange={handleChange} className="col-span-3 text-center p-2 border-b-2 border-gray-500 rounded bg-transparent text-white" />
-                  </div>
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    {form.trailerLink.length > 0 ? (
-                      <video src={jsonToLink(form.trailerLink)} controls className='w-96 h-64'></video>
-                    ) : (
-                      <div className='w-full bg-gray-800 flex items-center justify-center' style={{height: "200px"}}>No Trailer</div>
-
-                    )}
+                  <label className="block text-center mb-8">Upload Trailer</label>
+                  <div 
+                    className="flex items-center justify-center border border-dashed border-gray-500 h-36 p-4 text-center rounded bg-transparent text-white"
+                  >
+                    <input type="file" name="trailerLink" onChange={handleFileChange} className="hidden" id="trailerLink" />
+                    <label htmlFor="trailerLink" className="cursor-pointer text-blue-400">
+                      {form.trailerLink instanceof File ? form.trailerLink.name : 'Choose a file to upload'}
+                    </label>
                   </div>
                 </div>
               )}
               {step === 4 && (
                 <div>
-                  <p className='mb-4 text-center'>Run this command in your terminal to upload cover(replace with your path)</p>
-                  <div className="mb-4 bg-gray-700 relative">
-                    <code>
-                      {`curl -X POST -H 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"edgestore.PutFile","params":[{"path": "<PATH-TO-COVER>"}],"id":1}' https://p2p.thetre.live/rpc`}
-                    </code>
-                    <div className='absolute top-1 right-1 cursor-pointer' onClick={() => copyCommand("COVER")}>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-                      </svg>
-
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <input type="text" name="coverLink" id="coverLink" value={form.coverLink} placeholder='Paste the response' onChange={handleChange} className="col-span-3 text-center p-2 border-b-2 border-gray-500 rounded bg-transparent text-white" />
-                  </div>
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    {form.coverLink.length > 0 ? (
-                      <Image src={jsonToLink(form.coverLink)} height={300} width={300} alt="Cover" className='text-center'></Image>
-                    ) : (
-                      <div className='w-full bg-gray-800 flex items-center justify-center' style={{height: "200px"}}>No Cover</div>
-
-                    )}
+                  <label className="block text-center mb-8">Upload Cover</label>
+                  <div 
+                    className="flex items-center justify-center border border-dashed border-gray-500 h-36 p-4 text-center rounded bg-transparent text-white"
+                  >
+                    <input type="file" name="coverLink" onChange={handleFileChange} className="hidden" id="coverLink" />
+                    <label htmlFor="coverLink" className="cursor-pointer text-blue-400">
+                      {form.coverLink instanceof File ? form.coverLink.name : 'Choose a file to upload'}
+                    </label>
                   </div>
                 </div>
               )}

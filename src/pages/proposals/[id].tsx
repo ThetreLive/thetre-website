@@ -67,13 +67,13 @@ const Proposal: React.FC = () => {
                     <h2 className="text-xl font-bold text-white">Trailer</h2>
 
                     <video controls className='w-full h-full'>
-                        <source src={getFileURL(JSON.parse(proposal.data.trailerLink).result.key, JSON.parse(proposal.data.trailerLink).result.relpath)} />
+                        <source src={getFileURL(JSON.parse(proposal.data.trailerLink as string).result.key, JSON.parse(proposal.data.trailerLink as string).result.relpath)} />
                     </video>
                 </div>
                 <div className='col-start-5 col-span-4 row-start-3'>
                     <h2 className="text-xl font-bold text-white">Cover Image</h2>
                 <div className='h-full flex flex-row justify-center items-center bg-gray-700/20'>
-                    <img className="h-80" src={getFileURL(JSON.parse(proposal.data.coverLink).result.key, JSON.parse(proposal.data.coverLink).result.relpath)} alt="Cover Page" />
+                    <img className="h-80" src={getFileURL(JSON.parse(proposal.data.coverLink as string).result.key, JSON.parse(proposal.data.coverLink as string).result.relpath)} alt="Cover Page" />
                 </div>
 
                 </div>

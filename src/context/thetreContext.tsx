@@ -1,7 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { useTurnkeyContext } from "./turnkeyContext";
 import { ethers } from "ethers";
-import { getFileURL, getFromEdgeStore, uploadToEdgeStore, uploadVideo } from "@/utils/theta";
+import { getFileURL, getFromEdgeStore, uploadFileToEdgeStore, uploadToEdgeStore, uploadVideo } from "@/utils/theta";
 import { governerABI } from "@/utils/abis/governerABI";
 import { thetreAB1 } from "@/utils/abis/thetreABI";
 import { contracts } from "@/utils/constants";
@@ -14,9 +14,9 @@ export interface ProposalData {
     cast: string;
     director: string;
     platforms: string;
-    movieLink: string;
-    trailerLink: string;
-    coverLink: string;
+    movieLink: string | File;
+    trailerLink: string | File;
+    coverLink: string | File;
 }
 
 export enum ProposalState {
@@ -136,17 +136,24 @@ const ThetreContextProvider = (props: Props) => {
         }
         const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, signer)
         const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, signer)
-        const upload = await uploadVideo(getFileURL(JSON.parse(data.movieLink).result.key, JSON.parse(data.movieLink).result.relpath), contracts.GOVERNANCE_PASS, data.title, data.coverLink)
+
+        const movieRes = await uploadFileToEdgeStore(data.movieLink as File)
+        const trailerRes = await uploadFileToEdgeStore(data.trailerLink as File)
+        const coverRes = await uploadFileToEdgeStore(data.coverLink as File)
+        
+        const upload = await uploadVideo(getFileURL(movieRes.result.key, movieRes.result.relpath), contracts.GOVERNANCE_PASS, data.title, getFileURL(coverRes.result.key, coverRes.result.relpath))
         try {
             const result = await uploadToEdgeStore({
               ...data,
+              trailerLink: JSON.stringify(trailerRes),
+              coverLink: JSON.stringify(coverRes),
               movieLink: upload.body.videos[0].id,
             });
 
             console.log(result)
             // const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", ["movie", getFileURL("0x122d07b601c05953fe8229d17e5b5c0a66fbec3b9da839aea24afc18d86a6219", null)])
             const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", [data.title, result.result.key])
-
+            console.log([contracts.THETRE], [0], [listingCalldata], "List Movie: " + data.title)
             const govCalldata = govEthers.interface.encodeFunctionData("propose", [[contracts.THETRE], [0], [listingCalldata], "List Movie: " + data.title]);
             const txResponse =  await signer?.sendTransaction({
                 from: signer.getAddress(),
