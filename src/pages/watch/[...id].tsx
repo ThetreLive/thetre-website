@@ -53,7 +53,7 @@ const WatchPage: React.FC = () => {
     return (
         <div className='h-screen flex lg:flex-row flex-col'>
             <div className='w-full lg:h-screen lg:overflow-y-scroll'>
-                <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type='DRM' styles="w-full h-96 lg:h-screen"/>
+                <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type='DRM' styles="w-full h-96 lg:h-[70vh]"/>
                 <div className='p-4 flex flex-col gap-2 hidden lg:block'>
                     <p className='text-white font-bold text-2xl'>{movie.data.title}</p>
                     <p className="font-bold text-white">{movie.data.description}</p>
