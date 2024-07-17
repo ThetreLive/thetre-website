@@ -2,7 +2,7 @@ import { createContext, Dispatch, SetStateAction, useContext, useEffect, useStat
 import { ethers } from "ethers";
 import { getFileURL, getFromEdgeStore, uploadFileToEdgeStore, uploadToEdgeStore, uploadVideo } from "@/utils/theta";
 import { governerABI } from "@/utils/abis/governerABI";
-import { thetreAB1 } from "@/utils/abis/thetreABI";
+import { thetreABI } from "@/utils/abis/thetreABI";
 import { contracts } from "@/utils/constants";
 import { useWalletContext } from "./walletContext";
 
@@ -99,7 +99,7 @@ const ThetreContextProvider = (props: Props) => {
         }
       
         const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, provider);
-        const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, provider);
+        const thetreEthers = new ethers.Contract(contracts.THETRE, thetreABI, provider);
         
         const logsPromises = ranges.map(range => {
           const filter = {
@@ -155,7 +155,7 @@ const ThetreContextProvider = (props: Props) => {
             }
         }
         const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, signer)
-        const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, signer)
+        const thetreEthers = new ethers.Contract(contracts.THETRE, thetreABI, signer)
 
         const movieRes = await uploadFileToEdgeStore(data.movieLink as File)
         const trailerRes = await uploadFileToEdgeStore(data.trailerLink as File)
