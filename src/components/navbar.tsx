@@ -4,10 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTurnkeyContext } from '@/context/turnkeyContext';
+import { useWalletContext } from '@/context/walletContext';
 
 export default function Navbar() {
   const asPath = usePathname()
   const { wallet, createSubOrgAndWallet, login } = useTurnkeyContext()
+  const { signer } = useWalletContext()
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
@@ -68,7 +70,7 @@ export default function Navbar() {
             Shows
           </Link>
         </div>
-        {wallet ? (
+        {signer ? (
           <div className='hidden md:flex rounded-full bg-custom-radial px-6 py-2'>
             <Link href="/account" className="text-white">
               Account
