@@ -88,55 +88,64 @@ const ThetreContextProvider = (props: Props) => {
       const blockRange = 5000;
     
       let proposals: ProposalDetails[] = [];
-      let currentBlock = startBlock;
+      const ranges: { fromBlock: number; toBlock: number }[] = [];
+      
+      for (let currentBlock = startBlock; currentBlock <= endBlock; currentBlock += blockRange) {
+        ranges.push({
+          fromBlock: currentBlock,
+          toBlock: Math.min(currentBlock + blockRange - 1, endBlock),
+        });
+      }
     
       const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, provider);
       const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, provider);
     
-      while (currentBlock <= endBlock) {
-        const toBlock = Math.min(currentBlock + blockRange - 1, endBlock);
+      const logsPromises = ranges.map(range => {
         const filter = {
           address: contracts.LISTING_GOVERNER,
           topics: [
             ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
           ],
-          fromBlock: currentBlock,
-          toBlock: toBlock
+          fromBlock: range.fromBlock,
+          toBlock: range.toBlock
         };
+        return provider.getLogs(filter);
+      });
     
-        const logs = await provider.provider?.getLogs(filter);
-        const parsedLogs = logs?.map(log => govEthers.interface.parseLog(log)) || [];
+      const logsResults = await Promise.all(logsPromises);
     
-        const proposalsInChunk = await Promise.all(parsedLogs.map(async log => {
-          const proposalDetails: ProposalDetails[] = await Promise.all(log?.args?.calldatas?.map(async (calldata: any) => {
-            const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
-            const data = JSON.parse(await getFromEdgeStore(listingData[1]));
-            const state = await govEthers.state(log?.args?.proposalId);
-            const voteEnd = log?.args?.voteEnd;
-            console.log(ethers.id(log.args.description))
-            const votes = await govEthers.proposalVotes(log?.args?.proposalId);
-            return {
-              data,
-              voteEnd,
-              proposalState: state,
-              id: log?.args?.proposalId.toString(),
-              votes: {
-                forProp: ethers.formatEther(votes[1]),
-                against: ethers.formatEther(votes[0]) 
-              }
-            };
-          }));
+      const logs = logsResults.flat();
     
-          return proposalDetails;
-        }) ?? []);
+      const parsedLogs = logs.map(log => govEthers.interface.parseLog(log));
     
-        proposals = proposals.concat(proposalsInChunk.flat());
-        currentBlock = toBlock + 1;
-      }
+      const proposalDetailsPromises = parsedLogs.map(async log => {
+        const proposalDetails: ProposalDetails[] = await Promise.all(log!.args.calldatas.map(async (calldata: any) => {
+          const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
+          const data = JSON.parse(await getFromEdgeStore(listingData[1]));
+          const state = await govEthers.state(log!.args.proposalId);
+          const voteEnd = log!.args.voteEnd;
+          const votes = await govEthers.proposalVotes(log!.args.proposalId);
+          return {
+            data,
+            voteEnd,
+            proposalState: state,
+            id: log!.args.proposalId.toString(),
+            votes: {
+              forProp: ethers.formatEther(votes[1]),
+              against: ethers.formatEther(votes[0])
+            }
+          };
+        }));
+        return proposalDetails;
+      });
     
+      const proposalsInChunks = await Promise.all(proposalDetailsPromises);
+    
+      proposals = proposalsInChunks.flat();
       setProposalDetails(proposals);
       console.log(proposals);
     };
+    
     const createProposal = async (data: ProposalData) => {
         for (const key in data) {
             if (data.hasOwnProperty(key) && data[key as keyof ProposalData] === '') {
