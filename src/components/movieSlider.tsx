@@ -4,7 +4,7 @@ import Image from 'next/image';
 import React from 'react';
 import Slider from 'react-slick';
 
-const MovieSlider = (props: { proposalDetails: ProposalDetails[] }) => {  
+const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string[] }) => {  
   const settings = {
     dots: true,
     infinite: true,
@@ -59,7 +59,7 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[] }) => {
                 {/* <p className="text-sm mb-8">Rating: {movie.rating}</p> */}
                 <p className="mb-8 lg:text-base text-sm">{movie.data.description}</p>
                 <div className="flex space-x-4">
-                  <button className="bg-custom-radial px-6 py-3 font-bold rounded-full">Watch now</button>
+                  <button className="bg-custom-radial px-6 py-3 font-bold rounded-full">{props.access.includes(movie.data.title) ? "Watch now" : "Buy Pass for 10TFUEL"}</button>
                   <button className="bg-gray-700 px-4 py-2 rounded-full">Trailer</button>
                   <button className="bg-gray-700 px-4 py-2 rounded-full">More</button>
                 </div>
