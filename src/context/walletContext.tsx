@@ -1,5 +1,5 @@
 import { TurnkeySigner } from "@turnkey/ethers";
-import ethers, {BrowserProvider, Provider, Signer } from "ethers";
+import  {ethers, BrowserProvider, Signer } from "ethers";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 
 type StoreState = {
@@ -48,6 +48,7 @@ const WalletContextProvider = (props: Props) => {
       const fetchInitialAccounts = async (providerInstance: BrowserProvider) => {
         try {
           const accounts = await window.ethereum.request({ method: "eth_accounts" });
+          console.log(accounts)
           if (accounts.length > 0) {
             setSigner(await providerInstance.getSigner());
           }
