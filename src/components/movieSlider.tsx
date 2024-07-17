@@ -13,8 +13,8 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[] }) => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
     appendDots: (dots: any) => (
       <div>
         <ul style={{ margin: "0px" }}> {dots} </ul>
@@ -23,7 +23,7 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[] }) => {
   };
 
 
-  function SampleNextArrow(props: any) {
+  function NextArrow(props: any) {
     const { className, style, onClick } = props;
     return (
       <div
@@ -34,7 +34,7 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[] }) => {
     );
   }
 
-  function SamplePrevArrow(props: any) {
+  function PrevArrow(props: any) {
     const { className, style, onClick } = props;
     return (
       <div
