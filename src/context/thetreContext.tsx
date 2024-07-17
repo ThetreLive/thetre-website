@@ -1,10 +1,10 @@
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { useTurnkeyContext } from "./turnkeyContext";
 import { ethers } from "ethers";
 import { getFileURL, getFromEdgeStore, uploadFileToEdgeStore, uploadToEdgeStore, uploadVideo } from "@/utils/theta";
 import { governerABI } from "@/utils/abis/governerABI";
 import { thetreAB1 } from "@/utils/abis/thetreABI";
 import { contracts } from "@/utils/constants";
+import { useWalletContext } from "./walletContext";
 
 export interface ProposalData {
     title: string;
@@ -72,7 +72,7 @@ const ThetreContextProvider = (props: Props) => {
     const [loading, setLoading] = useState(false)
     const [movies, setMovies] = useState([])
     const [proposalDetails, setProposalDetails] = useState<ProposalDetails[]>([])
-    const {signer} = useTurnkeyContext()
+    const {signer} = useWalletContext()
 
     const setLoader = async (fn: any) => {
       setLoading(true);

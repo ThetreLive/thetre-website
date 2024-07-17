@@ -1,6 +1,9 @@
 "use client"
-import { useTurnkeyContext } from "@/context/turnkeyContext";
+import { useWalletContext } from "@/context/walletContext";
 import { LegacyRef, RefObject, useEffect, useRef } from "react";
+import { Signer } from "ethers";
+import { TurnkeySigner } from "@turnkey/ethers";
+
 
 let TVA_JS_VERSION_NUMBER = '1.0.12';
 
@@ -36,13 +39,19 @@ interface Props {
 }
 
 const ThetaPlayer: React.FC<Props> = (props: Props) => {
-    const {signer} = useTurnkeyContext()
+    const {signer} = useWalletContext()
     const renderVideo = () => {
         if (signer && props.type === "DRM") {
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
             (async () => {
-                const signature = await signer._signTypedData(data.domain, data.types, data.message)
+                let signature;
+                if ((signer as TurnkeySigner)._signTypedData) {
+                    signature = await (signer as TurnkeySigner)._signTypedData(data.domain, data.types, data.message)
+                } else {
+                    signature = await (signer as Signer).signTypedData(data.domain, data.types, data.message)
+
+                }
                 let script = document.createElement('script');
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
                 script.async = true;

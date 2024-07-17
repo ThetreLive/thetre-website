@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState, useEffect, createContext, useContext } from "react";
 import { TWalletDetails } from "../types";
 import { ethers } from "ethers";
+import { useWalletContext } from "./walletContext";
 
 
 type TWalletState = TWalletDetails | null;
@@ -16,14 +17,12 @@ const humanReadableDateTime = (): string => {
 
 type StoreState = {
     wallet: TWalletState;
-    signer: TSigner;
     createSubOrgAndWallet: () => any;
     login: () => any;
 };
   
 const TurnkeyContext = createContext<StoreState>({
     wallet: null,
-    signer: null,
     createSubOrgAndWallet: () => {},
     login: () => {}
 });
@@ -37,7 +36,7 @@ type Props = {
 const TurnkeyContextProvider = (props: Props) => {
     const { turnkey, passkeyClient } = useTurnkey();
     const [wallet, setWallet] = useState<TWalletState>(null);
-    const [signer, setSigner] = useState<TSigner>(null)
+    const { signer, setSigner } = useWalletContext()
 
     useEffect(() => {
         (async () => {
@@ -137,7 +136,6 @@ const TurnkeyContextProvider = (props: Props) => {
     return (
         <TurnkeyContext.Provider value={{
             wallet,
-            signer,
             createSubOrgAndWallet,
             login
         }}>
