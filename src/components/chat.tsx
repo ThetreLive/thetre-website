@@ -40,35 +40,37 @@ const Chat: React.FC<Props> = (props: Props) => {
 
 
   useEffect(() => {
-        const videoElement = props.playerRef.current;
-
-        const handlePlay = async () => {
-            await sendMessage("play", "")
-        };
-
-        const handlePause = async () => {
-            await sendMessage("pause", "")
-            
-        };
-
-        const handleSeeked = async() => {
-            await sendMessage("seek", (videoElement!.currentTime).toString());
-          };
-
-        if (videoElement) {
-            videoElement.addEventListener('play', handlePlay);
-            videoElement.addEventListener('pause', handlePause);
-            videoElement.addEventListener('seeked', handleSeeked);
-        }
-      
-        return () => {
+        if (libp2p) {
+            const videoElement = props.playerRef.current;
+    
+            const handlePlay = async () => {
+                await sendMessage("play", "")
+            };
+    
+            const handlePause = async () => {
+                await sendMessage("pause", "")
+                
+            };
+    
+            const handleSeeked = async() => {
+                await sendMessage("seek", (videoElement!.currentTime).toString());
+              };
+    
             if (videoElement) {
-                videoElement.removeEventListener('play', handlePlay);
-                videoElement.removeEventListener('pause', handlePause);
-                videoElement.removeEventListener('seeked', handleSeeked);
+                videoElement.addEventListener('play', handlePlay);
+                videoElement.addEventListener('pause', handlePause);
+                videoElement.addEventListener('seeked', handleSeeked);
             }
-        };
-    }, [props.playerRef.current]);
+          
+            return () => {
+                if (videoElement) {
+                    videoElement.removeEventListener('play', handlePlay);
+                    videoElement.removeEventListener('pause', handlePause);
+                    videoElement.removeEventListener('seeked', handleSeeked);
+                }
+            };
+        }
+    }, [props.playerRef.current, libp2p]);
 
     useEffect(() => {
         (async () => {
