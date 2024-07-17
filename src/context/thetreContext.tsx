@@ -83,7 +83,7 @@ const ThetreContextProvider = (props: Props) => {
     }
 
     const fetchProposals = async () => {
-      const startBlock = 27110027;
+      const startBlock = 27166848;
       const endBlock = await provider.getBlockNumber();
       const blockRange = 5000;
     
