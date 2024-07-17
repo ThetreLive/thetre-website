@@ -43,15 +43,15 @@ const Proposal: React.FC = () => {
                 <div className='w-full h-full col-start-0 col-span-5'>
                     <ThetaPlayer playerRef={playerRef} videoId={proposal.data.movieLink as string} type="DRM" styles="w-full h-96" />
                 </div>
-                <div className='col-start-6 col-span-3 flex flex-col gap-16 justify-center'>
+                <div className='col-start-6 col-span-3 flex flex-col gap-8 justify-center'>
                     <div className='flex flex-col gap-2'>
-                        <p className='text-white font-bold text-2xl'>Movie Name - {proposal.data.title}</p>
+                        <p className='text-white font-bold text-2xl underline decoration-thetre-blue decoration-4'>Movie Name - {proposal.data.title}</p>
                         <p className="font-bold text-white">{proposal.data.description}</p>
-                        <p className="font-bold text-white">Genre: {proposal.data.genre}</p>
-                        <p className="font-bold text-white">Cast: {proposal.data.cast}</p>
-                        <p className="font-bold text-white">Directed By: {proposal.data.director}</p>
-                        <p className="font-bold text-white">Produced By: {proposal.data.producer}</p>
-                        <p className="font-bold text-white">Available On: {proposal.data.platforms}</p>
+                        <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Genre</span>{" "}{proposal.data.genre}</p>
+                        <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Cast</span>{" "}{proposal.data.cast}</p>
+                        <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Directed By:</span>{" "}{proposal.data.director}</p>
+                        <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Produced By:</span>{" "}{proposal.data.producer}</p>
+                        <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Available On(if any):</span>{" "}{proposal.data.platforms}</p>
                     </div>
                     <div className="flex space-x-4">
                         <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700" onClick={async () => await castVote(router.query.id as string, 1)}>
@@ -63,14 +63,14 @@ const Proposal: React.FC = () => {
                     </div>
                 </div>
                 <div className='col-start-0 col-span-4 row-start-3 h-full'>
-                    <h2 className="text-xl font-bold text-white">Trailer</h2>
+                    <h2 className="text-xl font-bold text-white underline decoration-thetre-blue decoration-4">Trailer</h2>
 
                     <video controls className='w-full h-full'>
                         <source src={getFileURL(JSON.parse(proposal.data.trailerLink as string).result.key, JSON.parse(proposal.data.trailerLink as string).result.relpath)} />
                     </video>
                 </div>
                 <div className='col-start-5 col-span-4 row-start-3'>
-                    <h2 className="text-xl font-bold text-white">Cover Image</h2>
+                    <h2 className="text-xl font-bold text-white underline decoration-thetre-blue decoration-4">Cover Image</h2>
                 <div className='h-full flex flex-row justify-center items-center bg-gray-700/20'>
                     <img className="h-80" src={getFileURL(JSON.parse(proposal.data.coverLink as string).result.key, JSON.parse(proposal.data.coverLink as string).result.relpath)} alt="Cover Page" />
                 </div>
