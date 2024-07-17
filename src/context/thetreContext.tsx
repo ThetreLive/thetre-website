@@ -50,6 +50,7 @@ type StoreState = {
     castVote: (proposalId: string, support: 0 | 1) => Promise<void>,
     createProposal: (data: ProposalData) => Promise<void>,
     fetchProposals: () => Promise<void>,
+    getVideo: (movieName: string) => Promise<string>
 };
   
 const ThetreContext = createContext<StoreState>({
@@ -60,6 +61,7 @@ const ThetreContext = createContext<StoreState>({
     castVote: async() => {},
     createProposal: async() => {},
     fetchProposals: async() => {},
+    getVideo: async() => ""
 });
   
 export const useThetreContext = () => useContext(ThetreContext);
@@ -218,8 +220,15 @@ const ThetreContextProvider = (props: Props) => {
       }
 
     }
+
+    const getVideo = async (movieName: string) => {
+      console.log(movieName)
+      const thetreEthers = new ethers.Contract(contracts.THETRE, thetreABI, provider)
+      const ticket = await thetreEthers.movieVideos(movieName)
+      return ticket
+    }
     return (
-        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals, loading, setLoader, castVote }}>
+        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals, loading, setLoader, castVote, getVideo }}>
             {props.children}
         </ThetreContext.Provider>
     )
