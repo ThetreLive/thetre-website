@@ -41,8 +41,7 @@ const Proposal: React.FC = () => {
                 gridTemplateRows: "minmax(1em, auto) 1fr auto minmax(1em, auto)"
             }}>
                 <div className='w-full h-full col-start-0 col-span-5'>
-                    {/* to replace with correct movie id */}
-                    <ThetaPlayer playerRef={playerRef} videoId={"video_mg3tvfr4hzutanrfrru714kw0u"} type="FREE" styles="w-full h-96" />
+                    <ThetaPlayer playerRef={playerRef} videoId={proposal.data.movieLink as string} type="DRM" styles="w-full h-96" />
                 </div>
                 <div className='col-start-6 col-span-3 flex flex-col gap-16 justify-center'>
                     <div className='flex flex-col gap-2'>
