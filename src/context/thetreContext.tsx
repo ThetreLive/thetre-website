@@ -83,67 +83,69 @@ const ThetreContextProvider = (props: Props) => {
     }
 
     const fetchProposals = async () => {
-      const startBlock = 27166848;
-      const endBlock = await provider.getBlockNumber();
-      const blockRange = 5000;
-    
-      let proposals: ProposalDetails[] = [];
-      const ranges: { fromBlock: number; toBlock: number }[] = [];
+      if (proposalDetails.length === 0) {
+        const startBlock = 27166848;
+        const endBlock = await provider.getBlockNumber();
+        const blockRange = 5000;
       
-      for (let currentBlock = startBlock; currentBlock <= endBlock; currentBlock += blockRange) {
-        ranges.push({
-          fromBlock: currentBlock,
-          toBlock: Math.min(currentBlock + blockRange - 1, endBlock),
-        });
-      }
-    
-      const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, provider);
-      const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, provider);
-    
-      const logsPromises = ranges.map(range => {
-        const filter = {
-          address: contracts.LISTING_GOVERNER,
-          topics: [
-            ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
-          ],
-          fromBlock: range.fromBlock,
-          toBlock: range.toBlock
-        };
-        return provider.getLogs(filter);
-      });
-    
-      const logsResults = await Promise.all(logsPromises);
-    
-      const logs = logsResults.flat();
-    
-      const parsedLogs = logs.map(log => govEthers.interface.parseLog(log));
-    
-      const proposalDetailsPromises = parsedLogs.map(async log => {
-        const proposalDetails: ProposalDetails[] = await Promise.all(log!.args.calldatas.map(async (calldata: any) => {
-          const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
-          const data = JSON.parse(await getFromEdgeStore(listingData[1]));
-          const state = await govEthers.state(log!.args.proposalId);
-          const voteEnd = log!.args.voteEnd;
-          const votes = await govEthers.proposalVotes(log!.args.proposalId);
-          return {
-            data,
-            voteEnd,
-            proposalState: state,
-            id: log!.args.proposalId.toString(),
-            votes: {
-              forProp: ethers.formatEther(votes[1]),
-              against: ethers.formatEther(votes[0])
-            }
+        let proposals: ProposalDetails[] = [];
+        const ranges: { fromBlock: number; toBlock: number }[] = [];
+        
+        for (let currentBlock = startBlock; currentBlock <= endBlock; currentBlock += blockRange) {
+          ranges.push({
+            fromBlock: currentBlock,
+            toBlock: Math.min(currentBlock + blockRange - 1, endBlock),
+          });
+        }
+      
+        const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, provider);
+        const thetreEthers = new ethers.Contract(contracts.THETRE, thetreAB1, provider);
+        
+        const logsPromises = ranges.map(range => {
+          const filter = {
+            address: contracts.LISTING_GOVERNER,
+            topics: [
+              ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
+            ],
+            fromBlock: range.fromBlock,
+            toBlock: range.toBlock
           };
-        }));
-        return proposalDetails;
-      });
-    
-      const proposalsInChunks = await Promise.all(proposalDetailsPromises);
-    
-      proposals = proposalsInChunks.flat();
-      setProposalDetails(proposals);
-      console.log(proposals);
+          return provider.getLogs(filter);
+        });
+      
+        const logsResults = await Promise.all(logsPromises);
+      
+        const logs = logsResults.flat();
+      
+        const parsedLogs = logs.map(log => govEthers.interface.parseLog(log));
+      
+        const proposalDetailsPromises = parsedLogs.map(async log => {
+          const proposalDetails: ProposalDetails[] = await Promise.all(log!.args.calldatas.map(async (calldata: any) => {
+            const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
+            const data = JSON.parse(await getFromEdgeStore(listingData[1]));
+            const state = await govEthers.state(log!.args.proposalId);
+            const voteEnd = log!.args.voteEnd;
+            const votes = await govEthers.proposalVotes(log!.args.proposalId);
+            return {
+              data,
+              voteEnd,
+              proposalState: state,
+              id: log!.args.proposalId.toString(),
+              votes: {
+                forProp: ethers.formatEther(votes[1]),
+                against: ethers.formatEther(votes[0])
+              }
+            };
+          }));
+          return proposalDetails;
+        });
+      
+        const proposalsInChunks = await Promise.all(proposalDetailsPromises);
+      
+        proposals = proposalsInChunks.flat();
+        setProposalDetails(proposals);
+        console.log(proposals);
+      }
     };
     
     const createProposal = async (data: ProposalData) => {
