@@ -30,7 +30,7 @@ const Home: NextPage = () => {
               </div>
               <div>
                 <span className="text-green-500">Passed {proposalDetails.filter(prop => prop.proposalState == ProposalState.Succeeded).length}</span>
-                <span className="text-red-500 ml-4">Failed {proposalDetails.filter(prop => prop.proposalState in [ProposalState.Defeated, ProposalState.Expired]).length}</span>
+                <span className="text-red-500 ml-4">Failed {proposalDetails.filter(prop => prop.proposalState == ProposalState.Defeated || prop.proposalState == ProposalState.Expired).length}</span>
               </div>
             </div>
           </div>
