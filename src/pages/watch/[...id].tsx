@@ -10,7 +10,7 @@ const WatchPage: React.FC = () => {
 
     const playerRef = useRef<HTMLVideoElement>(null);
     const [movie, setMovie] = useState<ProposalDetails | undefined>(undefined);
-    const { proposalDetails, fetchProposals, setLoader, castVote } = useThetreContext();
+    const { proposalDetails, fetchProposals, setLoader, getVideo } = useThetreContext();
 
     const onPlay = () => {
         playerRef.current?.play();
@@ -30,15 +30,22 @@ const WatchPage: React.FC = () => {
     useEffect(() => {
         if (router.isReady && (router.query.id)![0]) {
             if (proposalDetails.length > 0) {
-                proposalDetails.find((proposal) => {
-                    return proposal.id === (router.query.id)![0] && setMovie(proposal)
+                proposalDetails.map(async (proposal) => {
+                    if (proposal.id === (router.query.id)![0]) {
+                        const videoId = await getVideo(proposal.data.title as string)
+                        setMovie({...proposal, data: {...proposal.data, movieLink: videoId} })
+                    }
                 })
             } else {
                 (async () => {
                     await setLoader(async () => {
                         await fetchProposals()
-                        setMovie(proposalDetails.filter((proposal) => {
-                            return proposal.id === (router.query.id)![0] && setMovie(proposal)
+                        setMovie(await proposalDetails.map(async (proposal) => {
+                            if (proposal.id === (router.query.id)![0]) {
+                                console.log()
+                                const videoId = await getVideo(proposal.data.title as string)
+                                return {...proposal, data: {...proposal.data, movieLink: videoId} }
+                            }
                         })[0])
                     });
         
