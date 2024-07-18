@@ -2,6 +2,7 @@ import Chat from '@/components/chat';
 import Loader from '@/components/loader';
 import ThetaPlayer from '@/components/thetaPlayer';
 import { ProposalDetails, useThetreContext } from '@/context/thetreContext';
+import { useWalletContext } from '@/context/walletContext';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
@@ -10,7 +11,8 @@ const WatchPage: React.FC = () => {
 
     const playerRef = useRef<HTMLVideoElement>(null);
     const [movie, setMovie] = useState<ProposalDetails | undefined>(undefined);
-    const { proposalDetails, fetchProposals, setLoader, getVideo } = useThetreContext();
+    const { proposalDetails, fetchProposals, setLoader, getVideo, buyTicket } = useThetreContext();
+    const { access } = useWalletContext()
 
     const onPlay = () => {
         playerRef.current?.play();
@@ -62,12 +64,15 @@ const WatchPage: React.FC = () => {
             <div className='w-full lg:h-screen lg:overflow-y-scroll'>
                 <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type='DRM' styles="w-full h-96 lg:h-[70vh]"/>
                 <div className='p-4 flex flex-col gap-2 hidden lg:block'>
-                    <p className='text-white font-bold text-2xl'>{movie.data.title}</p>
-                    <p className="font-bold text-white">{movie.data.description}</p>
+                    <div className='flex flex-row gap-2 items-center'>
+                        <p className='text-white font-bold text-2xl underline decoration-thetre-blue decoration-4'>{movie.data.title}</p>
+
+                        {!access.includes(movie.data.title) && (
+                            <button className='text-white bg-thetre-blue p-2 rounded-lg' onClick={() => buyTicket(movie.data.title)}>Buy Pass for 10TFUEL</button>
+                        )}
+                    </div>
                     <p className="font-bold text-white">Genre: {movie.data.genre}</p>
-                    <p className="font-bold text-white">Cast: {movie.data.cast}</p>
-                    <p className="font-bold text-white">Directed By: {movie.data.director}</p>
-                    <p className="font-bold text-white">Produced By: {movie.data.producer}</p>
+                    <p className="font-bold text-white">Starring: {movie.data.cast}</p>
 
                 </div>
             </div>
