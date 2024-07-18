@@ -21,8 +21,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     platforms: '',
     movieLink: '',
     trailerLink: '',
-    coverLink: ''
+    coverLink: '',
+    isDRMEnabled: true,
+    screeningType: 'Recorded'
   });
+  const [isDRMEnabled, setIsDRMEnabled] = useState(true);
+  const [screeningType, setScreeningType] = useState<'Recorded' | 'Live Screening'>('Recorded');
 
   const [step, setStep] = useState(1);
 
@@ -34,7 +38,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(form);
-    await createProposal(form)
+    await createProposal({...form, isDRMEnabled, screeningType});
   };
 
   const handleNext = () => {
@@ -106,6 +110,47 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     <label htmlFor="movieLink" className="cursor-pointer text-blue-400">
                       {form.movieLink instanceof File ? form.movieLink.name : 'Choose a file to upload'}
                     </label>
+                  </div>
+                  <div className="flex items-center justify-between space-x-4 p-4">
+                    <div className="flex items-center">
+                      <input 
+                        id="enable-drm" 
+                        type="checkbox" 
+                        className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" 
+                        checked={isDRMEnabled}
+                        onChange={() => setIsDRMEnabled(!isDRMEnabled)}
+                      />
+                      <label htmlFor="enable-drm" className="text-white">Enable DRM</label>
+                    </div>
+                    <div className='flex items-center space-x-2'>
+
+
+                    <div className="flex items-center space-x-1">
+                      <input 
+                        id="live-screening" 
+                        type="radio" 
+                        name="screeningType" 
+                        value="Live Screening" 
+                        className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" 
+                        checked={screeningType === 'Live Screening'}
+                        onChange={(e) => setScreeningType("Live Screening")}
+                      />
+                      <label htmlFor="live-screening" className="text-white">Live Screening</label>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <input 
+                        id="recorded" 
+                        type="radio" 
+                        name="screeningType" 
+                        value="Recorded" 
+                        className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" 
+                        checked={screeningType === 'Recorded'}
+                        onChange={(e) => setScreeningType("Recorded")}
+                      />
+                      <label htmlFor="recorded" className="text-white">Recorded</label>
+                    </div>
+                    </div>
+
                   </div>
                 </div>
               )}

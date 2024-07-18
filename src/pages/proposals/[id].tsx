@@ -41,7 +41,13 @@ const Proposal: React.FC = () => {
                 gridTemplateRows: "minmax(1em, auto) 1fr auto minmax(1em, auto)"
             }}>
                 <div className='w-full h-full col-start-0 col-span-5'>
-                    <ThetaPlayer playerRef={playerRef} videoId={proposal.data.movieLink as string} type="DRM" styles="w-full h-96" />
+                    {proposal.data.isDRMEnabled ? (
+                        <ThetaPlayer playerRef={playerRef} videoId={proposal.data.movieLink as string} type="DRM" styles="w-full h-96" />
+                    ) : (
+                        <video controls className='w-full h-96 bg-black'>
+                            <source src={getFileURL(JSON.parse(proposal.data.movieLink as string).result.key, JSON.parse(proposal.data.movieLink as string).result.relpath)} />
+                        </video>
+                    )}
                 </div>
                 <div className='col-start-6 col-span-3 flex flex-col gap-8 justify-center'>
                     <div className='flex flex-col gap-2'>

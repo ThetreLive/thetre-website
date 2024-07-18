@@ -3,6 +3,7 @@ import Loader from '@/components/loader';
 import ThetaPlayer from '@/components/thetaPlayer';
 import { ProposalDetails, useThetreContext } from '@/context/thetreContext';
 import { useWalletContext } from '@/context/walletContext';
+import { getFileURL } from '@/utils/theta';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
@@ -34,8 +35,10 @@ const WatchPage: React.FC = () => {
             if (proposalDetails.length > 0) {
                 proposalDetails.map(async (proposal) => {
                     if (proposal.id === (router.query.id)![0]) {
-                        const videoId = await getVideo(proposal.data.title as string)
-                        setMovie({...proposal, data: {...proposal.data, movieLink: videoId} })
+                        if (proposal.data.isDRMEnabled) {
+                            const videoId = await getVideo(proposal.data.title as string)
+                            setMovie({...proposal, data: {...proposal.data, movieLink: videoId} })
+                        } else setMovie(proposal)
                     }
                 })
             } else {
@@ -44,9 +47,10 @@ const WatchPage: React.FC = () => {
                         await fetchProposals()
                         setMovie(await proposalDetails.map(async (proposal) => {
                             if (proposal.id === (router.query.id)![0]) {
-                                console.log()
-                                const videoId = await getVideo(proposal.data.title as string)
-                                return {...proposal, data: {...proposal.data, movieLink: videoId} }
+                                if (proposal.data.isDRMEnabled) {
+                                    const videoId = await getVideo(proposal.data.title as string)
+                                    return {...proposal, data: {...proposal.data, movieLink: videoId} }
+                                } else return proposal
                             }
                         })[0])
                     });
@@ -62,7 +66,13 @@ const WatchPage: React.FC = () => {
     return (
         <div className='h-screen flex lg:flex-row flex-col'>
             <div className='w-full lg:h-screen lg:overflow-y-scroll'>
-                <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type='DRM' styles="w-full h-96 lg:h-[70vh]"/>
+                {movie.data.isDRMEnabled ? (
+                    <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type='DRM' styles="w-full h-96 lg:h-[70vh]"/>
+                ) : (
+                    <video controls className='w-full h-96 lg:h-[70vh] bg-black'>
+                        <source src={getFileURL(JSON.parse(movie.data.movieLink as string).result.key, JSON.parse(movie.data.movieLink as string).result.relpath)} />
+                    </video>
+                )}
                 <div className='p-4 flex flex-col gap-2 hidden lg:block'>
                     <div className='flex flex-row gap-2 items-center'>
                         <p className='text-white font-bold text-2xl underline decoration-thetre-blue decoration-4'>{movie.data.title}</p>

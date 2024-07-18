@@ -17,6 +17,8 @@ export interface ProposalData {
     movieLink: string | File;
     trailerLink: string | File;
     coverLink: string | File;
+    isDRMEnabled: boolean,
+    screeningType: "Recorded" | "Live Screening"
 }
 
 export enum ProposalState {
@@ -127,12 +129,23 @@ const ThetreContextProvider = (props: Props) => {
         const proposalDetailsPromises = parsedLogs.map(async log => {
           const proposalDetails: ProposalDetails[] = await Promise.all(log!.args.calldatas.map(async (calldata: any) => {
             const listingData = thetreEthers.interface.decodeFunctionData("listMovie", calldata);
+            console.log(listingData[1])
             const data = JSON.parse(await getFromEdgeStore(listingData[1]));
+            let isDRMEnabled = true
+            let screeningType = "Recorded"
+            if (data.isDRMEnabled !== undefined) {
+              isDRMEnabled = data.isDRMEnabled
+              screeningType = data.screeningType
+            }
             const state = await govEthers.state(log!.args.proposalId);
             const voteEnd = log!.args.voteEnd;
             const votes = await govEthers.proposalVotes(log!.args.proposalId);
             return {
-              data,
+              data: {
+                ...data,
+                isDRMEnabled,
+                screeningType
+              },
               voteEnd,
               proposalState: state,
               id: log!.args.proposalId.toString(),
@@ -166,18 +179,22 @@ const ThetreContextProvider = (props: Props) => {
         const movieRes = await uploadFileToEdgeStore(data.movieLink as File)
         const trailerRes = await uploadFileToEdgeStore(data.trailerLink as File)
         const coverRes = await uploadFileToEdgeStore(data.coverLink as File)
-        
-        const upload = await uploadVideo(getFileURL(movieRes.result.key, movieRes.result.relpath), contracts.GOVERNANCE_PASS, data.title, getFileURL(coverRes.result.key, coverRes.result.relpath))
+        let movieLink;
+        if (data.isDRMEnabled) {
+          const upload = await uploadVideo(getFileURL(movieRes.result.key, movieRes.result.relpath), contracts.GOVERNANCE_PASS, data.title, getFileURL(coverRes.result.key, coverRes.result.relpath))
+          movieLink = upload.body.videos[0].id
+        } else {
+          movieLink = JSON.stringify(movieRes)
+        }
         try {
             const result = await uploadToEdgeStore({
               ...data,
               trailerLink: JSON.stringify(trailerRes),
               coverLink: JSON.stringify(coverRes),
-              movieLink: upload.body.videos[0].id,
+              movieLink
             });
 
             console.log(result)
-            // const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", ["movie", getFileURL("0x122d07b601c05953fe8229d17e5b5c0a66fbec3b9da839aea24afc18d86a6219", null)])
             const listingCalldata = thetreEthers.interface.encodeFunctionData("listMovie", [data.title, result.result.key])
             console.log([contracts.THETRE], [0], [listingCalldata], "List Movie: " + data.title)
             const govCalldata = govEthers.interface.encodeFunctionData("propose", [[contracts.THETRE], [0], [listingCalldata], "List Movie: " + data.title]);
