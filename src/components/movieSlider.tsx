@@ -1,6 +1,7 @@
 import { ProposalDetails } from '@/context/thetreContext';
 import { getFileURL } from '@/utils/theta';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import Slider from 'react-slick';
 
@@ -59,7 +60,12 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                 {/* <p className="text-sm mb-8">Rating: {movie.rating}</p> */}
                 <p className="mb-8 lg:text-base text-sm">{movie.data.description}</p>
                 <div className="flex space-x-4">
-                  <button className="bg-custom-radial px-6 py-3 font-bold rounded-full">{props.access.includes(movie.data.title) ? "Watch now" : "Buy Pass for 10TFUEL"}</button>
+                  {props.access.includes(movie.data.title) ? (
+                    <Link href={`/watch/${movie.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-full">Watch Now</Link>
+                  ) : (
+                    <button className="bg-custom-radial px-6 py-3 font-bold rounded-full">Buy Pass for 10TFUEL</button>   
+                    )}
+                  
                   <button className="bg-gray-700 px-4 py-2 rounded-full">Trailer</button>
                   <button className="bg-gray-700 px-4 py-2 rounded-full">More</button>
                 </div>
