@@ -61,7 +61,7 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                 {/* <p className="text-sm mb-8">Rating: {movie.rating}</p> */}
                 <p className="mb-8 lg:text-base text-sm">{movie.data.description}</p>
                 <div className="flex space-x-4">
-                  {props.access.includes(movie.data.title) ? (
+                  {props.access.includes(movie.data.title) || !movie.data.isDRMEnabled ? (
                     <Link href={`/watch/${movie.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-full">Watch Now</Link>
                   ) : (
                     <button onClick={() => buyTicket(movie.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-full">Buy Pass for 10TFUEL</button>   
