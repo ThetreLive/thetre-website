@@ -45,30 +45,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     if (step > 1) setStep(step - 1);
   };
 
-  const jsonToLink = (jsonData: string) => {
-    return getFileURL(JSON.parse(jsonData).result.key, JSON.parse(jsonData).result.relpath)
-  }
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     setForm({ ...form, [name]: files ? files[0] : "" });
   };
-  const copyCommand = (type: "MOVIE" | "TRAILER" | "COVER") => {
-    let command = '';
-    switch (type) {
-      case "MOVIE":
-        command = `curl -X POST -H 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"edgestore.PutFile","params":[{"path": "<PATH-TO-MOVIE>"}],"id":1}' https://p2p.thetre.live/rpc`;
-        break;
-      case "TRAILER":
-        command = `curl -X POST -H 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"edgestore.PutFile","params":[{"path": "<PATH-TO-TRAILER>"}],"id":1}' https://p2p.thetre.live/rpc`;
-        break;
-      case "COVER":
-        command = `curl -X POST -H 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"edgestore.PutFile","params":[{"path": "<PATH-TO-COVER>"}],"id":1}' https://p2p.thetre.live/rpc`;
-        break;
-      default:
-        break;
-    }
-    navigator.clipboard.writeText(command);
-  }
 
   if (!isOpen) return null;
 
