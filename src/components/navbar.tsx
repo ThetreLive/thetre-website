@@ -45,20 +45,6 @@ export default function Navbar() {
       }`}
     >
       <div className="w-full flex items-center justify-between">
-        <div className="flex items-center">
-          <div className="text-white text-2xl font-bold">
-            <Link href="/">
-              <Image
-                src="/thetre-logo.png"
-                alt="Thetre Logo"
-                width={200}
-                height={16}
-                className="h-12"
-                loading='eager'
-              />
-            </Link>
-          </div>
-        </div>
         <div className="hidden md:flex space-x-12 p-4 rounded-xl">
           <Link href="/" className={`text-white font-bold ${asPath === '/' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Browse

@@ -1,4 +1,6 @@
 import { GENRES } from '@/utils/constants';
+import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 const Sidebar: React.FC = () => {
@@ -23,9 +25,20 @@ const Sidebar: React.FC = () => {
   );
 
   return (
-    <div>
-        <div className='overflow-y-scroll w-96 max-height-[800px]'>
-            <div className="hidden lg:block p-4 backdrop-blur-xl bg-black/40">
+      <div className='overflow-y-scroll w-96 h-screen border-r border-gray-500/40'>
+        <div className="flex items-center w-full justify-center py-2">
+            <Link href="/">
+              <Image
+                src="/thetre-logo.png"
+                alt="Thetre Logo"
+                width={200}
+                height={16}
+                className="h-12"
+                loading='eager'
+              />
+            </Link>
+        </div>
+            <div className="hidden lg:block p-4">
                 <div className="mb-4">
                 <input
                     type="text"
@@ -52,50 +65,6 @@ const Sidebar: React.FC = () => {
                 </div>
             </div>
       </div>
-
-      <div className="lg:hidden p-4">
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded w-full"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? 'Close Genres' : 'Open Genres'}
-        </button>
-        <div
-          className={`${
-            isOpen ? 'max-h-screen' : 'max-h-0'
-          } overflow-hidden transition-all duration-300 ease-in-out`}
-        >
-          {isOpen && (
-            <div className="mt-4 bg-gray-100 p-4 rounded shadow-lg">
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Search genres"
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                {filteredGenres.map((genre) => (
-                  <div key={genre} className="mb-2">
-                    <label className="inline-flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedGenres.includes(genre)}
-                        onChange={() => handleCheckboxChange(genre)}
-                        className="form-checkbox"
-                      />
-                      <span className="ml-2">{genre}</span>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
   );
 };
 

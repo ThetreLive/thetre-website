@@ -3,7 +3,6 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 
 import { TurnkeyProvider } from "@turnkey/sdk-react";
-import Navbar from '@/components/navbar';
 import TurnkeyContextProvider from '@/context/turnkeyContext';
 import nexaHeavy from '@/utils/font';
 import ThetreContextProvider from '@/context/thetreContext';
@@ -31,7 +30,6 @@ function Thetre({ Component, pageProps }: AppProps) {
                 <link rel="manifest" href="/site.webmanifest"/>
                 <title>Thetre | A Decentralized Movie Experience</title>
               </Head>
-              <Navbar/>
               <Component {...pageProps} />
             </ThetreContextProvider>
           </TurnkeyContextProvider>

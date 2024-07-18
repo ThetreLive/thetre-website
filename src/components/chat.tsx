@@ -189,12 +189,12 @@ const Chat: React.FC<Props> = (props: Props) => {
         }
     }, [props.room, defaultMa])
     return (
-        <div className='flex flex-col justify-between w-full lg:w-[550px] lg:h-screen h-[500px] px-2'>
+        <div className='flex flex-col justify-between w-full lg:w-[550px] lg:border lg:border-gray-500/40 h-[600px] rounded-xl p-4'>
             <div className='p-2'>
                 {roomId ? (
-                    <button className='bg-black text-white w-full py-2 bg-thetre-blue rounded-xl' onClick={copyCommand}>Copy Invite Link</button>
+                    <button className='bg-black text-white w-full py-2 bg-thetre-blue rounded-full' onClick={copyCommand}>Copy Invite Link</button>
                 ) : (
-                    <button className='bg-black text-white w-full py-2 bg-thetre-blue rounded-xl' onClick={host}>New Room</button>
+                    <button className='bg-black text-white w-full py-2 bg-thetre-blue rounded-full' onClick={host}>New Room</button>
                 )}
             </div>
             <div className='overflow-y-scroll' ref={msgRef}>
@@ -215,7 +215,7 @@ const Chat: React.FC<Props> = (props: Props) => {
                 
             </div>
             <div className="relative w-full">
-                <input type="text" placeholder="Send Message" className="w-full p-4 pr-12 rounded-full bg-gray-600 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" value={currMessage} onChange={e => setCurr(e.target.value)}/>
+                <input type="text" placeholder="Send Message" className="w-full p-2 pr-12 rounded-full bg-gray-600 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" value={currMessage} onChange={e => setCurr(e.target.value)}/>
                 <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none" onClick={async() => await sendMessage("text", currMessage)}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />

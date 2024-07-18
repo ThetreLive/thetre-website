@@ -49,10 +49,7 @@
 }
 
 body {
-    background-image: url("/background.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    backdrop-filter:blur(100px);
+    background-color: #01132b;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
