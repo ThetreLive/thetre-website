@@ -20,7 +20,6 @@ const WatchPage: React.FC = () => {
     }
 
     const onSeek = (time: number) => {
-        playerRef.current?.play();
         if (playerRef.current) {
             playerRef.current.currentTime = time;
         }

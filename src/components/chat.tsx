@@ -37,7 +37,7 @@ const Chat: React.FC<Props> = (props: Props) => {
     const [currMessage, setCurr] = useState<string>("")
     const [defaultMa, setDefaultMa] = useState<Multiaddr | undefined>(undefined)
     const router = useRouter()
-
+    const [fireEvent, setFireEvent] = useState(true)
 
   useEffect(() => {
         if (libp2p) {
@@ -48,12 +48,14 @@ const Chat: React.FC<Props> = (props: Props) => {
             };
     
             const handlePause = async () => {
-                await sendMessage("pause", "")
-                
+                await sendMessage("pause", "")                
             };
     
             const handleSeeked = async() => {
-                await sendMessage("seek", (videoElement!.currentTime).toString());
+                if (fireEvent) {
+                    await sendMessage("seek", (videoElement!.currentTime).toString());
+                }
+                setFireEvent(true)
               };
     
             if (videoElement) {
@@ -138,6 +140,7 @@ const Chat: React.FC<Props> = (props: Props) => {
             } else if (data.type === "pause") {
                 props.onPause()
             } else if (data.type === "seek") {
+                setFireEvent(false)
                 props.onSeek(parseFloat(data.message))
             } else {
                 setMessages((prev) => [...prev, {from: decodedString, data}])
