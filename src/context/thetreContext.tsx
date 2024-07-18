@@ -51,7 +51,8 @@ type StoreState = {
     castVote: (proposalId: string, support: 0 | 1) => Promise<void>,
     createProposal: (data: ProposalData) => Promise<void>,
     fetchProposals: () => Promise<void>,
-    getVideo: (movieName: string) => Promise<string>
+    getVideo: (movieName: string) => Promise<string>,
+    buyTicket: (movieName: string) => Promise<void>
 };
   
 const ThetreContext = createContext<StoreState>({
@@ -62,7 +63,8 @@ const ThetreContext = createContext<StoreState>({
     castVote: async() => {},
     createProposal: async() => {},
     fetchProposals: async() => {},
-    getVideo: async() => ""
+    getVideo: async() => "",
+    buyTicket: async() => {}
 });
   
 export const useThetreContext = () => useContext(ThetreContext);
@@ -75,7 +77,7 @@ const ThetreContextProvider = (props: Props) => {
     const [loading, setLoading] = useState(false)
     const [movies, setMovies] = useState([])
     const [proposalDetails, setProposalDetails] = useState<ProposalDetails[]>([])
-    const {signer} = useWalletContext()
+    const {signer, access, setAccess} = useWalletContext()
 
     const setLoader = async (fn: any) => {
       setLoading(true);
@@ -229,8 +231,36 @@ const ThetreContextProvider = (props: Props) => {
       const ticket = await thetreEthers.movieVideos(movieName)
       return ticket
     }
+
+    const buyTicket = async (movieName: string) => {
+      if (!signer) {
+        alert("Please connect wallet/sign in first")
+        return
+      }
+      const thetreEthers = new ethers.Contract(contracts.THETRE, thetreABI, signer)
+      try {
+        // buy ticket
+        const thetreCalldata = thetreEthers.interface.encodeFunctionData("buyTicket", [movieName]);
+
+        const txResponse =  await signer?.sendTransaction({
+          from: signer.getAddress(),
+          to: contracts.THETRE,
+          data: thetreCalldata,
+          value: ethers.parseEther("10")
+        })
+        console.log('Transaction response:', txResponse);
+
+        // Wait for the transaction to be mined
+        const receipt = await txResponse?.wait();
+        console.log('Receipt - ', receipt);
+        setAccess([...access, movieName])
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
     return (
-        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals, loading, setLoader, castVote, getVideo }}>
+        <ThetreContext.Provider value={{ movies, createProposal, proposalDetails, fetchProposals, loading, setLoader, castVote, getVideo, buyTicket }}>
             {props.children}
         </ThetreContext.Provider>
     )

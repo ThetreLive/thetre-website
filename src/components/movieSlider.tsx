@@ -1,4 +1,4 @@
-import { ProposalDetails } from '@/context/thetreContext';
+import { ProposalDetails, useThetreContext } from '@/context/thetreContext';
 import { getFileURL } from '@/utils/theta';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,6 +6,7 @@ import React from 'react';
 import Slider from 'react-slick';
 
 const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string[] }) => {  
+  const { buyTicket } = useThetreContext();
   const settings = {
     dots: true,
     infinite: true,
@@ -63,7 +64,7 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                   {props.access.includes(movie.data.title) ? (
                     <Link href={`/watch/${movie.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-full">Watch Now</Link>
                   ) : (
-                    <button className="bg-custom-radial px-6 py-3 font-bold rounded-full">Buy Pass for 10TFUEL</button>   
+                    <button onClick={() => buyTicket(movie.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-full">Buy Pass for 10TFUEL</button>   
                     )}
                   
                   <button className="bg-gray-700 px-4 py-2 rounded-full">Trailer</button>
