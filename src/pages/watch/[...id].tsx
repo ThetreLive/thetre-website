@@ -68,7 +68,7 @@ const WatchPage: React.FC = () => {
                 {movie.data.isDRMEnabled ? (
                 <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type="DRM" styles="w-full h-96 lg:h-[70vh]" />
                 ) : (
-                <video controls className="w-full h-96 lg:h-[70vh] bg-black">
+                <video controls className="w-full h-96 lg:h-[70vh] bg-black" ref={playerRef}>
                     <source src={getFileURL(JSON.parse(movie.data.movieLink as string).result.key, JSON.parse(movie.data.movieLink as string).result.relpath)} />
                 </video>
                 )}
