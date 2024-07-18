@@ -39,6 +39,7 @@ export interface ProposalDetails {
     forProp: number;
     against: number;
   };
+  proposer: string;
 }
 const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
 
@@ -136,7 +137,8 @@ const ThetreContextProvider = (props: Props) => {
               votes: {
                 forProp: ethers.formatEther(votes[1]),
                 against: ethers.formatEther(votes[0])
-              }
+              },
+              proposer: log!.args.proposer
             };
           }));
           return proposalDetails;
