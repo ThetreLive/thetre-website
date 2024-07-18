@@ -57,16 +57,19 @@ const Proposal: React.FC = () => {
                         <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Cast</span>{" "}{proposal.data.cast}</p>
                         <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Directed By:</span>{" "}{proposal.data.director}</p>
                         <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Produced By:</span>{" "}{proposal.data.producer}</p>
-                        <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Available On(if any):</span>{" "}{proposal.data.platforms}</p>
+                        <div className='flex flex-row items-center justify-between'>
+                            <p className="font-bold text-white"><span className='underline decoration-thetre-blue decoration-2'>Available On(if any):</span>{" "}{proposal.data.platforms}</p>
+                            <div className="flex space-x-4">
+                                <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700" onClick={async () => await castVote(router.query.id as string, 1)}>
+                                    Approve
+                                </button>
+                                <button className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700" onClick={async () => await castVote(router.query.id as string, 0)}>
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex space-x-4">
-                        <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700" onClick={async () => await castVote(router.query.id as string, 1)}>
-                            Approve
-                        </button>
-                        <button className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700" onClick={async () => await castVote(router.query.id as string, 0)}>
-                            Reject
-                        </button>
-                    </div>
+                    
                 </div>
                 <div className='col-start-0 col-span-4 row-start-3 h-full'>
                     <h2 className="text-xl font-bold text-white underline decoration-thetre-blue decoration-4">Trailer</h2>

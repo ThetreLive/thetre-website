@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className="flex gap-2">
       <Sidebar/>
-      <div className="h-screen overflow-y-scroll">
+      <div className="h-screen w-full overflow-y-scroll">
       <Navbar />
       <main className="h-[50vh]" id="slider">
         <MovieSlider access={access} proposalDetails={proposalDetails.filter(proposal => [ProposalState.Succeeded, ProposalState.Executed, ProposalState.Queued].includes(Number(proposal.proposalState)))}/>
