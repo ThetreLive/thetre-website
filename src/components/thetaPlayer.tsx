@@ -39,7 +39,7 @@ interface Props {
 }
 
 const ThetaPlayer: React.FC<Props> = (props: Props) => {
-    const {signer} = useWalletContext()
+    const {signer, access} = useWalletContext()
     const renderVideo = () => {
         if (signer && props.type === "DRM") {
             const timestamp = Date.now();
@@ -91,7 +91,7 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
     }
     useEffect(() => {
         renderVideo()
-    }, [signer])
+    }, [signer, access])
     return (
         <div className="w-full">
             <video ref={props.playerRef} controls className={props.styles}/>
