@@ -124,7 +124,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div className='flex items-center space-x-2'>
 
-
+                    {isDRMEnabled && (
+                      <>
                     <div className="flex items-center space-x-1">
                       <input 
                         id="live-screening" 
@@ -149,6 +150,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                       />
                       <label htmlFor="recorded" className="text-white">Recorded</label>
                     </div>
+                      </>
+                    )}
                     </div>
 
                   </div>
