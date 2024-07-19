@@ -45,7 +45,7 @@ const Sidebar: React.FC = () => {
                     placeholder="Search genres"
                     value={searchTerm}
                     onChange={handleSearch}
-                    className="w-full p-2 border-b-2 rounded bg-transparent"
+                    className="w-full p-2 border-b-2 rounded bg-transparent text-white"
                 />
                 </div>
                 <div>

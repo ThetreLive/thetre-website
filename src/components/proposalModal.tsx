@@ -38,7 +38,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(form);
-    await createProposal({...form, isDRMEnabled, screeningType});
+    await createProposal({...form, isDRMEnabled, screeningType: isDRMEnabled ? screeningType : "Recorded"});
   };
 
   const handleNext = () => {
@@ -122,10 +122,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                       />
                       <label htmlFor="enable-drm" className="text-white">Enable DRM</label>
                     </div>
-                    <div className='flex items-center space-x-2'>
 
                     {isDRMEnabled && (
-                      <>
+                    <div className='flex items-center space-x-2'>
                     <div className="flex items-center space-x-1">
                       <input 
                         id="live-screening" 
@@ -150,6 +149,20 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                       />
                       <label htmlFor="recorded" className="text-white">Recorded</label>
                     </div>
+                    </div>
+                    )}
+
+                  </div>
+                  <div className="flex items-center justify-between space-x-4 p-4">
+                    <div className="text-white">
+                      Disable DRM for uploading a free movie
+                    </div>
+                    <div className='flex flex-col w-1/2'>
+
+                      {isDRMEnabled && (
+                        <>
+                          <p>Live Screening - You'll be required to do a livestream of movie on regular intervals(cost and storage efficient)</p>
+                          <p>Recorded - You can just upload the movie once(more convenient)</p>
                       </>
                     )}
                     </div>
