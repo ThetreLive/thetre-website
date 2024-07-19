@@ -24,12 +24,21 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     alert('Wallet address copied to clipboard!');
   };
 
+  const clearState = () => {
+    setTransferAmount("")
+    setRecipientAddress('')
+    setNftCollectionAddress('')
+    setNftTokenId('')
+  }
+
   const handleTransferTFUEL = async () => {
     await transferTFUEL(recipientAddress, transferAmount);
+    clearState()
   };
 
   const handleTransferNFT = async () => {
     await transferNFT(nftCollectionAddress, nftTokenId, recipientAddress);
+    clearState()
   };
 
   const handleWatch = (id: string) => {
