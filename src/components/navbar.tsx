@@ -55,8 +55,8 @@ export default function Navbar() {
           <Link href="/movies" className={`text-white font-bold ${asPath === '/movies' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Movies
           </Link>
-          <Link href="/shows" className={`text-white font-bold ${asPath === '/shows' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
-            Shows
+          <Link href="/proposals" className={`text-white font-bold ${asPath === '/shows' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
+            Proposals
           </Link>
         </div>
         {signer ? (
