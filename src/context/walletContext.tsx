@@ -11,6 +11,8 @@ type StoreState = {
     disconnectWallet: () => void;
     access: string[];
     setAccess: (list: string[]) => void;
+    transferTFUEL: (recipient: string, amount: string) => Promise<void>;
+    transferNFT: (nftCollectionAddress: string, tokenId: string, recipient: string) => Promise<void>;
 };
   
 const WalletContext = createContext<StoreState>({
@@ -19,7 +21,9 @@ const WalletContext = createContext<StoreState>({
     connectWallet: async () => {},
     disconnectWallet: () => {},
     access: [],
-    setAccess: () => {}
+    setAccess: () => {},
+    transferTFUEL: async () => {},
+    transferNFT: async () => {}
 });
   
 export const useWalletContext = () => useContext(WalletContext);
@@ -156,9 +160,41 @@ const WalletContextProvider = (props: Props) => {
           console.error("Failed to add network:", error);
         }
       };
-      
+      const transferTFUEL = async (recipient: string, amount: string) => {
+        if (!signer) {
+          console.error("No signer available");
+          return;
+        }
+        try {
+          const tx = await signer.sendTransaction({
+            to: recipient,
+            value: ethers.parseEther(amount),
+          });
+          await tx.wait();
+          console.log(`Transferred ${amount} ETH to ${recipient}`);
+        } catch (error) {
+          console.error("ETH transfer failed:", error);
+        }
+      };
+      const transferNFT = async (nftCollectionAddress: string, tokenId: string, recipient: string) => {
+        if (!signer) {
+          console.error("No signer available");
+          return;
+        }
+        try {
+          const nftContract = new ethers.Contract(nftCollectionAddress, [
+            "function transfer(address from, address to, uint256 tokenId) external",
+          ], signer);
+          const tx = await nftContract.transfer(await signer.getAddress(), recipient, tokenId);
+          await tx.wait();
+          console.log(`Transferred NFT (Collection: ${nftCollectionAddress}, Token ID: ${tokenId}) to ${recipient}`);
+        } catch (error) {
+          console.error("NFT transfer failed:", error);
+        }
+      };
+            
     return (
-        <WalletContext.Provider value={{ signer, setSigner, connectWallet, disconnectWallet, access, setAccess }}>
+        <WalletContext.Provider value={{ signer, setSigner, connectWallet, disconnectWallet, access, setAccess, transferTFUEL, transferNFT }}>
             {props.children}
         </WalletContext.Provider>
     )

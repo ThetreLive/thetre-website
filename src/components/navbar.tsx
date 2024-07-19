@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTurnkeyContext } from '@/context/turnkeyContext';
 import { useWalletContext } from '@/context/walletContext';
+import AccountPage from './account';
 
 export default function Navbar() {
   const asPath = usePathname()
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
+  const [isWalletOpen, setWalletOpen] = useState(false);
 
   const handleScroll = () => {
     if (typeof window !== 'undefined') {
@@ -39,6 +41,7 @@ export default function Navbar() {
   }, []);
 
   return (
+    <>
     <nav
       className={`px-8 py-2 w-full transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
@@ -57,11 +60,9 @@ export default function Navbar() {
           </Link>
         </div>
         {signer ? (
-          <div className='hidden md:flex rounded-full bg-custom-radial px-6 py-2'>
-            <Link href="/account" className="text-white">
-              Account
-            </Link>
-          </div>
+          <button className='hidden md:flex rounded-full text-white bg-custom-radial px-6 py-2' onClick={() => setWalletOpen(true)}>
+            Account
+          </button>
         ): (
           <div className='hidden md:flex space-x-4 items-center'>
             <div className='hidden md:flex rounded-full bg-custom-radial px-6 py-2'>
@@ -121,5 +122,7 @@ export default function Navbar() {
         )}
       </div>
     </nav>
+    <AccountPage isOpen={isWalletOpen} onClose={() => setWalletOpen(false)} />
+    </>
   );
 }
