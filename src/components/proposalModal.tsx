@@ -51,10 +51,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(form);
-    await createProposal({...form, isDRMEnabled, screeningType: isDRMEnabled ? screeningType : "Recorded", livestreamData: {
+    const livestreamData = screeningType === 'Live Screening' ? ({
       selectedDates,
       screeningTimes
-    }});
+    }) : undefined
+    await createProposal({...form, isDRMEnabled, screeningType: isDRMEnabled ? screeningType : "Recorded", livestreamData });
   };
 
   const handleNext = () => {
