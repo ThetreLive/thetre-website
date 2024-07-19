@@ -3,6 +3,8 @@ import { GENRES } from '@/utils/constants';
 import { getFileURL } from '@/utils/theta';
 import Image from 'next/image';
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -23,30 +25,22 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     trailerLink: '',
     coverLink: '',
     isDRMEnabled: true,
-    screeningType: 'Recorded'
+    screeningType: 'Recorded',
+    livestreamData: undefined
   });
+
   const [isDRMEnabled, setIsDRMEnabled] = useState(true);
   const [screeningType, setScreeningType] = useState<'Recorded' | 'Live Screening'>('Recorded');
-
   const [step, setStep] = useState(1);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([
+    new Date(),
+    new Date(new Date().setDate(new Date().getDate() + 7))
+  ]);  
+  const [screeningTimes, setScreeningTimes] = useState<string[]>(["09:00", "04:00", "21:00"]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(form);
-    await createProposal({...form, isDRMEnabled, screeningType: isDRMEnabled ? screeningType : "Recorded"});
-  };
-
-  const handleNext = () => {
-    if (step < 4) setStep(step + 1);
-  };
-
-  const handlePrev = () => {
-    if (step > 1) setStep(step - 1);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +48,23 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     setForm({ ...form, [name]: files ? files[0] : "" });
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(form);
+    await createProposal({...form, isDRMEnabled, screeningType: isDRMEnabled ? screeningType : "Recorded", livestreamData: {
+      selectedDates,
+      screeningTimes
+    }});
+  };
+
+  const handleNext = () => {
+    if (step < 5) setStep(step + 1);
+  };
+
+  const handlePrev = () => {
+    if (step > 1) setStep(step - 1);
+  };
+  console.log(screeningTimes)
   if (!isOpen) return null;
 
   return (
@@ -62,7 +73,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         <div className="backdrop-blur-[100px] p-6" style={{ height: '600px' }}>
           <h2 className="text-2xl mb-4 text-center">Movie Listing Proposal</h2>
           <form onSubmit={handleSubmit} className="h-full flex flex-col justify-between">
-            <div className='h-full flex flex-col justify-center'>
+            <div className='h-full flex flex-col'>
               {step === 1 && (
                 <div>
                   <div className="grid grid-cols-3 gap-4 mb-4">
@@ -101,7 +112,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 </div>
               )}
               {step === 2 && (
-                <div>
+                <div className='flex flex-col justify-center'>
                   <label className="block text-center mb-8">Upload Movie</label>
                   <div 
                     className="flex items-center justify-center border border-dashed border-gray-500 h-36 p-4 text-center rounded bg-transparent text-white"
@@ -111,7 +122,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                       {form.movieLink instanceof File ? form.movieLink.name : 'Choose a file to upload'}
                     </label>
                   </div>
-                  <div className="flex items-center justify-between space-x-4 p-4">
+                  <div className="flex items-center justify-between p-4">
                     <div className="flex items-center">
                       <input 
                         id="enable-drm" 
@@ -153,21 +164,28 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     )}
 
                   </div>
-                  <div className="flex items-center justify-between space-x-4 p-4">
+                  <div className="flex items-center justify-between p-4">
                     <div className="text-white">
                       Disable DRM for uploading a free movie
                     </div>
-                    <div className='flex flex-col w-1/2'>
+                    <div className='flex flex-col w-1/2 gap-2'>
 
                       {isDRMEnabled && (
                         <>
-                          <p>Live Screening - You will be required to do a livestream of movie on regular intervals(cost and storage efficient)</p>
-                          <p>Recorded - You can just upload the movie once(more convenient)</p>
+                          <p className='text-right'>Live Screening - You will be required to do a livestream of movie on regular intervals(cost and storage efficient)</p>
+                          <p className='text-right'>Recorded - You can just upload the movie once(more convenient)</p>
                       </>
                     )}
                     </div>
 
                   </div>
+                  {screeningType === "Live Screening" && (
+                    <div className="flex items-center gap-5 p-4 mx-auto">
+                      <input type="text" placeholder='Enter TVA API KEY' className='p-2 rounded-lg'/>
+                      <input type="text" placeholder='Enter TVA Secret' className='p-2 rounded-lg'/>
+                      <button className='bg-thetre-blue p-2 rounded-lg'>Save to Localstorage(optional)</button>
+                    </div>
+                  )}
                 </div>
               )}
               {step === 3 && (
@@ -196,10 +214,74 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   </div>
                 </div>
               )}
+              {step === 5 && screeningType === 'Live Screening' && (
+                <div>
+                  <label className="block text-center mb-4">Select Stream Dates</label>
+                  <div className="flex justify-center mb-4">
+                    <DatePicker
+                      selected={null}
+                      onChange={(date) => {
+                        console.log(date)
+                        console.log(selectedDates)
+                        if (Array.isArray(date) && date.every(d => d instanceof Date || d === null)) {
+                          const validDates = date.filter(d => d !== null) as Date[];
+                          if (selectedDates[0] !== undefined && selectedDates[1] === undefined) {
+                            if (selectedDates[0] > validDates[0]) {
+                              setSelectedDates([validDates[0], selectedDates[0]]);
+                            } else {
+                              setSelectedDates([selectedDates[0], validDates[0]])
+                            }
+                          } else if ((selectedDates[0] === undefined) || (selectedDates[0] !== undefined && selectedDates[1] !== undefined)) {
+                            setSelectedDates([validDates[0]]);
+                          }
+                        }
+                      }}
+                      
+                      startDate={selectedDates[0]}
+                      endDate={selectedDates[selectedDates.length - 1]}
+                      selectsRange
+                      inline
+                      className="bg-transparent text-white w-full"
+                      highlightDates={selectedDates}
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="flex flex-col items-center">
+                      <label htmlFor="time1" className="block mb-2">Time Slot 1</label>
+                      <input
+                        type="time"
+                        id="time1"
+                        value={screeningTimes[0]}
+                        onChange={(e) => setScreeningTimes([e.target.value, screeningTimes[1], screeningTimes[2]])}
+                        className="p-2 border-b-2 border-gray-500 rounded bg-transparent text-white"
+                      />
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <label htmlFor="time2" className="block mb-2">Time Slot 2</label>
+                      <input
+                        type="time"
+                        id="time2"
+                        value={screeningTimes[1]}
+                        onChange={(e) => setScreeningTimes([screeningTimes[0], e.target.value, screeningTimes[2]])}
+                        className="p-2 border-b-2 border-gray-500 rounded bg-transparent text-white"
+                      />
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <label htmlFor="time3" className="block mb-2">Time Slot 3</label>
+                      <input
+                        type="time"
+                        id="time3"
+                        value={screeningTimes[2]}
+                        onChange={(e) => setScreeningTimes([screeningTimes[0], screeningTimes[1], e.target.value])}
+                        className="p-2 border-b-2 border-gray-500 rounded bg-transparent text-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <div>
-
-              {step === 4 && (
+              {(step === 5 || (step === 4 && screeningType !== "Live Screening")) && (
                 <div className="flex justify-center mt-4">
                   <button type="submit" className="px-4 py-2 rounded text-white w-96 bg-[#4B4BFF] font-bold cursor-pointer">Submit</button>
                 </div>
@@ -209,21 +291,19 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
                   </svg>
-
                 </button>
                 <div className="flex items-center">
-                  {[1, 2, 3, 4].map((s) => (
+                  {[1, 2, 3, 4, 5].map((s) => (
                     <div
                       key={s}
                       className={`w-3 h-3 rounded-full mx-1 ${step === s ? 'bg-thetre-blue' : 'bg-gray-500'}`}
                     ></div>
                   ))}
                 </div>
-                <button type="button" onClick={handleNext} disabled={step === 4} className="px-4 py-2 rounded text-white">
+                <button type="button" onClick={handleNext} disabled={step === 5 || (step === 4 && screeningType !== "Live Screening")} className="px-4 py-2 rounded text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
                   </svg>
-
                 </button>
               </div>
             </div>

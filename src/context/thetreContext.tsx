@@ -18,7 +18,11 @@ export interface ProposalData {
     trailerLink: string | File;
     coverLink: string | File;
     isDRMEnabled: boolean,
-    screeningType: "Recorded" | "Live Screening"
+    screeningType: "Recorded" | "Live Screening",
+    livestreamData: {
+      selectedDates: Date[],
+      screeningTimes: string[]
+    } | undefined
 }
 
 export enum ProposalState {
@@ -133,9 +137,13 @@ const ThetreContextProvider = (props: Props) => {
             const data = JSON.parse(await getFromEdgeStore(listingData[1]));
             let isDRMEnabled = true
             let screeningType = "Recorded"
+            let livestreamData = undefined
             if (data.isDRMEnabled !== undefined) {
               isDRMEnabled = data.isDRMEnabled
               screeningType = data.screeningType
+              if (screeningType === "Live Screening") {
+                livestreamData = data.livestreamData
+              }
             }
             const state = await govEthers.state(log!.args.proposalId);
             const voteEnd = log!.args.voteEnd;
@@ -144,7 +152,8 @@ const ThetreContextProvider = (props: Props) => {
               data: {
                 ...data,
                 isDRMEnabled,
-                screeningType
+                screeningType,
+                livestreamData: JSON.stringify(livestreamData)
               },
               voteEnd,
               proposalState: state,
@@ -189,6 +198,7 @@ const ThetreContextProvider = (props: Props) => {
         try {
             const result = await uploadToEdgeStore({
               ...data,
+              livestreamData: JSON.stringify(data.livestreamData),
               trailerLink: JSON.stringify(trailerRes),
               coverLink: JSON.stringify(coverRes),
               movieLink
