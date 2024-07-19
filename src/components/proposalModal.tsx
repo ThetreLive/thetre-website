@@ -161,7 +161,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
                       {isDRMEnabled && (
                         <>
-                          <p>Live Screening - You'll be required to do a livestream of movie on regular intervals(cost and storage efficient)</p>
+                          <p>Live Screening - You will be required to do a livestream of movie on regular intervals(cost and storage efficient)</p>
                           <p>Recorded - You can just upload the movie once(more convenient)</p>
                       </>
                     )}
