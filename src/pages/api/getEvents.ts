@@ -11,11 +11,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc");
 
     try {
-        const startBlock = 27166848;
+        let startBlock = 27166848;
         const endBlock = await provider.getBlockNumber();
         const blockRange = 5000;
-
         let proposals: ProposalDetails[] = [];
+        const keys = await redis.keys('*');
+        if (keys.length !== 0) {
+          const latestKey = keys.sort().reverse()[0];
+          const latestData = await redis.get(latestKey);
+          proposals = JSON.parse(latestData!);
+          startBlock = Number(latestKey?.split(":")[1])
+        }
+        
         const ranges: { fromBlock: number; toBlock: number }[] = [];
         
         for (let currentBlock = startBlock; currentBlock <= endBlock; currentBlock += blockRange) {
@@ -24,29 +31,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 toBlock: Math.min(currentBlock + blockRange - 1, endBlock),
             });
         }
-
         const govEthers = new ethers.Contract(contracts.LISTING_GOVERNER, governerABI, provider);
         const thetreEthers = new ethers.Contract(contracts.THETRE, thetreABI, provider);
         for (const range of ranges) {
-            const cacheKey = `logs:${range.fromBlock}-${range.toBlock}`;
-            const cachedLogs = await redis.get(cacheKey);
 
             let logs;
-            if (cachedLogs) {
-                logs = JSON.parse(cachedLogs);
-            } else {
-                const filter = {
-                    address: contracts.LISTING_GOVERNER,
-                    topics: [
-                        ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
-                    ],
-                    fromBlock: range.fromBlock,
-                    toBlock: range.toBlock
-                };
-                logs = await provider.getLogs(filter);
-                await redis.set(cacheKey, JSON.stringify(logs)); // Cache logs for 1 hour
-            }
-
+            const filter = {
+                address: contracts.LISTING_GOVERNER,
+                topics: [
+                    ethers.id("ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)")
+                ],
+                fromBlock: range.fromBlock,
+                toBlock: range.toBlock
+            };
+            logs = await provider.getLogs(filter);
+            console.log(logs)
             const parsedLogs = logs.map((log: any) => govEthers.interface.parseLog(log));
             
             const proposalDetailsPromises = parsedLogs.map(async (log: any) => {
@@ -89,6 +88,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const proposalsInChunks = await Promise.all(proposalDetailsPromises);
             proposals = proposals.concat(proposalsInChunks.flat());
         }
+        await redis.flushdb();
+        const cacheKey = `logs:${endBlock}`;
+        await redis.set(cacheKey, JSON.stringify(proposals))
         console.log("done")
         res.status(200).json({ proposals });
     } catch (error) {
