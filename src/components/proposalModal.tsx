@@ -180,13 +180,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     </div>
 
                   </div>
-                  {screeningType === "Live Screening" && (
-                    <div className="flex items-center gap-5 p-4 mx-auto">
-                      <input type="text" placeholder='Enter TVA API KEY' className='p-2 rounded-lg'/>
-                      <input type="text" placeholder='Enter TVA Secret' className='p-2 rounded-lg'/>
-                      <button className='bg-thetre-blue p-2 rounded-lg'>Save to Localstorage(optional)</button>
-                    </div>
-                  )}
                 </div>
               )}
               {step === 3 && (
