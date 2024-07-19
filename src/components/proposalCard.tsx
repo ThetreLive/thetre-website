@@ -30,6 +30,30 @@ const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
     return () => clearInterval(interval);
   }, [proposal.voteEnd]);
 
+  const getProposalStateClasses = (state: ProposalState) => {
+    console.log(state)
+    switch (state) {
+      case ProposalState.Pending:
+        return 'bg-yellow-100 text-yellow-800';
+      case ProposalState.Active:
+        return 'bg-blue-100 text-blue-800';
+      case ProposalState.Canceled:
+        return 'bg-red-100 text-red-800';
+      case ProposalState.Defeated:
+        return 'bg-gray-100 text-gray-800';
+      case ProposalState.Succeeded:
+        return 'bg-green-100 text-green-800';
+      case ProposalState.Queued:
+        return 'bg-purple-100 text-purple-800';
+      case ProposalState.Expired:
+        return 'bg-orange-100 text-orange-800';
+      case ProposalState.Executed:
+        return 'bg-green-200 text-green-900';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
     <div className="shadow-md rounded-lg p-6 mb-4 bg-black/40 backdrop-blur-xl w-full">
       <div className="flex justify-between items-center mb-2">
@@ -41,7 +65,7 @@ const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
           />
           <div>
             <p className="text-white">{proposal.data.producer}</p>
-            <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+            <span className={`text-xs font-semibold mr-2 px-2.5 py-0.5 rounded ${getProposalStateClasses(Number(proposal.proposalState))}`}>
               {ProposalState[Number(proposal.proposalState)]}
             </span>
           </div>
