@@ -166,10 +166,56 @@ const getFromEdgeStore = async (key: any) => {
       }
 }
 
+const startStream = async (streamId: string) => {
+    let url = 'https://api.thetavideoapi.com/ingestor/filter';
+    let headers: any = {
+        'x-tva-sa-id': SA_ID,
+        'x-tva-sa-secret': process.env.NEXT_PUBLIC_THETA_SA as string,
+    };
+    try {
+        let response = await fetch(url, {
+          method: 'GET',
+          headers: headers
+        });
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    
+        let data = await response.json();
+        console.log(data);
+
+        url = `https://api.thetavideoapi.com/ingestor/${data.body.ingestors[0].id}/select`;
+        headers = {
+            'x-tva-sa-id': SA_ID,
+            'x-tva-sa-secret': process.env.NEXT_PUBLIC_THETA_SA as string,
+            'Content-Type': 'application/json'
+        };
+        const body = JSON.stringify({ tva_stream: streamId });
+
+
+        response = await fetch(url, {
+            method: 'PUT',
+            headers: headers,
+            body: body
+          });
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+      
+        data = await response.json();
+        return data.body
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+}
+
 export {
     getFileURL,
     uploadVideo,
     uploadToEdgeStore,
     getFromEdgeStore,
-    uploadFileToEdgeStore
+    uploadFileToEdgeStore,
+    startStream
 }

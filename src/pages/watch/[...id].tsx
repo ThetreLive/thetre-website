@@ -3,7 +3,7 @@ import Loader from '@/components/loader';
 import ThetaPlayer from '@/components/thetaPlayer';
 import { ProposalDetails, useThetreContext } from '@/context/thetreContext';
 import { useWalletContext } from '@/context/walletContext';
-import { getFileURL } from '@/utils/theta';
+import { getFileURL, startStream } from '@/utils/theta';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
@@ -13,7 +13,9 @@ const WatchPage: React.FC = () => {
     const playerRef = useRef<HTMLVideoElement>(null);
     const [movie, setMovie] = useState<ProposalDetails | undefined>(undefined);
     const { proposalDetails, fetchProposals, setLoader, getVideo, buyTicket } = useThetreContext();
-    const { access } = useWalletContext()
+    const { access, signer } = useWalletContext()
+    const [isAuth, setAuth] = useState<boolean>(false)
+    const [details, setDetails] = useState<any>("")
 
     const onPlay = () => {
         playerRef.current?.play();
@@ -58,6 +60,18 @@ const WatchPage: React.FC = () => {
             }
         }
     }, [router.isReady, router.query.id, proposalDetails]);
+
+    useEffect(() => {
+        if (movie && signer) {
+            console.log("here");
+            (async () => {
+                console.log(movie.proposer, await signer.getAddress())
+                if (movie.proposer === await signer.getAddress()) {
+                    setAuth(true)
+                }
+            })()
+        }
+    }, [movie, signer])
     if (!movie) {
         return <Loader />
     }
@@ -81,7 +95,7 @@ const WatchPage: React.FC = () => {
                         <p className="font-bold text-white">Genre: {movie.data.genre}</p>
                         <p className="font-bold text-white">Starring: {movie.data.cast}</p>
                     </div>
-                    <div>
+                    <div className='flex flex-col gap-2'>
 
                         {(!access.includes(movie.data.title) || !movie.data.isDRMEnabled) ? (
                             <button className="text-white bg-thetre-blue p-2 rounded-lg" onClick={() => buyTicket(movie.data.title)}>
@@ -91,6 +105,17 @@ const WatchPage: React.FC = () => {
                             <button className="text-white bg-green-500 p-2 rounded-lg">
                                 You Have Access to this movie
                             </button>
+                        )}
+                        {isAuth && (
+                            <div className='flex flex-col gap-2'>
+                                <button className="text-white bg-thetre-blue p-2 rounded-lg" onClick={async() => setDetails(await startStream(movie.data.movieLink as string))}>
+                                    Start Stream
+                                </button>
+                                <div className='text-white'>
+                                    <p>Stream Server - {details["stream_server"]}</p>
+                                    <p>Stream Key - {details["stream_key"]}</p>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>
