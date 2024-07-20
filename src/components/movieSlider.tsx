@@ -56,7 +56,7 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
       <Slider {...settings}>
         {props.proposalDetails.slice(0, 3).map((movie, index) => (
           <div key={index} className='relative h-full w-full'>
-            <Image src={getFileURL(JSON.parse(movie.data.coverLink as string).result.key, JSON.parse(movie.data.coverLink as string).result.relpath)} alt={movie.data.title} className="absolute inset-0 w-full h-full object-cover" fill/>
+            <Image objectPosition='right -100px' src={getFileURL(JSON.parse(movie.data.coverLink as string).result.key, JSON.parse(movie.data.coverLink as string).result.relpath)} alt={movie.data.title} className="absolute inset-0 w-full h-full object-cover" fill/>
             <div className="absolute inset-0"></div>
             <div className="relative z-10 flex lg:items-center items-end h-full px-16">
               <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 lg:p-8 p-4 rounded-lg backdrop-blur-xl">
@@ -72,7 +72,6 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                     )}
                   
                   <button className="bg-gray-700 px-4 py-2 rounded-xl">Trailer</button>
-                  <button className="bg-gray-700 px-4 py-2 rounded-xl">More</button>
                 </div>
               </div>
             </div>
