@@ -138,7 +138,7 @@ const ThetreContextProvider = (props: Props) => {
                 from: signer.getAddress(),
                 to: contracts.LISTING_GOVERNER,
                 data: govCalldata,
-                gasLimit: 100000
+                gasLimit: 200000
 
             })
             console.log('Transaction response:', txResponse);
@@ -165,7 +165,7 @@ const ThetreContextProvider = (props: Props) => {
           from: signer.getAddress(),
           to: contracts.LISTING_GOVERNER,
           data: govCalldata,
-          gasLimit: 100000
+          gasLimit: 200000
         })
         console.log('Transaction response:', txResponse);
 
@@ -200,7 +200,7 @@ const ThetreContextProvider = (props: Props) => {
           to: contracts.THETRE,
           data: thetreCalldata,
           value: ethers.parseEther("10"),
-          gasLimit: 150000
+          gasLimit: 200000
         })
         console.log('Transaction response:', txResponse);
 
