@@ -79,8 +79,10 @@ const WalletContextProvider = (props: Props) => {
       }, []);
       
       const handleAccountsChanged = async (accounts: string[]) => {
+        const providerInstance = new ethers.BrowserProvider(window.ethereum);
+        setProvider(providerInstance);
         if (accounts.length > 0) {
-          setSigner(await provider!.getSigner());
+          setSigner(await providerInstance.getSigner());
         } else {
           resetConnection();
         }
@@ -123,7 +125,7 @@ const WalletContextProvider = (props: Props) => {
       };
       
       const ensureCorrectNetwork = async () => {
-        const desiredChainId = "0x169";
+        const desiredChainId = "0x16d";
         try {
           await window.ethereum.request({
             method: "wallet_switchEthereumChain",
