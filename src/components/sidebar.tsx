@@ -3,9 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-const Sidebar: React.FC = () => {
+interface Props {
+  selectedGenres: string[];
+  setSelectedGenres: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const Sidebar: React.FC<Props> = ({ selectedGenres, setSelectedGenres }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
