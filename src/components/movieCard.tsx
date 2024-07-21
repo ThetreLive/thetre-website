@@ -6,10 +6,11 @@ import React, { useState, useRef, useEffect } from 'react';
 
 interface Props {
     proposal: ProposalDetails,
-    access: string[]
+    access: string[],
+    muted: boolean
 }
 
-const MovieCard: React.FC<Props> = ({ proposal, access }) => {
+const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
     const { buyTicket } = useThetreContext();
     const [isHovered, setIsHovered] = useState(false);
     const [isHoverDelayPassed, setIsHoverDelayPassed] = useState(false);
@@ -66,6 +67,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access }) => {
                         className="w-full h-full object-cover transition-opacity duration-300"
                         autoPlay
                         controls
+                        muted={muted}
                         onEnded={handleVideoEnd}
                     />
                 ) : (

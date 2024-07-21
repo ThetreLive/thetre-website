@@ -89,7 +89,7 @@ export default function Home() {
             )
             .slice(indexOfFirstMovie, indexOfLastMovie)
             .map((proposal, index) => (
-              <MovieCard key={index} proposal={proposal} access={access} />
+              <MovieCard key={index} proposal={proposal} access={access} muted={false}/>
             ))}
         </div>
         <div className="flex justify-center items-center space-x-4 p-4">
