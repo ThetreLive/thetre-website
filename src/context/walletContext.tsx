@@ -41,32 +41,6 @@ const WalletContextProvider = (props: Props) => {
         setAccessList([...list]);
     }
     useEffect(() => {
-      if (signer) {
-        (async () => {
-          const address = await signer.getAddress();
-          let accessibleMovies = [];
-          const thetreContract = new ethers.Contract(contracts.THETRE, thetreABI, signer);
-          const filter = thetreContract.filters.BoughtTicket(null, address);
-          const toBlock = await signer.provider!.getBlockNumber();
-
-          const fetchEvents = async (startBlock: number, endBlock: number) => {
-            const events = await thetreContract.queryFilter(filter, startBlock, endBlock);
-            return events.map(event => (event as EventLog).args.movieName);
-          };
-
-          const promises = [];
-          for (let startBlock = 27166848; startBlock <= toBlock; startBlock += 5000) {
-            const endBlock = Math.min(startBlock + 5000 - 1, toBlock);
-            promises.push(fetchEvents(startBlock, endBlock));
-          }
-
-          const results = await Promise.all(promises);
-          accessibleMovies = results.flat();
-          setAccess([...accessibleMovies]);
-        })()
-      }
-    }, [signer])
-    useEffect(() => {
         if (window.ethereum) {
           const providerInstance = new ethers.BrowserProvider(window.ethereum);
           setProvider(providerInstance);
