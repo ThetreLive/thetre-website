@@ -97,7 +97,7 @@ const WatchPage: React.FC = () => {
                     </div>
                     <div className='flex flex-col gap-2'>
 
-                        {(!access.includes(movie.data.title) || !movie.data.isDRMEnabled) ? (
+                        {(!access.includes(movie.data.title) && movie.data.isDRMEnabled) ? (
                             <button className="text-white bg-thetre-blue p-2 rounded-lg" onClick={() => buyTicket(movie.data.title)}>
                                 Buy Pass for 10TFUEL
                             </button>
