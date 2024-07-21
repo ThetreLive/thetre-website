@@ -110,7 +110,7 @@ const WatchPage: React.FC = () => {
                                 You Have Access to this movie
                             </button>
                         )}
-                        {isAuth && (
+                        {isAuth && movie.data.screeningType === "Live Screening" && (
                             <div className='flex flex-col gap-2'>
                                 <button className="text-white bg-thetre-blue p-2 rounded-lg" onClick={async() => setDetails(await startStream(movie.data.movieLink as string))}>
                                     Start Stream
