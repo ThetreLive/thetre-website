@@ -83,12 +83,12 @@ const Chat: React.FC<Props> = (props: Props) => {
       const addr = await m.json();
       console.log(
         addr.multiaddress[1]
-          .replace("172.31.47.160", "13.200.213.161")
+          .replace("/ip4/172.31.47.160", "/dns4/p2p.thetre.live")
           .replace(/\/tcp\/\d+\/ws\//, "/tcp/443/wss/")
       );
       const ma = multiaddr(
         addr.multiaddress[1]
-          .replace("172.31.47.160", "13.200.213.161")
+          .replace("/ip4/172.31.47.160", "/dns4/p2p.thetre.live")
           .replace(/\/tcp\/\d+\/ws\//, "/tcp/443/wss/")
       );
       setDefaultMa(ma);
@@ -194,7 +194,7 @@ const Chat: React.FC<Props> = (props: Props) => {
           .filter((ma: any) => {
             if (
               ma.toString().includes("webrtc") &&
-              ma.toString().includes("13.200.213.161")
+              ma.toString().includes("p2p.thetre.live")
             ) {
               return ma.toString().replace(/\/tcp\/\d+\/ws\//, "/tcp/443/wss/");
             }
