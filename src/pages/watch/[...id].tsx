@@ -1,3 +1,4 @@
+import AccountPage from '@/components/account';
 import Chat from '@/components/chat';
 import Loader from '@/components/loader';
 import ThetaPlayer from '@/components/thetaPlayer';
@@ -80,11 +81,14 @@ const WatchPage: React.FC = () => {
         <div className="h-screen flex lg:flex-row flex-col">
             <div className="w-full lg:h-screen lg:overflow-y-scroll flex-grow">
                 {movie.data.isDRMEnabled ? (
-                <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type="DRM" styles="w-full h-96 lg:h-[70vh]" />
+                    <ThetaPlayer playerRef={playerRef} videoId={movie.data.movieLink as string} type="DRM" styles={`w-full h-96 lg:h-[70vh]`} />
                 ) : (
-                <video controls className="w-full h-96 lg:h-[70vh] bg-black" ref={playerRef}>
-                    <source src={getFileURL(JSON.parse(movie.data.movieLink as string).result.key, JSON.parse(movie.data.movieLink as string).result.relpath)} />
-                </video>
+                    <video controls className="w-full h-96 lg:h-[70vh] bg-black" ref={playerRef}>
+                        <source src={getFileURL(JSON.parse(movie.data.movieLink as string).result.key, JSON.parse(movie.data.movieLink as string).result.relpath)} />
+                    </video>
+                )}
+                {!signer && (    
+                    <AccountPage isOpen={true} onClose={() => {}} login={false}/>
                 )}
             </div>
             <div className="flex flex-col w-full p-2 lg:w-auto gap-2">

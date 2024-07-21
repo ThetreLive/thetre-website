@@ -1,6 +1,6 @@
 "use client"
 import { useWalletContext } from "@/context/walletContext";
-import { LegacyRef, RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { Signer } from "ethers";
 import { TurnkeySigner } from "@turnkey/ethers";
 
@@ -40,11 +40,14 @@ interface Props {
 
 const ThetaPlayer: React.FC<Props> = (props: Props) => {
     const {signer, access} = useWalletContext()
+    const [signed, setSigned] = useState<boolean>(false)
     const renderVideo = () => {
         if (signer && props.type === "DRM") {
+            if (signed) return
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
             (async () => {
+                setSigned(true)
                 let signature;
                 if ((signer as TurnkeySigner)._signTypedData) {
                     signature = await (signer as TurnkeySigner)._signTypedData(data.domain, data.types, data.message)
