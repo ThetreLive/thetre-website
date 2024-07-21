@@ -23,6 +23,7 @@ const WatchPage: React.FC = () => {
   const { access, signer } = useWalletContext();
   const [isAuth, setAuth] = useState<boolean>(false);
   const [details, setDetails] = useState<any>("");
+  const requestFunds = useRef(() => {});
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 3;
 
@@ -63,6 +64,10 @@ const WatchPage: React.FC = () => {
 
   const onPause = () => {
     playerRef.current?.pause();
+  };
+
+  const setRequestFunds = (func: any) => {
+    requestFunds.current = func;
   };
 
   useEffect(() => {
@@ -238,6 +243,8 @@ const WatchPage: React.FC = () => {
           onSeek={onSeek}
           onPause={onPause}
           playerRef={playerRef}
+          requestFunds={requestFunds}
+          setRequestFunds={setRequestFunds}
         />
         <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/40 p-4 h-[500px] rounded-lg space-y-10">
           <div>
@@ -245,21 +252,28 @@ const WatchPage: React.FC = () => {
               {movie.data.title}
             </p>
             <p className="font-bold text-white">Genre: {movie.data.genre}</p>
-            <p className="font-bold text-white">Starring: {movie.data.cast}</p>
+            <p className="font-bold text-white">Starring: {movie.data.cast.split(",").splice(0, 3).join(",")}</p>
           </div>
           <div className="flex flex-col gap-2">
             {!access.includes(movie.data.title) && movie.data.isDRMEnabled ? (
-              <button
-                className="text-white bg-thetre-blue p-2 rounded-lg"
-                onClick={() => buyTicket(movie.data.title)}
-              >
-                Buy Pass for 10TFUEL
-              </button>
+                <button
+                    className="text-white bg-thetre-blue p-2 rounded-lg"
+                    onClick={() => buyTicket(movie.data.title)}
+                >
+                    Buy Pass for 10TFUEL
+                </button>
             ) : (
               <button className="text-white bg-green-500 p-2 rounded-lg">
                 You Have Access to this movie
               </button>
             )}
+
+            <button
+                className="text-white bg-thetre-blue p-2 rounded-lg"
+                onClick={() => requestFunds.current()}
+            >
+                Request TFUEL in Chat
+            </button>
             {isAuth && movie.data.screeningType === "Live Screening" && (
               <div className="flex flex-col gap-2">
                 <button

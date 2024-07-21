@@ -1,3 +1,4 @@
+import { useWalletContext } from "@/context/walletContext";
 import { gossipsub } from "@chainsafe/libp2p-gossipsub";
 import { noise } from "@chainsafe/libp2p-noise";
 import { yamux } from "@chainsafe/libp2p-yamux";
@@ -19,11 +20,13 @@ interface Props {
   onPause: () => void;
   onSeek: (time: number) => void;
   playerRef: React.RefObject<HTMLVideoElement>;
+  requestFunds: React.RefObject<any>;
+  setRequestFunds: any;
 }
 
 interface Message {
   data: {
-    type: "text" | "play" | "pause" | "seek";
+    type: "text" | "play" | "pause" | "seek" | "funds";
     message: string;
   };
   from: string;
@@ -39,6 +42,8 @@ const Chat: React.FC<Props> = (props: Props) => {
   const router = useRouter();
   const [fireEvent, setFireEvent] = useState(true);
   const [subscrbers, setSubscribers] = useState<any[]>([]);
+  const {signer, transferTFUEL} = useWalletContext()
+  const [amount, setAmount] = useState(0)
 
   useEffect(() => {
     if (libp2p) {
@@ -96,6 +101,13 @@ const Chat: React.FC<Props> = (props: Props) => {
   }, []);
 
   useEffect(() => {
+    const requestFunds = async () => {
+        await sendMessage("funds", await signer?.getAddress()!);
+    }
+    props.setRequestFunds(requestFunds)
+  }, [props.requestFunds])
+
+  useEffect(() => {
     msgRef.current?.lastElementChild?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -143,12 +155,12 @@ const Chat: React.FC<Props> = (props: Props) => {
             if (sub.subscribe === true) {
               setSubscribers((prev) => [
                 ...prev,
-                event.detail.peerId.publicKey.join(","),
+                event.detail.peerId.string
               ]);
             } else {
               setSubscribers((prev) =>
                 prev.filter(
-                  (peer) => peer !== event.detail.peerId.publicKey.join(",")
+                  (peer) => peer !== event.detail.peerId.string
                 )
               );
             }
@@ -156,10 +168,15 @@ const Chat: React.FC<Props> = (props: Props) => {
         });
       }
     );
+    p2p.addEventListener("connection:open", (event: any) => {
+        console.log("hey")
+        setSubscribers(p2p.services.pubsub.getSubscribers("thetre"))
+
+    })
     p2p.addEventListener("peer:disconnect", (event: any) => {
       console.log(event);
       setSubscribers((prev) =>
-        prev.filter((peer) => peer !== event.detail.publicKey.join(","))
+        prev.filter((peer) => peer !== event.detail.string)
       );
     });
     console.log(`Subscribing to thetre`);
@@ -168,9 +185,7 @@ const Chat: React.FC<Props> = (props: Props) => {
       console.log(event);
       const topic = event.detail.topic;
       const message = toString(event.detail.data);
-      console.log(event);
-      const decodedString = event.detail.key.join(",");
-      console.log(decodedString);
+      console.log(event.detail.from.toString());
       console.log(`Message received on topic '${topic}'`);
       const data = JSON.parse(message) as Message["data"];
       if (data.type === "play") {
@@ -181,7 +196,7 @@ const Chat: React.FC<Props> = (props: Props) => {
         setFireEvent(false);
         props.onSeek(parseFloat(data.message));
       } else {
-        setMessages((prev) => [...prev, { from: decodedString, data }]);
+        setMessages((prev) => [...prev, { from: event.detail.from.toString(), data }]);
       }
     });
   };
@@ -216,27 +231,26 @@ const Chat: React.FC<Props> = (props: Props) => {
     message: string
   ) => {
     console.log(`Sending message '${message}'`);
-
-    await window.libp2p.services.pubsub.publish(
-      "thetre",
-      fromString(
-        JSON.stringify({
-          type,
-          message,
-        })
-      )
-    );
-    setMessages((prev) => [
-      ...prev,
-      {
-        from: "me",
-        data: {
-          type,
-          message,
-        },
-      },
-    ]);
-    setCurr("");
+        await window.libp2p.services.pubsub.publish(
+          "thetre",
+          fromString(
+            JSON.stringify({
+              type,
+              message,
+            })
+          )
+        );
+        setMessages((prev) => [
+          ...prev,
+          {
+            from: "me",
+            data: {
+              type,
+              message,
+            },
+          },
+        ]);
+        setCurr("");
   };
 
   const copyCommand = () => {
@@ -294,7 +308,7 @@ const Chat: React.FC<Props> = (props: Props) => {
       </div>
       <div className="overflow-y-scroll" ref={msgRef}>
         {messages
-          .filter((msg) => msg.data.type === "text")
+          .filter((msg) => msg.data.type === "text" || msg.data.type === "funds")
           .map((msg, i) => (
             <div
               key={i}
@@ -311,13 +325,25 @@ const Chat: React.FC<Props> = (props: Props) => {
               ) : (
                 <div className="w-5 h-5"></div>
               )}
-              <p className="text-white bg-gray-600 max-w-80 text-wrap break-words	 px-2 py-1 rounded-xl">
-                {msg.data.message}
-              </p>
+              <div className="text-white bg-gray-600 max-w-80 text-wrap break-words px-2 py-1 rounded-xl">
+                {msg.data.type === "funds" ? (
+                    <div className="flex flex-col gap-2 items-center">
+                        <div>{msg.from === "me" ? "You" : ""} Requested TFUEL</div>
+                        {msg.from !== "me" && (
+                            <>
+                                <input type="number" onChange={(e) => setAmount(parseInt(e.target.value))} placeholder="Amount" className="w-full p-2 rounded-lg bg-gray-700 placeholder-gray-400 mb-2 bg-transparent border border-1 border-gray-400/40"/>
+                                <button onClick={async () => {await transferTFUEL(msg.data.message, amount.toString()); await sendMessage("text", "Just Sent " + amount.toString() + "TFUEL")}} className="bg-thetre-blue py-1 mb-2 w-full rounded-xl">Send</button>
+                            </>
+                        )}
+                    </div>
+                    ) : (
+                    msg.data.message
+                )}
+              </div>
             </div>
           ))}
       </div>
-      <div className="relative w-full">
+      <form className="relative w-full" onSubmit={async (e) => {e.preventDefault(); await sendMessage("text", currMessage)}}>
         <input
           type="text"
           placeholder="Send Message"
@@ -327,7 +353,7 @@ const Chat: React.FC<Props> = (props: Props) => {
         />
         <button
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
-          onClick={async () => await sendMessage("text", currMessage)}
+          type="submit"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -344,7 +370,7 @@ const Chat: React.FC<Props> = (props: Props) => {
             />
           </svg>
         </button>
-      </div>
+      </form>
     </div>
   );
 };
