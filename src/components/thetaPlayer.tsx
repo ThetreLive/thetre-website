@@ -36,6 +36,7 @@ interface Props {
     type: "FREE" | "DRM",
     styles: string;
     playerRef: RefObject<HTMLVideoElement>;
+    poster: string;
 }
 
 const ThetaPlayer: React.FC<Props> = (props: Props) => {
@@ -97,7 +98,7 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
     }, [signer, access])
     return (
         <div className="w-full">
-            <video ref={props.playerRef} controls className={props.styles}/>
+            <video ref={props.playerRef} controls className={props.styles} poster={props.poster}/>
         </div>
     )
 }
