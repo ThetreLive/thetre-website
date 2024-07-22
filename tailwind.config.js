@@ -18,5 +18,14 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addBase, theme }) {
+      addBase({
+        ':root': {
+          '--thetre-blue': theme('colors.thetre-blue'),
+          '--bg-blue': theme('colors.bg-blue'),
+        },
+      });
+    },
+  ],
 }
