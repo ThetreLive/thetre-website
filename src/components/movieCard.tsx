@@ -8,10 +8,11 @@ import LivestreamSchedule from './schedule';
 interface Props {
     proposal: ProposalDetails,
     access: string[],
-    muted: boolean
+    muted: boolean,
+    changePage: any
 }
 
-const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
+const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => {
     const { buyTicket } = useThetreContext();
     const [isHovered, setIsHovered] = useState(false);
     const [isHoverDelayPassed, setIsHoverDelayPassed] = useState(false);
@@ -30,13 +31,15 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
                 const endDate = new Date(livestreamData?.selectedDates[1]!);
                 const screeningTimes = livestreamData?.screeningTimes;
                 console.log(screeningTimes)
-                interval = setInterval(() => {
+                const callbackFn = () => {
                     const {closestTime, closestDifference} = findClosestTime(screeningTimes!, startDate, endDate);
                     if (closestTime) {
                         console.log(timeString(closestDifference))
                         setCountDown(timeString(closestDifference));
                     }
-                }, 60)
+                }
+                callbackFn()
+                interval = setInterval(callbackFn, 60000)
                 
             }
         }
@@ -170,7 +173,14 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
                 <p className="text-gray-200">{proposal.data.description.slice(0, 100)}...</p>
                 <div className="flex justify-between items-center mt-4 gap-2">
                     {access.includes(proposal.data.title) || !proposal.data.isDRMEnabled ? (
-                        <Link href={`/watch/${proposal.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-lg">{proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}</Link>
+                        <>
+                            {changePage ? (
+                                <button onClick={() => changePage(proposal.id)} className="bg-custom-radial px-6 py-3 font-bold rounded-lg">{proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}</button>
+                            ) : (
+                                <Link href={`/watch/${proposal.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-lg">{proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}</Link>
+
+                            )}
+                        </>
                     ) : (
                         <button onClick={() => buyTicket(proposal.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>
                     )}

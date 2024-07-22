@@ -20,10 +20,12 @@ const WatchPage: React.FC = () => {
   const [movie, setMovie] = useState<ProposalDetails | undefined>(undefined);
   const { proposalDetails, fetchProposals, setLoader, getVideo, buyTicket } =
     useThetreContext();
-  const { access, signer } = useWalletContext();
+  const { access, signer, balance } = useWalletContext();
   const [isAuth, setAuth] = useState<boolean>(false);
   const [details, setDetails] = useState<any>("");
   const requestFunds = useRef(() => {});
+  const changePage = useRef(() => {});
+
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 3;
 
@@ -70,6 +72,10 @@ const WatchPage: React.FC = () => {
 
   const setRequestFunds = (func: any) => {
     requestFunds.current = func;
+  };
+
+  const setChangePage = (func: any) => {
+    changePage.current = func;
   };
 
   useEffect(() => {
@@ -182,6 +188,7 @@ const WatchPage: React.FC = () => {
                   proposal={proposal}
                   access={access}
                   muted
+                  changePage={changePage.current}
                 />
               ))}
           </div>
@@ -247,6 +254,8 @@ const WatchPage: React.FC = () => {
           playerRef={playerRef}
           requestFunds={requestFunds}
           setRequestFunds={setRequestFunds}
+          changePage={changePage}
+          setChangePage={setChangePage}
         />
         <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/40 p-4 h-[500px] rounded-lg space-y-10">
           <div>
@@ -274,7 +283,7 @@ const WatchPage: React.FC = () => {
                 className="text-white bg-thetre-blue p-2 rounded-lg"
                 onClick={() => requestFunds.current()}
             >
-                Request TFUEL in Chat
+                Request TFUEL in Chat ({balance})
             </button>
             {isAuth && movie.data.screeningType === "Live Screening" && (
               <div className="flex flex-col gap-2">

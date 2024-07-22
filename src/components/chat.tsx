@@ -22,11 +22,13 @@ interface Props {
   playerRef: React.RefObject<HTMLVideoElement>;
   requestFunds: React.RefObject<any>;
   setRequestFunds: any;
+  changePage: React.RefObject<any>;
+  setChangePage: any;
 }
 
 interface Message {
   data: {
-    type: "text" | "play" | "pause" | "seek" | "funds";
+    type: "text" | "play" | "pause" | "seek" | "funds" | "movie";
     message: string;
   };
   from: string;
@@ -105,7 +107,8 @@ const Chat: React.FC<Props> = (props: Props) => {
         await sendMessage("funds", await signer?.getAddress()!);
     }
     props.setRequestFunds(requestFunds)
-  }, [props.requestFunds])
+    props.setChangePage(changePage)
+  }, [props.requestFunds, props.changePage])
 
   useEffect(() => {
     msgRef.current?.lastElementChild?.scrollIntoView({ behavior: "smooth" });
@@ -195,6 +198,12 @@ const Chat: React.FC<Props> = (props: Props) => {
       } else if (data.type === "seek") {
         setFireEvent(false);
         props.onSeek(parseFloat(data.message));
+      } else if (data.type === "movie") {
+        if (props.room) {
+          router.push("/watch/" + data.message + "/" + props.room);
+        } else {
+          router.push("/watch/" + data.message)
+        }
       } else {
         setMessages((prev) => [...prev, { from: event.detail.from.toString(), data }]);
       }
@@ -258,6 +267,15 @@ const Chat: React.FC<Props> = (props: Props) => {
       window.location.origin + router.asPath + "/" + roomId
     );
   };
+
+  const changePage = (movieId: string) => {
+    sendMessage("movie", movieId);
+    if (props.room) {
+      router.push("/watch/" + movieId + "/" + props.room);
+    } else {
+      router.push("/watch/" + movieId)
+    }
+  }
 
   useEffect(() => {
     if (props.room && defaultMa) {

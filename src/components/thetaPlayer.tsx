@@ -3,6 +3,7 @@ import { useWalletContext } from "@/context/walletContext";
 import { RefObject, useEffect, useState } from "react";
 import { Signer } from "ethers";
 import { TurnkeySigner } from "@turnkey/ethers";
+import { useRouter } from "next/router";
 
 
 let TVA_JS_VERSION_NUMBER = '1.0.12';
@@ -41,14 +42,14 @@ interface Props {
 
 const ThetaPlayer: React.FC<Props> = (props: Props) => {
     const {signer, access} = useWalletContext()
-    const [signed, setSigned] = useState<boolean>(false)
+    const router = useRouter()
     const renderVideo = () => {
+        console.log("here")
+        console.log(props)
         if (signer && props.type === "DRM") {
-            if (signed) return
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
             (async () => {
-                setSigned(true)
                 let signature;
                 if ((signer as TurnkeySigner)._signTypedData) {
                     signature = await (signer as TurnkeySigner)._signTypedData(data.domain, data.types, data.message)
@@ -95,7 +96,7 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
     }
     useEffect(() => {
         renderVideo()
-    }, [signer, access])
+    }, [signer, access, props.videoId])
     return (
         <div className="w-full">
             <video ref={props.playerRef} controls className={props.styles} poster={props.poster}/>
