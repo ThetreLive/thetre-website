@@ -19,6 +19,76 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [viewSchedule, setViewSchedule] = useState(false);
+    const [countDown, setCountDown] = useState("");
+
+    useEffect(() => {
+        let interval: any;
+        if (proposal) {
+            if (proposal.data.livestreamData) {
+                const livestreamData: ProposalDetails["data"]["livestreamData"] = JSON.parse(JSON.parse(proposal.data.livestreamData as any));
+                const startDate = new Date(livestreamData?.selectedDates[0]!);
+                const endDate = new Date(livestreamData?.selectedDates[1]!);
+                const screeningTimes = livestreamData?.screeningTimes;
+                console.log(screeningTimes)
+                interval = setInterval(() => {
+                    const {closestTime, closestDifference} = findClosestTime(screeningTimes!, startDate, endDate);
+                    if (closestTime) {
+                        console.log(timeString(closestDifference))
+                        setCountDown(timeString(closestDifference));
+                    }
+                }, 60)
+                
+            }
+        }
+        return () => clearInterval(interval);
+    }, [proposal])
+
+    const timeString = (time: number) => {
+        const totalSeconds = Math.floor(time / 1000);
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const totalHours = Math.floor(totalMinutes / 60);
+
+        // Calculate remaining minutes and seconds
+        const hours = totalHours;
+        const minutes = totalMinutes % 60;
+
+        // Format the result as hh:mm
+        const formattedHours = String(hours).padStart(2, '0');
+        const formattedMinutes = String(minutes).padStart(2, '0');
+
+        return `${formattedHours}:${formattedMinutes}`;
+    }
+
+    const convertUTCToLocal = (utcDate: Date) => {
+        return new Intl.DateTimeFormat(navigator.language, {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }).format(utcDate);
+      };
+    
+      const findClosestTime = (screeningTimes: string[], startDate: Date, endDate: Date) => {
+        const currentTimeUTC = new Date();
+    
+        let closestTime = null;
+        let closestDifference = Infinity;
+    
+        for (const time of screeningTimes) {
+          for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+            const [hours, minutes] = time.split(':').map(Number);
+            const screeningTimeUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes));
+            
+            const difference = screeningTimeUTC.getTime() - currentTimeUTC.getTime();
+    
+            if (difference > 0 && difference < closestDifference) {
+              closestDifference = difference;
+              closestTime = screeningTimeUTC;
+            }
+          }
+        }
+    
+        return {closestTime, closestDifference};
+      };
 
     const coverURL = getFileURL(
         JSON.parse(proposal.data.coverLink as string).result.key,
@@ -100,14 +170,14 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
                 <p className="text-gray-200">{proposal.data.description.slice(0, 100)}...</p>
                 <div className="flex justify-between items-center mt-4 gap-2">
                     {access.includes(proposal.data.title) || !proposal.data.isDRMEnabled ? (
-                        <Link href={`/watch/${proposal.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Watch Now</Link>
+                        <Link href={`/watch/${proposal.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-lg">{proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}</Link>
                     ) : (
                         <button onClick={() => buyTicket(proposal.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>
                     )}
 
                     <button 
                         onClick={handleTrailerClick}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex-1"
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex-1"
                     >
                         Trailer
                     </button>
