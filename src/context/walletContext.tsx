@@ -71,6 +71,7 @@ const WalletContextProvider = (props: Props) => {
             setPower(ethers.formatUnits(daPower.toString()).toString())
             setBalance(ethers.formatEther(await signer.provider?.getBalance(await signer.getAddress())!)?.toString()!)
           }
+          getBalance()
           console.log("here")
           interval = setInterval(getBalance, 30000)
         }
