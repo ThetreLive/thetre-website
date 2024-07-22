@@ -1,3 +1,5 @@
+import { governerABI } from "@/utils/abis/governerABI";
+import { contracts } from "@/utils/constants";
 import { TurnkeySigner } from "@turnkey/ethers";
 import  {ethers, BrowserProvider, Signer } from "ethers";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
@@ -12,6 +14,7 @@ type StoreState = {
     setAccess: (list: string[]) => void;
     transferTFUEL: (recipient: string, amount: string) => Promise<void>;
     transferNFT: (nftCollectionAddress: string, tokenId: string, recipient: string) => Promise<void>;
+    power: string;
 };
   
 const WalletContext = createContext<StoreState>({
@@ -23,7 +26,8 @@ const WalletContext = createContext<StoreState>({
     access: [],
     setAccess: () => {},
     transferTFUEL: async () => {},
-    transferNFT: async () => {}
+    transferNFT: async () => {},
+    power: "0"
 });
   
 export const useWalletContext = () => useContext(WalletContext);
@@ -37,6 +41,7 @@ const WalletContextProvider = (props: Props) => {
     const [provider, setProvider] = useState<BrowserProvider | null>(null);
     const [access, setAccessList] = useState<string[]>([]);
     const [balance, setBalance] = useState<string>("0")
+    const [power, setPower] = useState<string>("0")
     const setAccess = (list: string[]) => {
         console.log(list)
         setAccessList([...list]);
@@ -57,10 +62,17 @@ const WalletContextProvider = (props: Props) => {
         let interval: any;
         if (signer) {
           const getBalance = async () => {
+            const govEthers = new ethers.Contract(
+              contracts.LISTING_GOVERNER,
+              governerABI,
+              signer
+            );
+            const daPower = await govEthers.getVotes(await signer.getAddress(), Math.floor(Date.now() / 1000));
+            setPower(ethers.formatUnits(daPower.toString()).toString())
             setBalance(ethers.formatEther(await signer.provider?.getBalance(await signer.getAddress())!)?.toString()!)
           }
           console.log("here")
-          interval = setInterval(getBalance, 5000)
+          interval = setInterval(getBalance, 30000)
         }
         return () => clearInterval(interval)
       }, [signer])
@@ -183,7 +195,7 @@ const WalletContextProvider = (props: Props) => {
       };
             
     return (
-        <WalletContext.Provider value={{ balance, signer, setSigner, connectWallet, disconnectWallet, access, setAccess, transferTFUEL, transferNFT }}>
+        <WalletContext.Provider value={{ balance, signer, setSigner, connectWallet, disconnectWallet, access, setAccess, transferTFUEL, transferNFT, power }}>
             {props.children}
         </WalletContext.Provider>
     )

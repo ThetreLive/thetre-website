@@ -5,6 +5,8 @@ import { ethers } from 'ethers';
 import { useTurnkeyContext } from '@/context/turnkeyContext';
 import MetaMaskIcon from '../../public/metamask.svg';
 import Image from 'next/image';
+import { useThetreContext } from '@/context/thetreContext';
+import Link from 'next/link';
 
 interface ModalProps {
     isOpen: boolean;
@@ -15,8 +17,9 @@ interface ModalProps {
 const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
   const [activeTab, setActiveTab] = useState<'tfuel' | 'nft'>('tfuel');
   const [walletAddress, setWalletAddress] = useState('');
-  const { signer, access, transferNFT, transferTFUEL, connectWallet, balance: walletBalance } = useWalletContext()
+  const { signer, access, transferNFT, transferTFUEL, connectWallet, balance: walletBalance, power } = useWalletContext()
   const { createSubOrgAndWallet, login: loginPasskey } = useTurnkeyContext()
+  const { proposalDetails } = useThetreContext()
 
   const [transferAmount, setTransferAmount] = useState('');
   const [recipientAddress, setRecipientAddress] = useState('');
@@ -99,7 +102,10 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
               </div>
               <div className="mb-4">
                 <h3 className="text-lg font-semibold">Wallet Balance</h3>
-                <p className="text-3xl font-bold">{walletBalance}</p>
+                <div className='flex flex-row gap-6 items-center'>
+                  <p className="text-3xl font-bold">{walletBalance} TFUEL</p>
+                  <div className='bg-golden-gradient rounded-full px-4 py-2 text-black'>{power} tDAO</div>
+                </div>
               </div>
               <div className="mb-4">
                 <div className="flex space-x-2 mb-4">
@@ -179,12 +185,12 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
                   {access.map((movie, index) => (
                     <li key={index} className="flex justify-between items-center bg-gray-700 p-2 rounded-md">
                       <span>{movie}</span>
-                      <button
-                        onClick={() => handleWatch(index.toString())}
+                      <Link
+                        href={`/watch/${proposalDetails.filter((prop) => prop.data.title === movie)[0].id}`}
                         className="bg-thetre-blue hover:bg-blue-500 p-2 rounded-md"
                       >
                         Watch
-                      </button>
+                      </Link>
                     </li>
                   ))}
                 </ul>

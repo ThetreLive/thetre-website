@@ -11,7 +11,8 @@ module.exports = {
       },
       backgroundImage: {
         'custom-radial': 'radial-gradient(circle, rgba(8,0,255,0.7) 0%, rgba(75,75,255,0.7) 100%)',
-        'bg-image': 'url(/background.png)'
+        'bg-image': 'url(/background.png)',
+        'golden-gradient': 'linear-gradient(90deg, #FFD700, #FFB14E)',
       },
       fontFamily: {
         nexa: ['var(--font-nexa)'],
