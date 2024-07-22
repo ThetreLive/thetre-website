@@ -168,7 +168,7 @@ const WatchPage: React.FC = () => {
           </video>
         )}
         <div>
-            <div className="text-center text-white text-2xl p-2">More from Thetre</div>
+            <div className="text-left px-6 text-white text-2xl mt-4">More from Thetre</div>
           <div
             className="grid grid-cols-3 gap-4 p-4 w-full justify-center"
             id="moreMovies"
@@ -257,9 +257,9 @@ const WatchPage: React.FC = () => {
           changePage={changePage}
           setChangePage={setChangePage}
         />
-        <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/40 p-4 h-[500px] rounded-lg space-y-10">
+        <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/50 p-4 h-[500px] rounded-lg space-y-10">
           <div>
-            <p className="text-white font-bold text-2xl underline decoration-thetre-blue decoration-4">
+            <p className="text-white font-bold text-2xl p-2 rounded-xl text-center">
               {movie.data.title}
             </p>
             <p className="font-bold text-white">Genre: {movie.data.genre}</p>
@@ -274,7 +274,7 @@ const WatchPage: React.FC = () => {
                     Buy Pass for 10TFUEL
                 </button>
             ) : (
-              <button className="text-white bg-green-500 p-2 rounded-lg">
+              <button className="text-green-500 p-2 rounded-lg">
                 You Have Access to this movie
               </button>
             )}

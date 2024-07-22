@@ -76,7 +76,7 @@ const Proposal: React.FC = () => {
             </video>
           )}
         </div>
-        <div className="col-start-6 col-span-3 flex flex-col gap-8 justify-center">
+        <div className="col-start-6 col-span-3 flex flex-col gap-8">
           <div className="flex flex-col gap-2">
             <p className="text-white font-bold text-2xl underline decoration-thetre-blue decoration-4">
               Movie Name - {proposal.data.title}
@@ -135,7 +135,7 @@ const Proposal: React.FC = () => {
           </div>
         </div>
         <div className="col-start-0 col-span-4 row-start-3 h-full">
-          <h2 className="text-xl font-bold text-white underline decoration-thetre-blue decoration-4">
+          <h2 className="text-xl font-bold text-white">
             Trailer
           </h2>
 
@@ -149,7 +149,7 @@ const Proposal: React.FC = () => {
           </video>
         </div>
         <div className="col-start-5 col-span-4 row-start-3">
-          <h2 className="text-xl font-bold text-white underline decoration-thetre-blue decoration-4">
+          <h2 className="text-xl font-bold text-white">
             Cover Image
           </h2>
           <div className="h-full flex flex-row justify-center items-center bg-gray-700/20">

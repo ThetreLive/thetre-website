@@ -29,7 +29,7 @@ const Sidebar: React.FC<Props> = ({ selectedGenres, setSelectedGenres }) => {
   );
 
   return (
-      <div className='overflow-y-scroll w-96 h-screen border-r border-gray-500/40'>
+      <div className='overflow-y-scroll w-96 h-screen border-r border-gray-500/50'>
         <div className="flex items-center w-full justify-center py-2">
             <Link href="/">
               <Image

@@ -283,7 +283,7 @@ const Chat: React.FC<Props> = (props: Props) => {
     }
   }, [props.room, defaultMa]);
   return (
-    <div className="flex flex-col justify-between w-full lg:w-[550px] lg:border lg:border-gray-500/40 h-[600px] rounded-xl p-4">
+    <div className="flex flex-col justify-between w-full lg:w-[550px] lg:border lg:border-gray-500/50 h-[600px] rounded-xl p-4">
       <div className="p-2 flex flex-col gap-2">
         <div className="flex items-center justify-between text-white text-xl">
           <p>In Room({subscrbers.length})</p>
@@ -324,7 +324,9 @@ const Chat: React.FC<Props> = (props: Props) => {
           </button>
         )}
       </div>
-      <div className="overflow-y-scroll" ref={msgRef}>
+      {messages
+          .filter((msg) => msg.data.type === "text" || msg.data.type === "funds").length > 0 ? (
+            <div className="overflow-y-scroll" ref={msgRef}>
         {messages
           .filter((msg) => msg.data.type === "text" || msg.data.type === "funds")
           .map((msg, i) => (
@@ -361,6 +363,19 @@ const Chat: React.FC<Props> = (props: Props) => {
             </div>
           ))}
       </div>
+          ): (
+            <div className="w-full h-full text-center flex flex-col justify-center items-center text-white">
+              <div>Welcome to the Chat</div>
+              <div>Share your Thetre Experience with your friends</div>
+              <div className="text-left text-sm bg-gray-600 p-2 rounded-xl">
+                <p>- Create a chatroom with just one click</p>
+                <p>- Organise a watch party without having to worry about syncing movies</p>
+                <p>- Get TFUEL from your friends to buy tickets without any hassle </p>
+                <p>- Make the best out of your free time</p>
+              </div>
+            </div>
+          )}
+      
       <form className="relative w-full" onSubmit={async (e) => {e.preventDefault(); await sendMessage("text", currMessage)}}>
         <input
           type="text"
