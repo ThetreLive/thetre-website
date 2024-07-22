@@ -3,6 +3,7 @@ import { getFileURL } from '@/utils/theta';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
+import LivestreamSchedule from './schedule';
 
 interface Props {
     proposal: ProposalDetails,
@@ -17,6 +18,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
     const [isTrailerPlaying, setIsTrailerPlaying] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [viewSchedule, setViewSchedule] = useState(false);
 
     const coverURL = getFileURL(
         JSON.parse(proposal.data.coverLink as string).result.key,
@@ -54,6 +56,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
     };
 
     return (
+        <>
         <div className="bg-bg-blue border border-gray-400/40 text-white rounded-lg shadow-lg p-4 flex-1">
             <div 
                 className='w-full h-48 relative overflow-hidden rounded-t-lg'
@@ -81,7 +84,19 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
             </div>
             <div className="p-4">
                 <h2 className="text-xl font-bold mb-2">{proposal.data.title}</h2>
-                <p className="text-gray-200">Genre - {proposal.data.genre}</p>
+                <div className='flex flex-row justify-between items-center pb-1'>
+                    <p className="text-gray-200">Genre - {proposal.data.genre}</p>
+
+                    {proposal.data.livestreamData ? (
+                            <button 
+                                onClick={() => setViewSchedule(true)}
+                                className="bg-gray-700 px-2 py-1 rounded-xl">
+                                View Schedule
+                            </button>
+
+                    ): <div></div>}
+
+                </div>
                 <p className="text-gray-200">{proposal.data.description.slice(0, 100)}...</p>
                 <div className="flex justify-between items-center mt-4 gap-2">
                     {access.includes(proposal.data.title) || !proposal.data.isDRMEnabled ? (
@@ -89,6 +104,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
                     ) : (
                         <button onClick={() => buyTicket(proposal.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>
                     )}
+
                     <button 
                         onClick={handleTrailerClick}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex-1"
@@ -98,6 +114,12 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted }) => {
                 </div>
             </div>
         </div>
+
+        {proposal.data.livestreamData && viewSchedule && (
+            <LivestreamSchedule livestreamData={JSON.parse(JSON.parse(proposal.data.livestreamData! as any))} onClose={() => setViewSchedule(false)} />
+
+        )}
+        </>
     );
 };
 

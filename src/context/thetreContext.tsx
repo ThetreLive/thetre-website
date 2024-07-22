@@ -124,7 +124,8 @@ const ThetreContextProvider = (props: Props) => {
       const proposalsRes = await fetch("/api/getEvents");
       const proposals: ProposalDetails[] = (await proposalsRes.json())
         .proposals;
-      setProposalDetails(proposals);
+        console.log(proposals)
+      setProposalDetails(proposals.map((proposal) => {return {...proposal, livestreamData: proposal.data.livestreamData ? JSON.parse(JSON.parse(proposal.data.livestreamData as any)) : undefined}}));
       console.log(proposals);
     }
   };
