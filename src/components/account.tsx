@@ -15,8 +15,7 @@ interface ModalProps {
 const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
   const [activeTab, setActiveTab] = useState<'tfuel' | 'nft'>('tfuel');
   const [walletAddress, setWalletAddress] = useState('');
-  const [walletBalance, setWalletBalance] = useState('');
-  const { signer, access, transferNFT, transferTFUEL, connectWallet } = useWalletContext()
+  const { signer, access, transferNFT, transferTFUEL, connectWallet, balance: walletBalance } = useWalletContext()
   const { createSubOrgAndWallet, login: loginPasskey } = useTurnkeyContext()
 
   const [transferAmount, setTransferAmount] = useState('');
@@ -56,7 +55,6 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
     if (signer) {
         (async () => {
             setWalletAddress(await signer.getAddress())
-            setWalletBalance(ethers.formatEther(await signer.provider?.getBalance(await signer.getAddress())!)?.toString()!)
         })()
     }
   }, [signer])

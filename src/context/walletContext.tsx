@@ -1,11 +1,10 @@
 import { TurnkeySigner } from "@turnkey/ethers";
-import  {ethers, BrowserProvider, Signer, EventLog } from "ethers";
+import  {ethers, BrowserProvider, Signer } from "ethers";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { contracts } from "@/utils/constants";
-import { thetreABI } from "@/utils/abis/thetreABI";
 
 type StoreState = {
     signer: Signer | TurnkeySigner | null;
+    balance: string;
     setSigner: Dispatch<SetStateAction<StoreState["signer"]>>;
     connectWallet: () => Promise<void>;
     disconnectWallet: () => void;
@@ -17,6 +16,7 @@ type StoreState = {
   
 const WalletContext = createContext<StoreState>({
     signer: null,
+    balance: "0",
     setSigner: () => {},
     connectWallet: async () => {},
     disconnectWallet: () => {},
@@ -36,6 +36,7 @@ const WalletContextProvider = (props: Props) => {
     const [signer, setSigner] = useState<StoreState["signer"]>(null)
     const [provider, setProvider] = useState<BrowserProvider | null>(null);
     const [access, setAccessList] = useState<string[]>([]);
+    const [balance, setBalance] = useState<string>("0")
     const setAccess = (list: string[]) => {
         console.log(list)
         setAccessList([...list]);
@@ -51,6 +52,18 @@ const WalletContextProvider = (props: Props) => {
           fetchInitialAccounts(providerInstance);
         }
       }, []);
+
+      useEffect(() => {
+        let interval: any;
+        if (signer) {
+          const getBalance = async () => {
+            setBalance(ethers.formatEther(await signer.provider?.getBalance(await signer.getAddress())!)?.toString()!)
+          }
+          console.log("here")
+          interval = setInterval(getBalance, 5000)
+        }
+        return () => clearInterval(interval)
+      }, [signer])
       
       const handleAccountsChanged = async (accounts: string[]) => {
         const providerInstance = new ethers.BrowserProvider(window.ethereum);
@@ -170,7 +183,7 @@ const WalletContextProvider = (props: Props) => {
       };
             
     return (
-        <WalletContext.Provider value={{ signer, setSigner, connectWallet, disconnectWallet, access, setAccess, transferTFUEL, transferNFT }}>
+        <WalletContext.Provider value={{ balance, signer, setSigner, connectWallet, disconnectWallet, access, setAccess, transferTFUEL, transferNFT }}>
             {props.children}
         </WalletContext.Provider>
     )

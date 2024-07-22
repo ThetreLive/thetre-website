@@ -1,20 +1,17 @@
 'use client'
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useWalletContext } from '@/context/walletContext';
 import AccountPage from './account';
-import { ethers } from 'ethers';
 
 export default function Navbar() {
   const asPath = usePathname()
-  const { signer } = useWalletContext()
+  const { signer, balance } = useWalletContext()
   const [isVisible, setIsVisible] = useState(true);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
   const [isWalletOpen, setWalletOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false)
-  const [balance, setBalance] = useState("0")
   const handleScroll = () => {
     if (typeof window !== 'undefined') {
       if (window.scrollY > lastScrollY) {
@@ -27,13 +24,6 @@ export default function Navbar() {
       lastScrollY = window.scrollY;
     }
   };
-  useEffect(() => {
-    if (signer) {
-      (async () => {
-        setBalance(ethers.formatEther(await signer.provider?.getBalance(await signer.getAddress())!).toString())
-      })()
-    }
-  }, [signer])
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', handleScroll);
