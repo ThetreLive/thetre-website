@@ -37,7 +37,6 @@ export default async function createUser(
       apiPublicKey: process.env.TURNKEY_API_PUBLIC_KEY!,
       defaultOrganizationId: process.env.NEXT_PUBLIC_ORGANIZATION_ID!,
     });
-    console.log(turnkey)
 
     const apiClient = turnkey.apiClient(); // TODO: rename to apiClient
 

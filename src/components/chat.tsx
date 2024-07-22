@@ -88,11 +88,6 @@ const Chat: React.FC<Props> = (props: Props) => {
         process.env.NEXT_PUBLIC_BASE_URL + "/api/multiAddress"
       );
       const addr = await m.json();
-      console.log(
-        addr.multiaddress[1]
-          .replace("/ip4/172.31.47.160", "/dns4/p2p.thetre.live")
-          .replace(/\/tcp\/\d+\/ws\//, "/tcp/443/wss/")
-      );
       const ma = multiaddr(
         addr.multiaddress[1]
           .replace("/ip4/172.31.47.160", "/dns4/p2p.thetre.live")
@@ -152,7 +147,6 @@ const Chat: React.FC<Props> = (props: Props) => {
     p2p.services.pubsub.addEventListener(
       "subscription-change",
       (event: any) => {
-        console.log(event);
         event.detail.subscriptions.map((sub: any) => {
           if (sub.topic === "thetre") {
             if (sub.subscribe === true) {
@@ -172,12 +166,10 @@ const Chat: React.FC<Props> = (props: Props) => {
       }
     );
     p2p.addEventListener("connection:open", (event: any) => {
-        console.log("hey")
         setSubscribers(p2p.services.pubsub.getSubscribers("thetre"))
 
     })
     p2p.addEventListener("peer:disconnect", (event: any) => {
-      console.log(event);
       setSubscribers((prev) =>
         prev.filter((peer) => peer !== event.detail.string)
       );
@@ -185,10 +177,8 @@ const Chat: React.FC<Props> = (props: Props) => {
     console.log(`Subscribing to thetre`);
     p2p.services.pubsub.subscribe("thetre");
     p2p.services.pubsub.addEventListener("message", (event: any) => {
-      console.log(event);
       const topic = event.detail.topic;
       const message = toString(event.detail.data);
-      console.log(event.detail.from.toString());
       console.log(`Message received on topic '${topic}'`);
       const data = JSON.parse(message) as Message["data"];
       if (data.type === "play") {
@@ -223,7 +213,6 @@ const Chat: React.FC<Props> = (props: Props) => {
               return ma.toString().replace(/\/tcp\/\d+\/ws\//, "/tcp/443/wss/");
             }
           });
-        console.log(multiaddrs[0].toString());
         setRoomId(multiaddrs[0].toString().split("/")[11]);
       })();
     });

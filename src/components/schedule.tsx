@@ -10,7 +10,6 @@ type Props = {
 };
 
 const LivestreamSchedule: React.FC<Props> = ({ livestreamData, onClose }) => {
-  console.log(livestreamData);
   const [startDate, endDate] = livestreamData.selectedDates.map(
     (date) => new Date(date)
   );

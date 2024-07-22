@@ -43,7 +43,6 @@ const WalletContextProvider = (props: Props) => {
     const [balance, setBalance] = useState<string>("0")
     const [power, setPower] = useState<string>("0")
     const setAccess = (list: string[]) => {
-        console.log(list)
         setAccessList([...list]);
     }
     useEffect(() => {
@@ -72,7 +71,6 @@ const WalletContextProvider = (props: Props) => {
             setBalance(ethers.formatEther(await signer.provider?.getBalance(await signer.getAddress())!)?.toString()!)
           }
           getBalance()
-          console.log("here")
           interval = setInterval(getBalance, 30000)
         }
         return () => clearInterval(interval)
@@ -91,9 +89,7 @@ const WalletContextProvider = (props: Props) => {
       const fetchInitialAccounts = async (providerInstance: BrowserProvider) => {
         try {
           const accounts = await window.ethereum.request({ method: "eth_accounts" });
-          console.log(accounts)
           if (accounts.length > 0) {
-            console.log(await providerInstance.getSigner())
             setSigner(await providerInstance.getSigner());
           }
         } catch (error) {

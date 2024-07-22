@@ -44,8 +44,6 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
     const {signer, access} = useWalletContext()
     const router = useRouter()
     const renderVideo = () => {
-        console.log("here")
-        console.log(props)
         if (signer && props.type === "DRM") {
             const timestamp = Date.now();
             const data = getSignTypedDataJson(timestamp);
@@ -61,7 +59,6 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
                 script.src = "https://assets.thetatoken.org/tva-js/" + TVA_JS_VERSION_NUMBER + "/tva.js";
                 script.async = true;
                 const address = await signer.getAddress();
-                console.log(address)
                 const a = { address, timestamp, sig: signature }
                 script.onload = function () {
                     new window.TVA.Video({

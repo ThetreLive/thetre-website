@@ -124,9 +124,7 @@ const ThetreContextProvider = (props: Props) => {
       const proposalsRes = await fetch("/api/getEvents");
       const proposals: ProposalDetails[] = (await proposalsRes.json())
         .proposals;
-        console.log(proposals)
       setProposalDetails(proposals.map((proposal) => {return {...proposal, livestreamData: proposal.data.livestreamData ? JSON.parse(JSON.parse(proposal.data.livestreamData as any)) : undefined}}));
-      console.log(proposals);
     }
   };
 
@@ -206,16 +204,9 @@ const ThetreContextProvider = (props: Props) => {
         movieLink,
       });
 
-      console.log(result);
       const listingCalldata = thetreEthers.interface.encodeFunctionData(
         "listMovie",
         [data.title, result.result.key]
-      );
-      console.log(
-        [contracts.THETRE],
-        [0],
-        [listingCalldata],
-        "List Movie: " + data.title
       );
       const govCalldata = govEthers.interface.encodeFunctionData("propose", [
         [contracts.THETRE],
@@ -273,7 +264,6 @@ const ThetreContextProvider = (props: Props) => {
   };
 
   const getVideo = async (movieName: string) => {
-    console.log(movieName);
     const thetreEthers = new ethers.Contract(
       contracts.THETRE,
       thetreABI,

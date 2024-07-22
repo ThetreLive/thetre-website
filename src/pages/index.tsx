@@ -18,7 +18,6 @@ export default function Home() {
 
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
-  console.log(indexOfFirstMovie, indexOfLastMovie);
   const handleNextPage = () => {
     if (
       currentPage <

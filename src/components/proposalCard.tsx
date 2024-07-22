@@ -31,7 +31,6 @@ const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
   }, [proposal.voteEnd]);
 
   const getProposalStateClasses = (state: ProposalState) => {
-    console.log(state)
     switch (state) {
       case ProposalState.Pending:
         return 'bg-yellow-100 text-yellow-800';

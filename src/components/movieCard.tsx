@@ -30,11 +30,9 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
                 const startDate = new Date(livestreamData?.selectedDates[0]!);
                 const endDate = new Date(livestreamData?.selectedDates[1]!);
                 const screeningTimes = livestreamData?.screeningTimes;
-                console.log(screeningTimes)
                 const callbackFn = () => {
                     const {closestTime, closestDifference} = findClosestTime(screeningTimes!, startDate, endDate);
                     if (closestTime) {
-                        console.log(timeString(closestDifference))
                         setCountDown(timeString(closestDifference));
                     }
                 }

@@ -47,7 +47,6 @@ const uploadFileToEdgeStore = async (file: File) => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
-        console.log(result)
         return result
     } catch (error) {
       console.error('Error:', error);
@@ -94,7 +93,6 @@ const uploadVideo = async (movieUrl: string, ticket: string, movieName: string, 
         }
 
         const result = await response.json();
-        console.log('Success:', result);
         return result;
     } catch (error) {
         console.error('Error:', error);
@@ -183,7 +181,6 @@ const startStream = async (streamId: string) => {
         }
     
         let data = await response.json();
-        console.log(data);
 
         url = `https://api.thetavideoapi.com/ingestor/${data.body.ingestors[0].id}/select`;
         headers = {

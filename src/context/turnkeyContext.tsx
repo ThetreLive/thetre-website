@@ -124,7 +124,6 @@ const TurnkeyContextProvider = (props: Props) => {
             });
             const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc")
             ethersSigner = ethersSigner.connect(provider)
-            console.log(walletAccountsResponse?.accounts[0].address)
             setSigner(ethersSigner)
 
         } catch (e: any) {

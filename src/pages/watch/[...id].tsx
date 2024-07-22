@@ -119,9 +119,7 @@ const WatchPage: React.FC = () => {
 
   useEffect(() => {
     if (movie && signer) {
-      console.log("here");
       (async () => {
-        console.log(movie.proposer, await signer.getAddress());
         if (movie.proposer === (await signer.getAddress())) {
           setAuth(true);
         }

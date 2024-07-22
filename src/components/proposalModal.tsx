@@ -50,7 +50,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form);
     const livestreamData = screeningType === 'Live Screening' ? ({
       selectedDates,
       screeningTimes
@@ -65,7 +64,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const handlePrev = () => {
     if (step > 1) setStep(step - 1);
   };
-  console.log(screeningTimes)
   if (!isOpen) return null;
 
   return (
@@ -215,8 +213,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     <DatePicker
                       selected={null}
                       onChange={(date) => {
-                        console.log(date)
-                        console.log(selectedDates)
                         if (Array.isArray(date) && date.every(d => d instanceof Date || d === null)) {
                           const validDates = date.filter(d => d !== null) as Date[];
                           if (selectedDates[0] !== undefined && selectedDates[1] === undefined) {
