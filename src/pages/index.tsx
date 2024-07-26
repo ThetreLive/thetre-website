@@ -14,7 +14,7 @@ export default function Home() {
   const { access } = useWalletContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const moviesPerPage = 3;
+  const moviesPerPage = 4;
 
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
@@ -51,13 +51,12 @@ export default function Home() {
   }
   return (
     <div className="flex gap-2">
-      <Sidebar
+      {/* <Sidebar
         selectedGenres={selectedGenres}
         setSelectedGenres={setSelectedGenres}
-      />
+      /> */}
       <div className="h-screen w-full overflow-y-scroll">
-        <Navbar />
-        <main className="h-[50vh]" id="slider">
+        <main className="h-[100vh]" id="slider">
           <MovieSlider
             access={access}
             proposalDetails={proposalDetails.filter((proposal) =>
@@ -70,7 +69,7 @@ export default function Home() {
           />
         </main>
         <div
-          className="grid grid-cols-3 gap-4 p-4 w-full justify-center"
+          className="grid grid-cols-4 gap-4 p-4 w-full justify-center"
           id="movies"
         >
           {proposalDetails

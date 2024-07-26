@@ -46,7 +46,7 @@
 }
 
 .react-datepicker__month-container {
-  background-color: var(--bg-blue);
+  background-color: var(--bg-thetre);
   color: #f7fafc;
   border: 1px solid #4a5568;
 }
@@ -109,7 +109,7 @@
 }
 
 body {
-    background-color: #01132b;
+    background-color: #111;
     margin: 0;
     padding: 0;
     box-sizing: border-box;

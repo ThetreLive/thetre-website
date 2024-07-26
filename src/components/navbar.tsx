@@ -8,41 +8,20 @@ import AccountPage from './account';
 export default function Navbar() {
   const asPath = usePathname()
   const { signer, balance } = useWalletContext()
-  const [isVisible, setIsVisible] = useState(true);
-  let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
   const [isWalletOpen, setWalletOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false)
-  const handleScroll = () => {
-    if (typeof window !== 'undefined') {
-      if (window.scrollY > lastScrollY) {
-        // scroll down
-        setIsVisible(false);
-      } else {
-        // scroll up
-        setIsVisible(true);
-      }
-      lastScrollY = window.scrollY;
-    }
-  };
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', handleScroll);
-    }
-    return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, []);
-
+  const [isVisible, setIsVisible] = useState(true);
+  
   return (
     <>
     <nav
-      className={`px-8 py-2 w-full transition-transform duration-300 ${
-        isVisible ? 'translate-y-0' : '-translate-y-full'
-      }`}
+      className={`fixed inset-0 z-50 h-[100px] flex px-8 py-2 w-full`}
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
     >
-      <div className="w-full flex items-center justify-between">
+      <div className={`w-full flex items-center justify-between z-10000 transition-transform duration-300  ${
+        isVisible ? 'translate-y-0' : '-translate-y-[100px]'
+      }`}>
         <div className="flex space-x-12 p-4 rounded-xl">
           <Link href="/" className={`text-white font-bold ${asPath === '/' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Browse

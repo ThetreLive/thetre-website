@@ -68,7 +68,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70" onClick={onClose}>
-      <div className="bg-bg-blue rounded-lg w-full max-w-5xl text-white transition-transform transform duration-300" onClick={e => e.stopPropagation()}>
+      <div className="bg-bg-thetre rounded-lg w-full max-w-5xl text-white transition-transform transform duration-300" onClick={e => e.stopPropagation()}>
         <div className="backdrop-blur-[100px] p-6" style={{ height: '600px' }}>
           <h2 className="text-2xl mb-4 text-center">Movie Listing Proposal</h2>
           <form onSubmit={handleSubmit} className="h-full flex flex-col justify-between">

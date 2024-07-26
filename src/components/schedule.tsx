@@ -21,7 +21,7 @@ const LivestreamSchedule: React.FC<Props> = ({ livestreamData, onClose }) => {
       onClick={onClose}
     >
       <div
-        className={`bg-bg-blue rounded-lg max-w-5xl text-white transition-transform transform duration-300`}
+        className={`bg-bg-thetre rounded-lg max-w-5xl text-white transition-transform transform duration-300`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="backdrop-blur-[100px] p-6 rounded-lg">

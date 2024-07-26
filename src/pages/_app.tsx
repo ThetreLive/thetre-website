@@ -7,6 +7,7 @@ import TurnkeyContextProvider from '@/context/turnkeyContext';
 import nexaHeavy from '@/utils/font';
 import ThetreContextProvider from '@/context/thetreContext';
 import WalletContextProvider from '@/context/walletContext';
+import Navbar from '@/components/navbar';
 
 const turnkeyConfig = {
   apiBaseUrl: process.env.NEXT_PUBLIC_TURNKEY_API_BASE_URL!,
@@ -17,6 +18,7 @@ const turnkeyConfig = {
 };
 
 function Thetre({ Component, pageProps }: AppProps) {
+
   return (
     <div className={nexaHeavy.variable}>
       <WalletContextProvider>
@@ -30,6 +32,7 @@ function Thetre({ Component, pageProps }: AppProps) {
                 <link rel="manifest" href="/site.webmanifest"/>
                 <title>Thetre | A Decentralized Movie Experience</title>
               </Head>
+              <Navbar/>
               <Component {...pageProps} />
             </ThetreContextProvider>
           </TurnkeyContextProvider>

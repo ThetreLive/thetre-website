@@ -128,7 +128,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
 
     return (
         <>
-        <div className="bg-bg-blue border border-gray-400/40 text-white rounded-lg shadow-lg p-4 flex-1">
+        <div className="bg-bg-thetre border border-gray-400/40 text-white rounded-lg shadow-lg p-4 flex-1">
             <div 
                 className='w-full h-48 relative overflow-hidden rounded-t-lg'
                 onMouseEnter={() => setIsHovered(true)}

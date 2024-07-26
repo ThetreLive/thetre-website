@@ -67,7 +67,7 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70" onClick={onClose}>
-      <div className={`bg-bg-blue rounded-lg ${signer ? "w-full" : ""} max-w-5xl text-white transition-transform transform duration-300`} onClick={e => e.stopPropagation()}>
+      <div className={`bg-bg-thetre rounded-lg ${signer ? "w-full" : ""} max-w-5xl text-white transition-transform transform duration-300`} onClick={e => e.stopPropagation()}>
         <div className="backdrop-blur-[100px] p-6 rounded-lg">
           {!signer ? (
             <div className='flex flex-col gap-2'>

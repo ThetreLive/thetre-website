@@ -88,7 +88,7 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
     }
 
     return (
-        <div className="h-full" style={{
+        <div className="relative h-full" style={{
             WebkitBoxShadow: 'inset 65px 41px 115px 0px rgba(0,0,0,0.75)',
             MozBoxShadow: 'inset 65px 41px 115px 0px rgba(0,0,0,0.75)',
             boxShadow: 'inset 65px 41px 115px 0px rgba(0,0,0,0.75)',
@@ -112,6 +112,18 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                             onMouseEnter={() => setHoveredIndex(index)}
                             onMouseLeave={() => setHoveredIndex(null)}
                         >
+                            <Image
+                                src={coverURL}
+                                alt={movie.data.title}
+                                className="absolute inset-0 w-full h-full object-cover"
+                                fill
+                            />
+                            <div
+                                className={`absolute inset-0 bg-gradient opacity-50`}
+                                style={{
+                                    background: "radial-gradient(circle at 70% center, transparent 25%, rgba(0, 0, 0, 0.5) 50%, black 75%)"
+                                }}
+                            />
                             {(hoverDelayPassed === index || trailerPlayingIndex === index) ? (
                                 <video
                                     ref={el => { videoRefs.current[index] = el; }}
@@ -121,15 +133,6 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                                     controls
                                 />
                             ) : (
-                                <Image
-                                    objectPosition='right -100px'
-                                    src={coverURL}
-                                    alt={movie.data.title}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    fill
-                                />
-                            )}
-                            {!(hoverDelayPassed === index || trailerPlayingIndex === index) && (
                                 <div className="relative z-10 flex lg:items-center items-end h-full px-16">
                                     <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 lg:p-8 p-4 rounded-lg backdrop-blur-xl">
                                         <h1 className="lg:text-4xl text-2xl font-bold mb-4">{movie.data.title}</h1>
@@ -141,7 +144,6 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                                             ) : (
                                                 <button onClick={() => buyTicket(movie.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>
                                             )}
-
                                             <button onClick={() => handleTrailerClick(index)} className="bg-gray-700 px-4 py-2 rounded-xl">Trailer</button>
                                         </div>
                                     </div>

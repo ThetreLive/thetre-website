@@ -33,7 +33,7 @@ const Proposal: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-bg-blue p-8 text-white">
+    <div className="min-h-screen bg-bg-thetre p-8 text-white">
       <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold underline decoration-thetre-blue mb-6 text-center">
           {proposal.data.title}
