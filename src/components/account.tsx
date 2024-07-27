@@ -12,9 +12,10 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     login: boolean;
+    setLogin: any;
 }
 
-const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
+const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login, setLogin}) => {
   const [activeTab, setActiveTab] = useState<'tfuel' | 'nft'>('tfuel');
   const [walletAddress, setWalletAddress] = useState('');
   const { signer, access, transferNFT, transferTFUEL, connectWallet, balance: walletBalance, power } = useWalletContext()
@@ -72,7 +73,7 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
           {!signer ? (
             <div className='flex flex-col gap-2'>
               <div className='text-center text-2xl'>{login ? "Welcome Back to Thetre" : "Join the Thetre Experience"}</div>
-              <div className='text-gray-400'>Tip - Using passkey based wallet save yourself from losing your funds!</div>
+              <div className='text-gray-400'>Tip - Using passkey based wallet to save yourself from losing your funds!</div>
               <button className='flex-1 rounded-md p-2 bg-custom-radial flex flex-row-reverse items-center gap-2 text-xl justify-between' onClick={async () => {
                 login ? await loginPasskey() : await createSubOrgAndWallet()
               }}>
@@ -85,6 +86,7 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login}) => {
                 <Image src={MetaMaskIcon} alt="metamask" width={24} height={24} />
                 <span>Use Metamask</span>
               </button>
+              <p className='text-center mt-4'>{login ? "Don't" : "Already"} have an account? <button onClick={() => setLogin(!login)}>{login ? "Register" : "Login"}</button></p>
             </div>
           ) : (
             <>

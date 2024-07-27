@@ -11,7 +11,7 @@ export default function Navbar() {
   const [isWalletOpen, setWalletOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false)
   const [isVisible, setIsVisible] = useState(true);
-  
+
   return (
     <>
     <nav
@@ -20,7 +20,7 @@ export default function Navbar() {
       onMouseLeave={() => setIsVisible(false)}
     >
       <div className={`w-full flex items-center justify-between z-10000 transition-transform duration-300  ${
-        isVisible ? 'translate-y-0' : '-translate-y-[100px]'
+        isVisible || asPath === "/proposals" ? 'translate-y-0' : '-translate-y-[100px]'
       }`}>
         <div className="flex space-x-12 p-4 rounded-xl">
           <Link href="/" className={`text-white font-bold ${asPath === '/' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
@@ -59,7 +59,7 @@ export default function Navbar() {
         )}
       </div>
     </nav>
-    <AccountPage isOpen={isWalletOpen} onClose={() => setWalletOpen(false)} login={isLogin}/>
+    <AccountPage isOpen={isWalletOpen} onClose={() => setWalletOpen(false)} login={isLogin} setLogin={(log: boolean) => setIsLogin(log)}/>
     </>
   );
 }

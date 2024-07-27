@@ -21,7 +21,7 @@ const Home: NextPage = () => {
     <>
       {loading && <Loader />}
       <div
-        className={`min-h-screen w-full ${
+        className={`min-h-screen w-full pt-24 ${
           loading ? "blur-xs pointer-events-none" : ""
         }`}
       >

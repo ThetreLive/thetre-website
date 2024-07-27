@@ -128,7 +128,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
 
     return (
         <>
-        <div className="bg-bg-thetre border border-gray-400/40 text-white rounded-lg shadow-lg p-4 flex-1">
+        <div className="bg-black/50 backdrop-blur-xl border border-gray-400/40 text-white rounded-lg shadow-lg p-4 flex-1 relative">
             <div 
                 className='w-full h-48 relative overflow-hidden rounded-t-lg'
                 onMouseEnter={() => setIsHovered(true)}
@@ -185,7 +185,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
 
                     <button 
                         onClick={handleTrailerClick}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex-1"
+                        className="bg-gray-700 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex-1"
                     >
                         Trailer
                     </button>

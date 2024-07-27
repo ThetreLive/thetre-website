@@ -23,6 +23,7 @@ const WatchPage: React.FC = () => {
   const { access, signer, balance } = useWalletContext();
   const [isAuth, setAuth] = useState<boolean>(false);
   const [details, setDetails] = useState<any>("");
+  const [login, setLogin] = useState<boolean>(false);
   const requestFunds = useRef(() => {});
   const changePage = useRef(() => {});
 
@@ -133,7 +134,7 @@ const WatchPage: React.FC = () => {
   return (
     <div className="h-screen flex lg:flex-row flex-col">
       {!signer && (
-        <AccountPage isOpen={true} onClose={() => {}} login={false} />
+        <AccountPage isOpen={true} onClose={() => {}} login={login} setLogin={setLogin} />
       )}
       <div className="w-full lg:h-screen lg:overflow-y-scroll flex-grow">
         {movie.data.isDRMEnabled ? (

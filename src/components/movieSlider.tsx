@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import Slider from 'react-slick';
 
-const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string[] }) => {
+const MovieSlider = (props: { scroll: boolean, proposalDetails: ProposalDetails[], access: string[] }) => {
     const { buyTicket } = useThetreContext();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [hoverDelayPassed, setHoverDelayPassed] = useState<number | null>(null);
@@ -109,11 +109,11 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                         <div
                             key={index}
                             className='relative h-full w-full'
-                            onMouseEnter={() => setHoveredIndex(index)}
+                            onMouseEnter={() => props.scroll && setHoveredIndex(index)}
                             onMouseLeave={() => setHoveredIndex(null)}
                         >
                             <Image
-                                src={coverURL}
+                                src={"https://data.thetaedgestore.com/api/v2/data/0xba98cb3cdde6fae8aedd3fe74090f81e724981a8ac4e942262ada4796053a06f"}
                                 alt={movie.data.title}
                                 className="absolute inset-0 w-full h-full object-cover"
                                 fill
@@ -124,7 +124,18 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                                     background: "radial-gradient(circle at 70% center, transparent 25%, rgba(0, 0, 0, 0.5) 50%, black 75%)"
                                 }}
                             />
-                            {(hoverDelayPassed === index || trailerPlayingIndex === index) ? (
+                            {props.scroll && (
+                                <div className="absolute top-[100px] left-[100px] w-[600px] z-100 h-[300px]">
+                                <Image
+                                    src={"https://data.thetaedgestore.com/api/v2/data/0x3ed7c5806e436783de0468ab880018d94ce168e9620e743627d2d531066d89e2"}
+                                    alt="Overlay Image"
+                                    className="object-contain"
+                                    fill
+                                />
+                            </div>
+
+                            )}
+                            {(hoverDelayPassed === index || trailerPlayingIndex === index) && props.scroll ? (
                                 <video
                                     ref={el => { videoRefs.current[index] = el; }}
                                     src={trailerURL}
@@ -134,19 +145,21 @@ const MovieSlider = (props: { proposalDetails: ProposalDetails[], access: string
                                 />
                             ) : (
                                 <div className="relative z-10 flex lg:items-center items-end h-full px-16">
-                                    <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 lg:p-8 p-4 rounded-lg backdrop-blur-xl">
-                                        <h1 className="lg:text-4xl text-2xl font-bold mb-4">{movie.data.title}</h1>
-                                        <p className="lg:text-base text-sm mb-4">{movie.data.genre}</p>
-                                        <p className="mb-8 text-sm">{movie.data.description}</p>
-                                        <div className="flex space-x-4">
-                                            {props.access.includes(movie.data.title) || !movie.data.isDRMEnabled ? (
-                                                <Link href={`/watch/${movie.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Watch Now</Link>
-                                            ) : (
-                                                <button onClick={() => buyTicket(movie.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>
-                                            )}
-                                            <button onClick={() => handleTrailerClick(index)} className="bg-gray-700 px-4 py-2 rounded-xl">Trailer</button>
+                                    {props.scroll && (
+                                        <div className="text-left text-white lg:w-1/3 bg-black bg-opacity-50 lg:p-8 p-4 rounded-lg backdrop-blur-xl relative top-[100px]">
+                                            {/* <h1 className="lg:text-4xl text-2xl font-bold mb-4">{movie.data.title}</h1> */}
+                                            <p className="lg:text-xl text-xl font-bold mb-4">{movie.data.genre}</p>
+                                            <p className="mb-8 text-base">{movie.data.description}</p>
+                                            <div className="flex space-x-4">
+                                                {props.access.includes(movie.data.title) || !movie.data.isDRMEnabled ? (
+                                                    <Link href={`/watch/${movie.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Watch Now</Link>
+                                                ) : (
+                                                    <button onClick={() => buyTicket(movie.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>
+                                                )}
+                                                <button onClick={() => handleTrailerClick(index)} className="bg-gray-700 px-4 py-2 rounded-xl">Trailer</button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             )}
                         </div>
