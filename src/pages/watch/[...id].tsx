@@ -132,7 +132,7 @@ const WatchPage: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex lg:flex-row flex-col">
+    <div className="h-screen bg-bg-blue flex lg:flex-row flex-col">
       {!signer && (
         <AccountPage isOpen={true} onClose={() => {}} login={login} setLogin={setLogin} />
       )}
@@ -256,13 +256,13 @@ const WatchPage: React.FC = () => {
           changePage={changePage}
           setChangePage={setChangePage}
         />
-        <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/50 p-4 h-[500px] rounded-lg space-y-10">
+        <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/50 p-4 h-[40vh] rounded-lg space-y-10">
           <div>
             <p className="text-white font-bold text-2xl p-2 rounded-xl text-center">
               {movie.data.title}
             </p>
 
-            <p className="font-bold text-white">{movie.data.description}</p>
+            <p className="font-bold text-white pb-2">{movie.data.description}</p>
             <p className="font-bold text-white">Genre: {movie.data.genre}</p>
             <p className="font-bold text-white">Starring: {movie.data.cast.split(",").splice(0, 3).join(",")}</p>
           </div>
