@@ -1,6 +1,7 @@
 import Loader from "@/components/loader";
 import ThetaPlayer from "@/components/thetaPlayer";
 import { ProposalDetails, useThetreContext } from "@/context/thetreContext";
+import { useWalletContext } from "@/context/walletContext";
 import { getFileURL } from "@/utils/theta";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -8,11 +9,13 @@ import { useEffect, useRef, useState } from "react";
 const Proposal: React.FC = () => {
   const router = useRouter();
   const [proposal, setProposal] = useState<ProposalDetails | undefined>(undefined);
+  const { power } = useWalletContext()
   const { proposalDetails, fetchProposals, setLoader, castVote } = useThetreContext();
   const playerRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (router.isReady && router.query.id) {
+      if (power === "0") { router.replace("/"); return;}
       if (proposalDetails.length > 0) {
         const foundProposal = proposalDetails.find((proposal) => proposal.id === router.query.id);
         setProposal(foundProposal);
@@ -26,7 +29,7 @@ const Proposal: React.FC = () => {
         })();
       }
     }
-  }, [router.isReady, router.query.id, proposalDetails]);
+  }, [router.isReady, router.query.id, proposalDetails, power]);
 
   if (!proposal) {
     return <Loader />;

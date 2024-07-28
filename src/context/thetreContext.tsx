@@ -31,6 +31,7 @@ export interface ProposalData {
   movieLink: string | File;
   trailerLink: string | File;
   coverLink: string | File;
+  logoLink: string | File;
   isDRMEnabled: boolean;
   screeningType: "Recorded" | "Live Screening";
   livestreamData:
@@ -183,6 +184,7 @@ const ThetreContextProvider = (props: Props) => {
     const movieRes = await uploadFileToEdgeStore(data.movieLink as File);
     const trailerRes = await uploadFileToEdgeStore(data.trailerLink as File);
     const coverRes = await uploadFileToEdgeStore(data.coverLink as File);
+    const logoRes = await uploadFileToEdgeStore(data.logoLink as File);
     let movieLink;
     if (data.isDRMEnabled) {
       const upload = await uploadVideo(
@@ -201,6 +203,7 @@ const ThetreContextProvider = (props: Props) => {
         livestreamData: JSON.stringify(data.livestreamData),
         trailerLink: JSON.stringify(trailerRes),
         coverLink: JSON.stringify(coverRes),
+        logoLink: JSON.stringify(logoRes),
         movieLink,
       });
 

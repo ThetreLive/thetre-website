@@ -1,4 +1,4 @@
-import { SA_ID } from "./constants";
+import { contracts, SA_ID } from "./constants";
 
 const getFileURL = (key: string, relpath: string | null) => {
     return `https://p2p.thetre.live/file?key=${key}${relpath !== null && `&relpath=${relpath}`}`
@@ -70,6 +70,12 @@ const uploadVideo = async (movieUrl: string, ticket: string, movieName: string, 
         video_type: 1,
         drm_rules: [{
             nft_collection: ticket,
+            chain_id: 365,
+            title: movieName,
+            image: coverUrl,
+            link: "No link"
+        }, {
+            nft_collection: contracts.THETRE,
             chain_id: 365,
             title: movieName,
             image: coverUrl,

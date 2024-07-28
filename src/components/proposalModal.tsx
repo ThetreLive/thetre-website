@@ -24,6 +24,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     movieLink: '',
     trailerLink: '',
     coverLink: '',
+    logoLink: '',
     isDRMEnabled: true,
     screeningType: 'Recorded',
     livestreamData: undefined
@@ -112,7 +113,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               )}
               {step === 2 && (
                 <div className='flex flex-col justify-center'>
-                  <label className="block text-center mb-8">Upload Movie</label>
+                  <label className="block text-center mb-8">Upload Movie(10MB limit for testing)</label>
                   <div 
                     className="flex items-center justify-center border border-dashed border-gray-500 h-36 p-4 text-center rounded bg-transparent text-white"
                   >
@@ -194,6 +195,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 </div>
               )}
               {step === 4 && (
+                <div className='flex flex-col gap-2'>
+
                 <div>
                   <label className="block text-center mb-8">Upload Cover</label>
                   <div 
@@ -205,6 +208,19 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     </label>
                   </div>
                 </div>
+                <div>
+                <label className="block text-center mb-8">Upload Logo</label>
+                <div 
+                  className="flex items-center justify-center border border-dashed border-gray-500 h-36 p-4 text-center rounded bg-transparent text-white"
+                >
+                  <input type="file" name="logoLink" onChange={handleFileChange} className="hidden" id="logoLink" />
+                  <label htmlFor="logoLink" className="cursor-pointer text-blue-400">
+                    {form.logoLink instanceof File ? form.logoLink.name : 'Choose a file to upload'}
+                  </label>
+                </div>
+              </div>
+              </div>
+
               )}
               {step === 5 && screeningType === 'Live Screening' && (
                 <div>

@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const provider = new ethers.JsonRpcProvider("https://eth-rpc-api-testnet.thetatoken.org/rpc");
 
     try {
-        let startBlock = 27166848;
+        let startBlock = 27319817;
         const endBlock = await provider.getBlockNumber();
         const blockRange = 5000;
         let proposals: ProposalDetails[] = [];
@@ -45,7 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 toBlock: range.toBlock
             };
             logs = await provider.getLogs(filter);
-            console.log(logs)
             const parsedLogs = logs.map((log: any) => govEthers.interface.parseLog(log));
             
             const proposalDetailsPromises = parsedLogs.map(async (log: any) => {
