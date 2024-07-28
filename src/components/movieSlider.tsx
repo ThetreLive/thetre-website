@@ -100,6 +100,11 @@ const MovieSlider = (props: { scroll: boolean, proposalDetails: ProposalDetails[
                         JSON.parse(movie.data.coverLink as string).result.relpath
                     );
 
+                    const logoURL = getFileURL(
+                        JSON.parse(movie.data.logoLink as string).result.key,
+                        JSON.parse(movie.data.logoLink as string).result.relpath
+                    );
+
                     const trailerURL = getFileURL(
                         JSON.parse(movie.data.trailerLink as string).result.key,
                         JSON.parse(movie.data.trailerLink as string).result.relpath
@@ -113,7 +118,7 @@ const MovieSlider = (props: { scroll: boolean, proposalDetails: ProposalDetails[
                             onMouseLeave={() => setHoveredIndex(null)}
                         >
                             <Image
-                                src={"https://data.thetaedgestore.com/api/v2/data/0xba98cb3cdde6fae8aedd3fe74090f81e724981a8ac4e942262ada4796053a06f"}
+                                src={coverURL}
                                 alt={movie.data.title}
                                 className="absolute inset-0 w-full h-full object-cover"
                                 fill
@@ -127,7 +132,7 @@ const MovieSlider = (props: { scroll: boolean, proposalDetails: ProposalDetails[
                             {props.scroll && (
                                 <div className="absolute top-[100px] left-[100px] w-[600px] z-100 h-[300px]">
                                 <Image
-                                    src={"https://data.thetaedgestore.com/api/v2/data/0x3ed7c5806e436783de0468ab880018d94ce168e9620e743627d2d531066d89e2"}
+                                    src={logoURL}
                                     alt="Overlay Image"
                                     className="object-contain"
                                     fill
