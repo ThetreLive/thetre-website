@@ -20,7 +20,7 @@ const WatchPage: React.FC = () => {
   const [movie, setMovie] = useState<ProposalDetails | undefined>(undefined);
   const { proposalDetails, fetchProposals, setLoader, getVideo, buyTicket } =
     useThetreContext();
-  const { access, signer, balance } = useWalletContext();
+  const { access, signer, balance, subscribed } = useWalletContext();
   const [isAuth, setAuth] = useState<boolean>(false);
   const [details, setDetails] = useState<any>("");
   const [login, setLogin] = useState<boolean>(false);
@@ -80,11 +80,11 @@ const WatchPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (router.isReady && router.query.id![0]) {
+    if (router.isReady && router.query.id![0] && subscribed !== null) {
       if (proposalDetails.length > 0) {
         proposalDetails.map(async (proposal) => {
           if (proposal.id === router.query.id![0]) {
-            if (proposal.data.isDRMEnabled) {
+            if (proposal.data.isDRMEnabled  && !subscribed) {
               const videoId = await getVideo(proposal.data.title as string);
               setMovie({
                 ...proposal,
@@ -100,7 +100,7 @@ const WatchPage: React.FC = () => {
             setMovie(
               await proposalDetails.map(async (proposal) => {
                 if (proposal.id === router.query.id![0]) {
-                  if (proposal.data.isDRMEnabled) {
+                  if (proposal.data.isDRMEnabled  && !subscribed) {
                     const videoId = await getVideo(
                       proposal.data.title as string
                     );
@@ -116,7 +116,7 @@ const WatchPage: React.FC = () => {
         })();
       }
     }
-  }, [router.isReady, router.query.id, proposalDetails]);
+  }, [router.isReady, router.query.id, proposalDetails, subscribed]);
 
   useEffect(() => {
     if (movie && signer) {
@@ -261,11 +261,13 @@ const WatchPage: React.FC = () => {
             <p className="text-white font-bold text-2xl p-2 rounded-xl text-center">
               {movie.data.title}
             </p>
+
+            <p className="font-bold text-white">{movie.data.description}</p>
             <p className="font-bold text-white">Genre: {movie.data.genre}</p>
             <p className="font-bold text-white">Starring: {movie.data.cast.split(",").splice(0, 3).join(",")}</p>
           </div>
           <div className="flex flex-col gap-2">
-            {!access.includes(movie.data.title) && movie.data.isDRMEnabled ? (
+            {!access.includes(movie.data.title) && movie.data.isDRMEnabled && !subscribed ? (
                 <button
                     className="text-white bg-thetre-blue p-2 rounded-lg"
                     onClick={() => buyTicket(movie.data.title)}

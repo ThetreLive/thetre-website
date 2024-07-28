@@ -41,7 +41,7 @@ interface Props {
 }
 
 const ThetaPlayer: React.FC<Props> = (props: Props) => {
-    const {signer, access} = useWalletContext()
+    const {signer, access, subscribed} = useWalletContext()
     const router = useRouter()
     const renderVideo = () => {
         if (signer && props.type === "DRM") {
@@ -92,8 +92,10 @@ const ThetaPlayer: React.FC<Props> = (props: Props) => {
         }
     }
     useEffect(() => {
-        renderVideo()
-    }, [signer, access, props.videoId])
+        if (subscribed !== null) {
+            renderVideo()
+        }
+    }, [signer, access, props.videoId, subscribed])
     return (
         <div className="w-full">
             <video ref={props.playerRef} controls className={props.styles} poster={props.poster}/>

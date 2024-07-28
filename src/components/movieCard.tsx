@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import LivestreamSchedule from './schedule';
+import { useWalletContext } from '@/context/walletContext';
 
 interface Props {
     proposal: ProposalDetails,
@@ -21,7 +22,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [viewSchedule, setViewSchedule] = useState(false);
     const [countDown, setCountDown] = useState("");
-
+    const { subscribed } = useWalletContext()
     useEffect(() => {
         let interval: any;
         if (proposal) {
@@ -96,6 +97,11 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
         JSON.parse(proposal.data.coverLink as string).result.relpath
     );
 
+    const logoURL = getFileURL(
+        JSON.parse(proposal.data.logoLink as string).result.key,
+        JSON.parse(proposal.data.logoLink as string).result.relpath
+    );
+
     const trailerURL = getFileURL(
         JSON.parse(proposal.data.trailerLink as string).result.key,
         JSON.parse(proposal.data.trailerLink as string).result.relpath
@@ -145,12 +151,22 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
                         onEnded={handleVideoEnd}
                     />
                 ) : (
-                    <Image
-                        src={coverURL}
-                        alt={proposal.data.title}
-                        className="w-full h-full object-cover transition-opacity duration-300"
-                        fill
-                    />
+                    <>
+                        <Image
+                            src={coverURL}
+                            alt={proposal.data.title}
+                            className="w-full h-full object-cover transition-opacity duration-300"
+                            fill
+                        />
+                        <div className="absolute top-2 left-2 w-[200px] h-[130px]">
+                            <Image
+                                src={logoURL}
+                                alt="Overlay Image"
+                                className="object-contain"
+                                fill
+                            />
+                        </div>
+                    </>
                 )}
             </div>
             <div className="p-4">
@@ -170,7 +186,7 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
                 </div>
                 <p className="text-gray-200">{proposal.data.description.slice(0, 100)}...</p>
                 <div className="flex justify-between items-center mt-4 gap-2">
-                    {access.includes(proposal.data.title) || !proposal.data.isDRMEnabled ? (
+                    {(access.includes(proposal.data.title) || subscribed) || !proposal.data.isDRMEnabled ? (
                         <>
                             {changePage ? (
                                 <button onClick={() => changePage(proposal.id)} className="bg-custom-radial px-6 py-3 font-bold rounded-lg">{proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}</button>

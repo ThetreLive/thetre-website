@@ -1,7 +1,11 @@
 import Navbar from "@/components/navbar";
+import { useThetreContext } from "@/context/thetreContext";
+import { useWalletContext } from "@/context/walletContext";
 import Link from "next/link";
 
 const Plans = () => {
+  const { buySubscription } = useThetreContext()
+  const { subscribed } = useWalletContext()
   return (
     <>
       <Navbar />
@@ -41,9 +45,9 @@ const Plans = () => {
             </div>
             <div className="border border-1 border-gray-300/40 text-white rounded-lg p-8 shadow-lg flex-1">
               <h2 className="text-xl font-semibold text-thetre-blue mb-4">
-                Subscription Based DRM (coming soon)
+                Subscription Based DRM
               </h2>
-              <h3 className="text-4xl font-bold mb-6">?? TFUEL/month</h3>
+              <h3 className="text-4xl font-bold mb-6">40 TFUEL/month</h3>
               <ul className="text-left mb-6">
                 <li className="flex items-center mb-2">
                   <span className="text-green-500 mr-2">&#10003;</span> Chatroom
@@ -63,10 +67,10 @@ const Plans = () => {
                 </li>
               </ul>
               <button
-                className="bg-thetre-blue bg-opacity-40 text-white px-6 py-3 rounded-lg cursor-not-allowed w-full"
-                disabled
+                className={"bg-thetre-blue text-white px-6 py-3 rounded-lg w-full " + (subscribed ? "opacity-50 cursor-not-allowed" : "")}
+                onClick={buySubscription}
               >
-                Coming Soon
+                {subscribed ? "Subscribed" : "Subscribe for 28 days"}
               </button>
             </div>
           </div>

@@ -5,6 +5,11 @@ export const thetreABI = [
         "internalType": "contract TimelockController",
         "name": "_timelock",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_subscriptionDuration",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -69,6 +74,25 @@ export const thetreABI = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "_movieName",
         "type": "string"
@@ -80,6 +104,13 @@ export const thetreABI = [
       }
     ],
     "name": "buyDiscountedTicket",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "buySubscription",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
@@ -167,6 +198,19 @@ export const thetreABI = [
       }
     ],
     "name": "setMovieVideo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_subscriptionPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "setSubscriptionPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

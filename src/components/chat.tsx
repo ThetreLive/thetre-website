@@ -274,7 +274,7 @@ const Chat: React.FC<Props> = (props: Props) => {
   return (
     <div className="flex flex-col justify-between w-full lg:w-[550px] lg:border lg:border-gray-500/50 h-[600px] rounded-xl p-4">
       <div className="p-2 flex flex-col gap-2">
-        <div className="flex items-center justify-between text-white text-xl">
+        <div className={"flex items-center justify-between text-white text-xl " + (subscrbers.length === 0 ? "invisible" : "")}>
           <p>In Room({subscrbers.length})</p>
           {subscrbers.length > 0 && (
             <div className="flex items-center space-x-[-10px]">

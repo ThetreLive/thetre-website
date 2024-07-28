@@ -1,4 +1,5 @@
 import { ProposalDetails, useThetreContext } from '@/context/thetreContext';
+import { useWalletContext } from '@/context/walletContext';
 import { getFileURL } from '@/utils/theta';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +12,7 @@ const MovieSlider = (props: { scroll: boolean, proposalDetails: ProposalDetails[
     const [hoverDelayPassed, setHoverDelayPassed] = useState<number | null>(null);
     const [trailerPlayingIndex, setTrailerPlayingIndex] = useState<number | null>(null);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+    const { subscribed } = useWalletContext();
 
     useEffect(() => {
         if (hoveredIndex !== null) {
@@ -156,7 +158,7 @@ const MovieSlider = (props: { scroll: boolean, proposalDetails: ProposalDetails[
                                             <p className="lg:text-xl text-xl font-bold mb-4">{movie.data.genre}</p>
                                             <p className="mb-8 text-base">{movie.data.description}</p>
                                             <div className="flex space-x-4">
-                                                {props.access.includes(movie.data.title) || !movie.data.isDRMEnabled ? (
+                                                {(props.access.includes(movie.data.title) || subscribed) || !movie.data.isDRMEnabled ? (
                                                     <Link href={`/watch/${movie.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Watch Now</Link>
                                                 ) : (
                                                     <button onClick={() => buyTicket(movie.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>

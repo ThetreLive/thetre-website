@@ -1,4 +1,5 @@
 import { governerABI } from "@/utils/abis/governerABI";
+import { thetreABI } from "@/utils/abis/thetreABI";
 import { contracts } from "@/utils/constants";
 import { TurnkeySigner } from "@turnkey/ethers";
 import  {ethers, BrowserProvider, Signer } from "ethers";
@@ -15,6 +16,7 @@ type StoreState = {
     transferTFUEL: (recipient: string, amount: string) => Promise<void>;
     transferNFT: (nftCollectionAddress: string, tokenId: string, recipient: string) => Promise<void>;
     power: string;
+    subscribed: boolean | null;
 };
   
 const WalletContext = createContext<StoreState>({
@@ -27,7 +29,8 @@ const WalletContext = createContext<StoreState>({
     setAccess: () => {},
     transferTFUEL: async () => {},
     transferNFT: async () => {},
-    power: "0"
+    power: "0",
+    subscribed: null,
 });
   
 export const useWalletContext = () => useContext(WalletContext);
@@ -42,6 +45,8 @@ const WalletContextProvider = (props: Props) => {
     const [access, setAccessList] = useState<string[]>([]);
     const [balance, setBalance] = useState<string>("0")
     const [power, setPower] = useState<string>("0")
+    const [subscribed, setSubscribed] = useState<boolean | null>(null)
+
     const setAccess = (list: string[]) => {
         setAccessList([...list]);
     }
@@ -57,9 +62,15 @@ const WalletContextProvider = (props: Props) => {
         }
       }, []);
 
+      
       useEffect(() => {
         let interval: any;
         if (signer) {
+          (async () => {
+            const thetreEthers = new ethers.Contract(contracts.THETRE, thetreABI, signer)
+            const isSubscribed = await thetreEthers.balanceOf(await signer.getAddress())
+            setSubscribed(Number(isSubscribed) > 0)
+          })()
           const getBalance = async () => {
             const govEthers = new ethers.Contract(
               contracts.LISTING_GOVERNER,
@@ -192,7 +203,7 @@ const WalletContextProvider = (props: Props) => {
       };
             
     return (
-        <WalletContext.Provider value={{ balance, signer, setSigner, connectWallet, disconnectWallet, access, setAccess, transferTFUEL, transferNFT, power }}>
+        <WalletContext.Provider value={{ balance, signer, setSigner, connectWallet, disconnectWallet, access, setAccess, transferTFUEL, transferNFT, power, subscribed }}>
             {props.children}
         </WalletContext.Provider>
     )

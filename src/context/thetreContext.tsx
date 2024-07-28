@@ -78,6 +78,7 @@ type StoreState = {
   fetchProposals: () => Promise<void>;
   getVideo: (movieName: string) => Promise<string>;
   buyTicket: (movieName: string) => Promise<void>;
+  buySubscription: () => Promise<void>;
   getAccess: () => Promise<void>;
 };
 
@@ -91,6 +92,7 @@ const ThetreContext = createContext<StoreState>({
   fetchProposals: async () => {},
   getVideo: async () => "",
   buyTicket: async () => {},
+  buySubscription: async () => {},
   getAccess: async () => {},
 });
 
@@ -311,6 +313,40 @@ const ThetreContextProvider = (props: Props) => {
     }
   };
 
+  const buySubscription = async () => {
+    if (!signer) {
+      alert("Please connect wallet/sign in first");
+      return;
+    }
+    const thetreEthers = new ethers.Contract(
+      contracts.THETRE,
+      thetreABI,
+      signer
+    );
+    try {
+      // buy ticket
+      const thetreCalldata = thetreEthers.interface.encodeFunctionData(
+        "buySubscription"
+      );
+
+      const txResponse = await signer?.sendTransaction({
+        from: signer.getAddress(),
+        to: contracts.THETRE,
+        data: thetreCalldata,
+        value: ethers.parseEther("40"),
+        gasLimit: 200000,
+      });
+      console.log("Transaction response:", txResponse);
+
+      // Wait for the transaction to be mined
+      const receipt = await txResponse?.wait();
+      console.log("Receipt - ", receipt);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+
   return (
     <ThetreContext.Provider
       value={{
@@ -324,6 +360,7 @@ const ThetreContextProvider = (props: Props) => {
         getVideo,
         buyTicket,
         getAccess,
+        buySubscription
       }}
     >
       {props.children}
