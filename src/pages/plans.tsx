@@ -9,7 +9,7 @@ const Plans = () => {
   return (
     <>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-bg-thetre text-white">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-bg-blue text-white">
         <div className="w-full max-w-6xl p-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4">Plans</h1>

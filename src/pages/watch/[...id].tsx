@@ -84,7 +84,7 @@ const WatchPage: React.FC = () => {
       if (proposalDetails.length > 0) {
         proposalDetails.map(async (proposal) => {
           if (proposal.id === router.query.id![0]) {
-            if (proposal.data.isDRMEnabled  && !subscribed) {
+            if (proposal.data.isDRMEnabled  && (!subscribed || proposal.data.livestreamData)) {
               const videoId = await getVideo(proposal.data.title as string);
               setMovie({
                 ...proposal,
@@ -100,7 +100,7 @@ const WatchPage: React.FC = () => {
             setMovie(
               await proposalDetails.map(async (proposal) => {
                 if (proposal.id === router.query.id![0]) {
-                  if (proposal.data.isDRMEnabled  && !subscribed) {
+                  if (proposal.data.isDRMEnabled  && (!subscribed || proposal.data.livestreamData)) {
                     const videoId = await getVideo(
                       proposal.data.title as string
                     );
@@ -256,7 +256,7 @@ const WatchPage: React.FC = () => {
           changePage={changePage}
           setChangePage={setChangePage}
         />
-        <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/50 p-4 h-[40vh] rounded-lg space-y-10">
+        <div className="p-4 lg:flex lg:flex-col gap-2 hidden lg:w-[550px] lg:border lg:border-gray-500/50 p-4 h-[40vh] overflow-y-scroll rounded-lg space-y-10">
           <div>
             <p className="text-white font-bold text-2xl p-2 rounded-xl text-center">
               {movie.data.title}

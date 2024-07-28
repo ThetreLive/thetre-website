@@ -134,87 +134,104 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
 
     return (
         <>
-        <div className="bg-black/50 backdrop-blur-xl border border-gray-400/40 text-white rounded-lg shadow-lg p-4 flex-1 relative">
+          <div className="bg-black/50 backdrop-blur-xl border border-gray-400/40 text-white rounded-lg shadow-lg p-4 flex-1 relative flex flex-col justify-between">
             <div 
-                className='w-full h-48 relative overflow-hidden rounded-t-lg'
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+              className='w-full h-48 relative overflow-hidden rounded-t-lg'
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
-                {(isHoverDelayPassed || isTrailerPlaying) ? (
-                    <video
-                        ref={videoRef}
-                        src={trailerURL}
-                        className="w-full h-full object-cover transition-opacity duration-300"
-                        autoPlay
-                        controls
-                        muted={muted}
-                        onEnded={handleVideoEnd}
+              {(isHoverDelayPassed || isTrailerPlaying) ? (
+                <video
+                  ref={videoRef}
+                  src={trailerURL}
+                  className="w-full h-full object-cover transition-opacity duration-300"
+                  autoPlay
+                  controls
+                  muted={muted}
+                  onEnded={handleVideoEnd}
+                />
+              ) : (
+                <>
+                  <Image
+                    src={coverURL}
+                    alt={proposal.data.title}
+                    className="w-full h-full object-cover transition-opacity duration-300"
+                    fill
+                  />
+                  <div className="absolute top-2 left-2 w-[200px] h-[130px]">
+                    <Image
+                      src={logoURL}
+                      alt="Overlay Image"
+                      className="object-contain"
+                      fill
                     />
-                ) : (
-                    <>
-                        <Image
-                            src={coverURL}
-                            alt={proposal.data.title}
-                            className="w-full h-full object-cover transition-opacity duration-300"
-                            fill
-                        />
-                        <div className="absolute top-2 left-2 w-[200px] h-[130px]">
-                            <Image
-                                src={logoURL}
-                                alt="Overlay Image"
-                                className="object-contain"
-                                fill
-                            />
-                        </div>
-                    </>
-                )}
+                  </div>
+                </>
+              )}
             </div>
-            <div className="p-4">
+            <div className="p-4 flex flex-col justify-between flex-1">
+              <div>
                 <h2 className="text-xl font-bold mb-2">{proposal.data.title}</h2>
                 <div className='flex flex-row justify-between items-center pb-1'>
-                    <p className="text-gray-200">Genre - {proposal.data.genre}</p>
-
-                    {proposal.data.livestreamData ? (
-                            <button 
-                                onClick={() => setViewSchedule(true)}
-                                className="bg-gray-700 px-2 py-1 rounded-xl">
-                                View Schedule
-                            </button>
-
-                    ): <div></div>}
-
+                  <p className="text-gray-200">Genre - {proposal.data.genre}</p>
+      
+                  {proposal.data.livestreamData ? (
+                    <button 
+                      onClick={() => setViewSchedule(true)}
+                      className="bg-gray-700 px-2 py-1 rounded-xl"
+                    >
+                      View Schedule
+                    </button>
+                  ) : <div></div>}
                 </div>
                 <p className="text-gray-200">{proposal.data.description.slice(0, 100)}...</p>
-                <div className="flex justify-between items-center mt-4 gap-2">
-                    {(access.includes(proposal.data.title) || subscribed) || !proposal.data.isDRMEnabled ? (
-                        <>
-                            {changePage ? (
-                                <button onClick={() => changePage(proposal.id)} className="bg-custom-radial px-6 py-3 font-bold rounded-lg">{proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}</button>
-                            ) : (
-                                <Link href={`/watch/${proposal.id}`} className="bg-custom-radial px-6 py-3 font-bold rounded-lg">{proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}</Link>
-
-                            )}
-                        </>
+              </div>
+              <div className="flex justify-between items-center mt-4 gap-2">
+                {(access.includes(proposal.data.title) || subscribed) || !proposal.data.isDRMEnabled ? (
+                  <>
+                    {changePage ? (
+                      <button 
+                        onClick={() => changePage(proposal.id)} 
+                        className="bg-custom-radial px-6 py-3 font-bold rounded-lg"
+                      >
+                        {proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}
+                      </button>
                     ) : (
-                        <button onClick={() => buyTicket(proposal.data.title)} className="bg-custom-radial px-6 py-3 font-bold rounded-xl">Buy Pass for 10TFUEL</button>
+                      <Link 
+                        href={`/watch/${proposal.id}`} 
+                        className="bg-custom-radial px-6 py-3 font-bold rounded-lg"
+                      >
+                        {proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}
+                      </Link>
                     )}
-
-                    <button 
-                        onClick={handleTrailerClick}
-                        className="bg-gray-700 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex-1"
-                    >
-                        Trailer
-                    </button>
-                </div>
+                  </>
+                ) : (
+                  <button 
+                    onClick={() => buyTicket(proposal.data.title)} 
+                    className="bg-custom-radial px-6 py-3 font-bold rounded-xl"
+                  >
+                    Buy Pass for 10TFUEL
+                  </button>
+                )}
+                <button 
+                  onClick={handleTrailerClick}
+                  className="bg-gray-700 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex-1"
+                >
+                  Trailer
+                </button>
+              </div>
             </div>
-        </div>
-
-        {proposal.data.livestreamData && viewSchedule && (
-            <LivestreamSchedule livestreamData={JSON.parse(JSON.parse(proposal.data.livestreamData! as any))} onClose={() => setViewSchedule(false)} />
-
-        )}
+          </div>
+      
+          {proposal.data.livestreamData && viewSchedule && (
+            <LivestreamSchedule 
+              livestreamData={JSON.parse(JSON.parse(proposal.data.livestreamData! as any))} 
+              onClose={() => setViewSchedule(false)} 
+            />
+          )}
         </>
-    );
+      );
+      
 };
 
 export default MovieCard;
