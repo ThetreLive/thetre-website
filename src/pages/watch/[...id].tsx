@@ -80,7 +80,7 @@ const WatchPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (router.isReady && router.query.id![0] && subscribed !== null) {
+    if (router.isReady && router.query.id![0]) {
       if (proposalDetails.length > 0) {
         proposalDetails.map(async (proposal) => {
           if (proposal.id === router.query.id![0]) {
