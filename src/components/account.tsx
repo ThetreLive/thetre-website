@@ -73,7 +73,7 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login, setLogin}) 
           {!signer ? (
             <div className='flex flex-col gap-2'>
               <div className='text-center text-2xl'>{login ? "Welcome Back to Thetre" : "Join the Thetre Experience"}</div>
-              <div className='text-gray-400'>Tip - Using passkey based wallet to save yourself from losing your funds!</div>
+              <div className='text-gray-400'>Tip - Use passkey based wallet to save yourself from losing your funds!</div>
               <button className='flex-1 rounded-md p-2 bg-custom-radial flex flex-row-reverse items-center gap-2 text-xl justify-between' onClick={async () => {
                 login ? await loginPasskey() : await createSubOrgAndWallet()
               }}>
