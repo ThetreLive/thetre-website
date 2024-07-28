@@ -54,7 +54,7 @@ const ProposalCard: FC<ProposalCardProps> = ({ proposal }) => {
   };
 
   return (
-    <div className="shadow-md rounded-lg p-6 mb-4 bg-black/40 backdrop-blur-xl w-full border border-1 border-gray-300/50">
+    <div className="shadow-md rounded-lg p-6 mb-4 bg-black/40 backdrop-blur-xl w-full">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <img
