@@ -21,13 +21,11 @@ const uploadFileToApiGateway = async (file: any, filename: string): Promise<void
     method: 'PUT',
     headers: {
       'Content-Type': file.mimetype!,
+      'x-api-key': process.env.AWS_API_GATEWAY_KEY!,
     },
     body: fs.createReadStream(file.filepath),
   });
-
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
+  console.log(response)
 
   console.log('File uploaded successfully to S3');
 };
@@ -52,6 +50,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
       await uploadFileToApiGateway(file, filename);
+      console.log("hee")
       res.status(200).json({ message: 'File uploaded successfully' });
     } catch (error) {
       console.log(error)
