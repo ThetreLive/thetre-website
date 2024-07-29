@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useWalletContext } from '@/context/walletContext';
 import AccountPage from './account';
+import Image from 'next/image';
 
 export default function Navbar() {
   const asPath = usePathname()
@@ -19,9 +20,24 @@ export default function Navbar() {
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
     >
-      <div className={`w-full flex items-center justify-between z-10000 transition-transform duration-300  ${
-        isVisible || asPath === "/proposals" ? 'translate-y-0' : '-translate-y-[100px]'
-      }`}>
+      <div
+        className={`w-full flex items-center justify-between z-10000 transition-transform duration-300 rounded-full px-2 ${
+          isVisible || asPath === "/proposals" ? 'translate-y-0' : '-translate-y-[100px]'
+        }`}
+        style={{
+          background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%)"
+        }}
+      >
+        <Link href="/">
+          <Image
+            src="/thetre-logo.png"
+            alt="Thetre Logo"
+            width={200}
+            height={16}
+            className="h-12"
+            loading='eager'
+          />
+        </Link>
         <div className="flex space-x-12 p-4 rounded-xl">
           <Link href="/" className={`text-white font-bold ${asPath === '/' ? 'underline decoration-thetre-blue decoration-4' : ''}`}>
             Browse
