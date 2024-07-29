@@ -187,21 +187,21 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
                 <p className="text-gray-200">{proposal.data.description.slice(0, 100)}...</p>
               </div>
               <div className="flex justify-between items-center mt-4 gap-2">
-                {(access.includes(proposal.data.title) || subscribed) || !proposal.data.isDRMEnabled ? (
+                {(access.includes(proposal.data.title) || (subscribed && !proposal.data.livestreamData)) || !proposal.data.isDRMEnabled ? (
                   <>
                     {changePage ? (
                       <button 
                         onClick={() => changePage(proposal.id)} 
                         className="bg-custom-radial px-6 py-3 font-bold rounded-lg"
                       >
-                        {(proposal.data.livestreamData && access.includes(proposal.data.title)) ? "Next Screening in " + countDown : "Watch Now"}
+                        {proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}
                       </button>
                     ) : (
                       <Link 
                         href={`/watch/${proposal.id}`} 
                         className="bg-custom-radial px-6 py-3 font-bold rounded-lg"
                       >
-                        {(proposal.data.livestreamData && access.includes(proposal.data.title)) ? "Next Screening in " + countDown : "Watch Now"}
+                        {proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}
                       </Link>
                     )}
                   </>

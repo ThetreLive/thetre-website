@@ -267,7 +267,7 @@ const WatchPage: React.FC = () => {
             <p className="font-bold text-white">Starring: {movie.data.cast.split(",").splice(0, 3).join(",")}</p>
           </div>
           <div className="flex flex-col gap-2">
-            {!access.includes(movie.data.title) && movie.data.isDRMEnabled && !subscribed ? (
+            {!access.includes(movie.data.title) && movie.data.isDRMEnabled && (!subscribed && !movie.data.livestreamData) ? (
                 <button
                     className="text-white bg-thetre-blue p-2 rounded-lg"
                     onClick={() => buyTicket(movie.data.title)}
