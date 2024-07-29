@@ -18,7 +18,7 @@ interface ModalProps {
 const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login, setLogin}) => {
   const [activeTab, setActiveTab] = useState<'tfuel' | 'nft'>('tfuel');
   const [walletAddress, setWalletAddress] = useState('');
-  const { signer, access, transferNFT, transferTFUEL, connectWallet, balance: walletBalance, power } = useWalletContext()
+  const { signer, access, transferNFT, transferTFUEL, connectWallet, balance: walletBalance, power, subscribed } = useWalletContext()
   const { createSubOrgAndWallet, login: loginPasskey } = useTurnkeyContext()
   const { proposalDetails } = useThetreContext()
 
@@ -93,7 +93,7 @@ const AccountPage: React.FC<ModalProps> = ({ isOpen, onClose, login, setLogin}) 
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h2 className="text-2xl font-bold">Account</h2>
-                  <p className="text-gray-400">{`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}</p>
+                  <p className="text-gray-400">{`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`} {subscribed ? <span className='text-green-500 p-1 rounded-md'>Subscribed</span> : <button className="text-white bg-thetre-blue p-1 rounded-md">Subscribe Now</button>}</p>
                 </div>
                 <button
                   onClick={handleCopy}
