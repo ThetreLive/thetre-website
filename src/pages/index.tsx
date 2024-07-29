@@ -119,7 +119,7 @@ export default function Home() {
               ))}
           </div>
           <div className="flex items-center">
-            <div className="inline-flex justify-center items-center space-x-4 relative bg-black/50 backdrop-blur-xl p-2 mx-auto" id="prevnext">
+            <div className="inline-flex justify-center items-center space-x-4 relative bg-black/50 backdrop-blur-xl rounded-md p-2 mx-auto" id="prevnext">
               <button
                 className={`px-4 py-2 text-white ${
                   currentPage === 1 ? "bg-gray-600" : "bg-blue-600"

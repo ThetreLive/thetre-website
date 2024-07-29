@@ -16,16 +16,16 @@ export default function Navbar() {
   return (
     <>
     <nav
-      className={`fixed inset-0 z-50 h-[100px] flex px-8 py-2 w-full`}
+      className={`fixed inset-0 z-50 h-[100px] flex w-full`}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
     >
       <div
-        className={`w-full flex items-center justify-between z-10000 transition-transform duration-300 rounded-full px-2 ${
+        className={`w-full flex items-center justify-between z-10000 transition-transform duration-300 px-8 py-2  ${
           isVisible || asPath === "/proposals" ? 'translate-y-0' : '-translate-y-[100px]'
         }`}
         style={{
-          background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%)"
+          background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 100%)"
         }}
       >
         <Link href="/">
