@@ -194,14 +194,14 @@ const MovieCard: React.FC<Props> = ({ proposal, access, muted, changePage }) => 
                         onClick={() => changePage(proposal.id)} 
                         className="bg-custom-radial px-6 py-3 font-bold rounded-lg"
                       >
-                        {proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}
+                        {(proposal.data.livestreamData && access.includes(proposal.data.title)) ? "Next Screening in " + countDown : "Watch Now"}
                       </button>
                     ) : (
                       <Link 
                         href={`/watch/${proposal.id}`} 
                         className="bg-custom-radial px-6 py-3 font-bold rounded-lg"
                       >
-                        {proposal.data.livestreamData ? "Next Screening in " + countDown : "Watch Now"}
+                        {(proposal.data.livestreamData && access.includes(proposal.data.title)) ? "Next Screening in " + countDown : "Watch Now"}
                       </Link>
                     )}
                   </>
