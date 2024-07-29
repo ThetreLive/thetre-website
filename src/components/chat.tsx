@@ -59,24 +59,15 @@ const Chat: React.FC<Props> = (props: Props) => {
         await sendMessage("pause", "");
       };
 
-      const handleSeeked = async () => {
-        if (fireEvent) {
-          await sendMessage("seek", videoElement!.currentTime.toString());
-        }
-        setFireEvent(true);
-      };
-
       if (videoElement) {
         videoElement.addEventListener("play", handlePlay);
         videoElement.addEventListener("pause", handlePause);
-        videoElement.addEventListener("seeked", handleSeeked);
       }
 
       return () => {
         if (videoElement) {
           videoElement.removeEventListener("play", handlePlay);
           videoElement.removeEventListener("pause", handlePause);
-          videoElement.removeEventListener("seeked", handleSeeked);
         }
       };
     }
@@ -296,12 +287,27 @@ const Chat: React.FC<Props> = (props: Props) => {
         </div>
 
         {roomId ? (
-          <button
-            className="bg-black text-white w-full py-2 bg-thetre-blue rounded-full"
-            onClick={copyCommand}
-          >
-            Copy Invite Link
-          </button>
+          <div className="flex gap-2 items-center">
+            <button className="text-white py-2 bg-thetre-blue rounded-full flex justify-between py-2 px-4 items-center gap-2" onClick={async () => {
+                if (subscrbers.length > 0) {
+                  const videoElement = props.playerRef.current;
+  
+                  await sendMessage("seek", videoElement!.currentTime.toString());
+                }
+              }}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+              </svg>
+
+              Sync
+            </button>
+            <button
+              className="bg-black text-white w-full py-2 bg-thetre-blue rounded-full"
+              onClick={copyCommand}
+              >
+              Copy Invite Link
+            </button>
+          </div>
         ) : (
           <button
             className="bg-black text-white w-full py-2 bg-thetre-blue rounded-full"
