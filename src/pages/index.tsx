@@ -72,10 +72,12 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <Loader />;
+    return <Loader loading={true}/>;
   }
   return (
     <div  onScroll={() => {console.log("here"); document.getElementById("prevnext")?.scrollIntoView(true)}}>
+      <div className="lg:hidden"><Loader loading={false}/></div>
+
       {/* <Sidebar
         selectedGenres={selectedGenres}
         setSelectedGenres={setSelectedGenres}

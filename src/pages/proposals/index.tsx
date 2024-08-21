@@ -19,7 +19,8 @@ const Home: NextPage = () => {
   }, []);
   return (
     <>
-      {loading && <Loader />}
+      {loading && <Loader loading={true}/>}
+      <div className="lg:hidden"><Loader loading={false}/></div>
       <div
         className={`min-h-screen  bg-bg-blue w-full pt-24 ${
           loading ? "blur-xs pointer-events-none" : ""

@@ -128,11 +128,12 @@ const WatchPage: React.FC = () => {
     }
   }, [movie, signer]);
   if (!movie) {
-    return <Loader />;
+    return <Loader loading={true}/>;
   }
 
   return (
     <div className="h-screen bg-bg-blue flex lg:flex-row flex-col">
+      <div className="lg:hidden"><Loader loading={false}/></div>
       {!signer && (
         <AccountPage isOpen={true} onClose={() => {}} login={login} setLogin={setLogin} />
       )}

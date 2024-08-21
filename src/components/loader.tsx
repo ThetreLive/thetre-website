@@ -1,10 +1,19 @@
 import React from 'react';
 
-const Loader: React.FC = () => {
+interface Props {
+  loading: boolean;
+}
+
+const Loader: React.FC<Props> = (props: Props) => {
   return (
     <div className="fixed inset-0 gradient-background bg-opacity-50 z-50 flex items-center justify-center h-screen">
-      <div className="text-white text-4xl font-semibold">
-        Getting The Thetre Experience Ready For You
+      {props.loading && (
+        <div className="text-white text-center text-4xl font-semibold hidden lg:block">
+          Getting The Thetre Experience Ready For You
+        </div>
+      )}
+      <div className="text-white text-center text-4xl font-semibold lg:hidden">
+        Coming soon for the smaller screens. Please try on Desktop.
       </div>
     </div>
   );
