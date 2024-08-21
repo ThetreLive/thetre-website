@@ -44,11 +44,12 @@ const Proposal: React.FC = () => {
   }, [isWatching, isWatchingTrailer]);
 
   if (!proposal) {
-    return <Loader />;
+    return <Loader loading={true}/>;
   }
 
   return (
     <div className="h-screen w-screen bg-bg-thetre text-white">
+      <div className="lg:hidden"><Loader loading={false}/></div>
       <div className={`rounded-lg shadow-lg ${isWatching || isWatchingTrailer ? 'bg-gray-800' : 'bg-transparent'}`}>
         {!isWatching && !isWatchingTrailer ? (
           <div className="relative h-screen w-screen">
